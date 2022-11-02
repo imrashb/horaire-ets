@@ -1,5 +1,6 @@
 package me.imrashb.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.util.*;
 
@@ -10,6 +11,8 @@ import java.util.*;
 public class Cours {
 
     private String sigle;
+
+    @JsonIgnore
     private List<Groupe> groupes;
 
 }

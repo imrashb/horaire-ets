@@ -13,14 +13,16 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+@SpringBootApplication
 public class Main {
 
     public static int pdfCount=0;
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-    }*/
+    }
 
+    /*
     public static void main(String[] args) throws IOException {
         CoursParser parser = new CoursParser();
 
@@ -53,6 +55,8 @@ public class Main {
         System.out.println("Nombre de combinaisons: "+combinaisons.size());
 
     }
+
+     */
 
     public static void printCombinaisons(List<CombinaisonHoraire> combinaisons) {
         for(CombinaisonHoraire combinaison : combinaisons) {

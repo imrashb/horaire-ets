@@ -5,8 +5,10 @@ import lombok.Data;
 import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.exception.CoursDoesntExistException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -24,10 +26,19 @@ public class GenerateurHoraire {
     public List<CombinaisonHoraire> getCombinaisonsHoraire(String... cours) {
         List<Cours> coursVoulu = new ArrayList<>();
 
+        List<String> inexistant = new ArrayList<>(Arrays.asList(cours));
+
         for (Cours c : listeCours) {
             for (String s : cours) {
-                if (c.getSigle().equalsIgnoreCase(s)) coursVoulu.add(c);
+                if (c.getSigle().equalsIgnoreCase(s)) {
+                    coursVoulu.add(c);
+                    inexistant.remove(s);
+                }
             }
+        }
+
+        if(inexistant.size() > 0) {
+            throw new CoursDoesntExistException(inexistant);
         }
 
         return getCombinaisonsHoraire(coursVoulu);
