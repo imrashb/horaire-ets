@@ -1,17 +1,18 @@
-package me.imrashb;
+package me.imrashb.domain;
 
 import lombok.*;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Activite {
 
     private String nom;
-    private String type;
-    private Schedule schedule;
+    private String modeEnseignement;
+    private HeureActivite heure;
 
     public String toString() {
-        return this.nom +" "+schedule;
+        return this.nom +" "+ heure;
     }
 
     @Override
@@ -19,7 +20,7 @@ public class Activite {
         if(obj instanceof Activite) {
             Activite a = (Activite) obj;
 
-            if(this.nom.equalsIgnoreCase(a.nom) && this.type.equalsIgnoreCase(a.type) && this.schedule.equals(a.schedule)) {
+            if(this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equalsIgnoreCase(a.modeEnseignement) && this.heure.equals(a.heure)) {
                 return true;
             }
         }

@@ -1,16 +1,18 @@
-package me.imrashb;
+package me.imrashb.domain;
 
 import lombok.*;
 import org.apache.commons.lang3.*;
 
 @Data
-public class Schedule {
+@NoArgsConstructor
+public class HeureActivite {
 
+    private long id;
     private int heureDepart;
     private int heureFin;
     private Jour jour;
 
-    public Schedule(int heureDepart, int minDepart, int heureFin, int minFin, String jour) {
+    public HeureActivite(int heureDepart, int minDepart, int heureFin, int minFin, String jour) {
         this.heureDepart = heureDepart*100 + minDepart;
         this.heureFin = heureFin*100 + minFin;
         this.jour = stringToJour(jour);
@@ -18,8 +20,8 @@ public class Schedule {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Schedule) {
-            Schedule sch = (Schedule) obj;
+        if(obj instanceof HeureActivite) {
+            HeureActivite sch = (HeureActivite) obj;
             if(sch.heureDepart == this.heureDepart && sch.heureFin == this.heureFin && sch.jour == this.jour) {
                 return true;
             }
@@ -27,7 +29,7 @@ public class Schedule {
         return false;
     }
 
-    public boolean overlapsWith(Schedule schedule) {
+    public boolean overlapsWith(HeureActivite schedule) {
 
 
         if(schedule.jour != this.jour) return false;
@@ -73,22 +75,3 @@ public class Schedule {
 
 }
 
-enum Jour {
-    LUNDI("Lundi"),
-    MARDI("Mardi"),
-    MERCREDI("Mercredi"),
-    JEUDI("Jeudi"),
-    VENDREDI("Vendredi"),
-    SAMEDI("Samedi"),
-    DIMANCHE("Dimanche"),
-    UNDEFINED("Indéfini");
-
-    private String nom;
-    Jour(String nom) {
-        this.nom = nom;
-    }
-
-    public String getNom() {
-        return this.nom;
-    }
-}

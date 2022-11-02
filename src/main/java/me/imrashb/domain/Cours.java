@@ -1,7 +1,6 @@
-package me.imrashb;
+package me.imrashb.domain;
 
 import lombok.*;
-
 import java.util.*;
 
 @Data
@@ -10,8 +9,7 @@ import java.util.*;
 @ToString
 public class Cours {
 
-    private String id;
-
-    private List<Groupe> groupes = new ArrayList<>();
+    private String sigle;
+    private List<Groupe> groupes;
 
 }

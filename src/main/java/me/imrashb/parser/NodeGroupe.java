@@ -1,4 +1,8 @@
-package me.imrashb;
+package me.imrashb.parser;
+
+import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.Cours;
+import me.imrashb.domain.Groupe;
 
 import java.util.*;
 
@@ -26,9 +30,9 @@ public class NodeGroupe {
         return false;
     }
 
-    public List<List<Groupe>> getValidCombinaisons(List<Cours> cours) {
+    public List<CombinaisonHoraire> getValidCombinaisons(List<Cours> cours) {
 
-        List<List<Groupe>> liste = new ArrayList<>();
+        List<CombinaisonHoraire> liste = new ArrayList<>();
 
         if(nodes.size() == 0) {
 
@@ -39,7 +43,7 @@ public class NodeGroupe {
                     if(!cours.contains(g.getCours())) return liste;
                 }
 
-                liste.add(groupes);
+                liste.add(new CombinaisonHoraire(groupes));
                 return liste;
             }
             // Retourne liste vide si pas bonne branche de l'arbre
@@ -48,7 +52,7 @@ public class NodeGroupe {
         } else {
 
             for(NodeGroupe node : nodes) {
-                List<List<Groupe>> tmp = node.getValidCombinaisons(cours);
+                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(cours);
                 liste.addAll(tmp);
             }
 

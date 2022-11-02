@@ -1,4 +1,4 @@
-package me.imrashb;
+package me.imrashb.domain;
 
 import lombok.*;
 
@@ -7,13 +7,13 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Groupe {
 
-    private String id;
-    private List<Activite> activites;
-    private Cours cours;
+    private String numeroGroupe;
 
+    private List<Activite> activites;
+
+    private Cours cours;
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
@@ -22,7 +22,7 @@ public class Groupe {
             sb.append(a.toString()+" ");
         }
 
-        return cours.getId()+"-"+id+" "+sb.toString();
+        return cours.getSigle()+"-"+ numeroGroupe +" "+sb.toString();
     }
 
     public void addActivite(Activite activite) {
@@ -32,7 +32,7 @@ public class Groupe {
     public boolean overlapsWith(Groupe g) {
         for(Activite a : activites) {
             for(Activite a2 : g.activites) {
-                if(a.getSchedule().overlapsWith(a2.getSchedule())) return true;
+                if(a.getHeure().overlapsWith(a2.getHeure())) return true;
             }
         }
         return false;
