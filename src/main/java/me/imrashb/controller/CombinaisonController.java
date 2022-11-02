@@ -16,8 +16,8 @@ public class CombinaisonController {
     private CombinaisonService service;
 
     @GetMapping("/combinaisons")
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String... cours) {
-        return service.getCombinaisonsHoraire(cours);
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String trimestre, @RequestParam String[] cours) {
+        return service.getCombinaisonsHoraire(trimestre, cours);
     }
 
 }
