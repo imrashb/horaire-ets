@@ -1,6 +1,8 @@
 package me.imrashb.utils;
 
+import me.imrashb.domain.Programme;
 import me.imrashb.domain.Trimestre;
+import me.imrashb.parser.PdfCours;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -9,7 +11,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,32 +21,20 @@ import java.util.concurrent.Future;
 
 public class ETSUtils {
 
-    private static final String[] PROGRAMMES = {
-            "SEG", // Enseignements generaux
-            "7084", // LOG
-            "5730", // CUT
-            "7625", // CTN
-            "7694", // ELE
-            "7684", // MEC
-            "6556", // GOL
-            "6557", // GPA
-            "7086", // TI
-    };
-
-    public static List<Future<File>> getFichiersHoraireAsync(int annee, Trimestre trimestre) {
-        final List<Future<File>> futures = new ArrayList<>();
+    public static Map<Programme, Future<File>> getFichiersHoraireAsync(int annee, Trimestre trimestre) {
+        final Map<Programme, Future<File>> futures = new HashMap<>();
 
         final String idTrimestre = trimestre.getIdTrimestre(annee);
 
         final ExecutorService executor
-                = Executors.newFixedThreadPool(PROGRAMMES.length);
+                = Executors.newFixedThreadPool(Programme.values().length);
 
         final String tmpFolder = "./pdf";
         new File(tmpFolder).mkdir();
 
-        for (String id : PROGRAMMES) {
-            Future<File> future = downloadHoraire(executor, tmpFolder, id, idTrimestre);
-            futures.add(future);
+        for (Programme programme : Programme.values()) {
+            Future<File> future = downloadHoraire(executor, tmpFolder, programme.getId(), idTrimestre);
+            futures.put(programme, future);
         }
 
         executor.shutdownNow();
@@ -50,16 +42,16 @@ public class ETSUtils {
         return futures;
     }
 
-    public static List<File> getFichiersHoraireSync(int annee, Trimestre trimestre) throws ExecutionException, InterruptedException {
+    public static List<PdfCours> getFichiersHoraireSync(int annee, Trimestre trimestre) throws ExecutionException, InterruptedException {
 
-        List<Future<File>> futures = getFichiersHoraireAsync(annee, trimestre);
+        Map<Programme, Future<File>> futures = getFichiersHoraireAsync(annee, trimestre);
 
-        List<File> files = new ArrayList<>();
+        List<PdfCours> files = new ArrayList<>();
         //Resolve all futures
-        for(Future<File> future : futures) {
-            File f = future.get();
+        for(Programme programme : futures.keySet()) {
+            File f = futures.get(programme).get();
             if(f != null) {
-                files.add(f);
+                files.add(new PdfCours(f, programme));
             }
         }
 

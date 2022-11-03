@@ -21,7 +21,7 @@ public class CoursController {
     private CoursService service;
 
     @GetMapping("")
-    public String[] getCours(@RequestParam String trimestre) {
+    public List<Cours> getCours(@RequestParam String trimestre) {
         return service.getListeCours(trimestre);
     }
 

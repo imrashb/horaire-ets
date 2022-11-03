@@ -1,9 +1,6 @@
 package me.imrashb.parser;
 
-import me.imrashb.domain.Activite;
-import me.imrashb.domain.Cours;
-import me.imrashb.domain.Groupe;
-import me.imrashb.domain.HoraireActivite;
+import me.imrashb.domain.*;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.text.*;
 import org.springframework.stereotype.Component;
@@ -30,24 +27,23 @@ public class CoursParser {
         this.listeCours = cours;
     }
 
-    public List<Cours> getCoursFromPDF(File f) throws IOException {
+    public List<Cours> getCoursFromPDF(File f, Programme programme) throws IOException {
 
         currentCours = null;
         currentGroupe = null;
 
         String[] lines = getLinesFromPDF(f);
 
-
-        for(String line : lines) {
+        for (String line : lines) {
 
             Cours cours = getCoursFromLine(line);
 
-            if(handleCours(cours) || currentCours == null) {
+            if (handleCours(cours, programme) || currentCours == null) {
                 continue;
             }
 
             Groupe groupe = getGroupeFromLine(line);
-            handleGroupe(groupe);
+            handleGroupe(groupe, programme);
 
         }
 
@@ -58,26 +54,28 @@ public class CoursParser {
         return this.listeCours;
     }
 
-    private boolean handleCours(Cours cours) {
+    private boolean handleCours(Cours cours, Programme programme) {
 
-        if(cours != null) {
+        if (cours != null) {
             currentCours = cours;
             currentGroupe = null;
 
-            if(!listeCours.contains(cours)) {
+            if (!listeCours.contains(cours)) {
                 listeCours.add(cours);
             }
+            cours.addProgramme(programme);
             return true;
         }
         return false;
     }
 
-    private boolean handleGroupe(Groupe groupe) {
-        if(groupe != null) {
+    private boolean handleGroupe(Groupe groupe, Programme programme) {
+        if (groupe != null) {
             currentGroupe = groupe;
 
-            if(!currentCours.getGroupes().contains(groupe)) {
-                currentCours.getGroupes().add(groupe);
+            if (!currentCours.getGroupes().contains(groupe)) {
+                currentCours.addGroupe(groupe);
+                currentCours.addProgramme(programme);
             }
             return true;
         }
@@ -89,18 +87,18 @@ public class CoursParser {
 
         Matcher match = coursPattern.matcher(line);
 
-        if(match.find()) {
+        if (match.find()) {
 
             String id = match.group(1);
 
-            for(Cours cours : listeCours) {
+            for (Cours cours : listeCours) {
                 // Si cours existe deja retourne le cours
-                if(cours.getSigle().equalsIgnoreCase(id)) {
+                if (cours.getSigle().equalsIgnoreCase(id)) {
                     return cours;
                 }
             }
 
-            Cours cours = new Cours(id, new ArrayList<>());
+            Cours cours = new Cours(id, new ArrayList<>(), new HashSet<>());
             return cours;
         }
         return null;
@@ -111,14 +109,14 @@ public class CoursParser {
 
         Object obj = getGroupe(line);
 
-        if(obj instanceof Groupe) return (Groupe) obj;
+        if (obj instanceof Groupe) return (Groupe) obj;
 
-        if(obj instanceof Activite) {
+        if (obj instanceof Activite) {
 
             Activite activite = (Activite) obj;
 
-            for(Activite a : currentGroupe.getActivites()) {
-                if(a.equals(activite)) return currentGroupe;
+            for (Activite a : currentGroupe.getActivites()) {
+                if (a.equals(activite)) return currentGroupe;
             }
 
             currentGroupe.addActivite(activite);
@@ -132,7 +130,7 @@ public class CoursParser {
         Matcher match = groupePattern.matcher(line);
 
         // Check si definition du cours
-        if(match.find()) {
+        if (match.find()) {
 
             String id = match.group(1);
 
@@ -145,16 +143,16 @@ public class CoursParser {
 
             Activite activite = new Activite(match.group(7), match.group(8), sch);
 
-            if(match.group(1) == null) {
+            if (match.group(1) == null) {
                 return activite;
             }
 
             // Verifie si groupe existe deja
-            for(Groupe g : currentCours.getGroupes()) {
-                if(g.getNumeroGroupe().equalsIgnoreCase(id)) {
+            for (Groupe g : currentCours.getGroupes()) {
+                if (g.getNumeroGroupe().equalsIgnoreCase(id)) {
 
-                    for(Activite a : g.getActivites()) {
-                        if(a.equals(activite)) return g;
+                    for (Activite a : g.getActivites()) {
+                        if (a.equals(activite)) return g;
                     }
 
                     g.addActivite(activite);
@@ -168,6 +166,7 @@ public class CoursParser {
         }
         return null;
     }
+
     private String[] getLinesFromPDF(File f) throws IOException {
 
         PDDocument document = PDDocument.load(f);

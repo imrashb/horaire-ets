@@ -1,5 +1,7 @@
 package me.imrashb.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public enum Jour {
     LUNDI("Lundi"),
     MARDI("Mardi"),
@@ -9,6 +11,7 @@ public enum Jour {
     SAMEDI("Samedi"),
     DIMANCHE("Dimanche");
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private String nom;
 
     Jour(String nom) {

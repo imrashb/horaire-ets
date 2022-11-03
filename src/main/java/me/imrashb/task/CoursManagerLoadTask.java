@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.CoursManager;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
+import me.imrashb.parser.PdfCours;
 import me.imrashb.utils.ETSUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class CoursManagerLoadTask {
 
             CoursParser coursParser = new CoursParser();
 
-            List<File> files = null;
+            List<PdfCours> files = null;
             try {
                 files = ETSUtils.getFichiersHoraireSync(Integer.parseInt(trimestre.substring(0, 4)), trim);
             } catch (ExecutionException e) {
@@ -53,9 +54,9 @@ public class CoursManagerLoadTask {
                 throw new RuntimeException(e);
             }
 
-            for(File f : files) {
-                coursParser.getCoursFromPDF(f);
-                f.delete();
+            for(PdfCours pdf : files) {
+                coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme());
+                pdf.getPdf().delete();
             }
 
             this.coursManager.addTrimestre(trimestre, coursParser.getCours());

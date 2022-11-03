@@ -24,17 +24,11 @@ public class CoursServiceImpl implements CoursService{
 
 
     @Override
-    public String[] getListeCours(String trimestre) {
+    public List<Cours> getListeCours(String trimestre) {
         if(!coursManager.isReady())
             throw new CoursNotInitializedException();
 
         List<Cours> liste = coursManager.getListeCours(trimestre);
-
-        String[] arr = new String[liste.size()];
-
-        for(int i = 0; i<liste.size(); i++) {
-            arr[i] = liste.get(i).getSigle();
-        }
-        return arr;
+        return liste;
     }
 }
