@@ -7,10 +7,10 @@ public class Activite {
 
     private String nom;
     private ModeEnseignement modeEnseignement;
-    private HeureActivite heure;
+    private HoraireActivite horaire;
 
-    public Activite(String nom, String modeEnseignement, HeureActivite heure) {
-        this.heure = heure;
+    public Activite(String nom, String modeEnseignement, HoraireActivite horaire) {
+        this.horaire = horaire;
         this.nom = nom.trim();
         this.modeEnseignement = stringToModeEnseignement(modeEnseignement);
     }
@@ -31,7 +31,7 @@ public class Activite {
     }
 
     public String toString() {
-        return this.nom +" "+ heure;
+        return this.nom +" "+ horaire;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Activite {
         if(obj instanceof Activite) {
             Activite a = (Activite) obj;
 
-            if(this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.heure.equals(a.heure)) {
+            if(this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire)) {
                 return true;
             }
         }

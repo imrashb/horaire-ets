@@ -3,7 +3,7 @@ package me.imrashb.parser;
 import me.imrashb.domain.Activite;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
-import me.imrashb.domain.HeureActivite;
+import me.imrashb.domain.HoraireActivite;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.text.*;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.util.regex.*;
 public class CoursParser {
 
     private static Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*(D|P|H|C)");
+    private static Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*(D|P|H|C)\\b");
 
     private List<Cours> listeCours;
     private Cours currentCours = null;
@@ -136,7 +136,7 @@ public class CoursParser {
 
             String id = match.group(1);
 
-            HeureActivite sch = new HeureActivite(
+            HoraireActivite sch = new HoraireActivite(
                     Integer.parseInt(match.group(3)),
                     Integer.parseInt(match.group(4)),
                     Integer.parseInt(match.group(5)),

@@ -32,7 +32,7 @@ public class Groupe {
     public boolean overlapsWith(Groupe g) {
         for(Activite a : activites) {
             for(Activite a2 : g.activites) {
-                if(a.getHeure().overlapsWith(a2.getHeure())) return true;
+                if(a.getHoraire().overlapsWith(a2.getHoraire())) return true;
             }
         }
         return false;

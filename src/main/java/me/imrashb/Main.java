@@ -1,17 +1,9 @@
 package me.imrashb;
 import me.imrashb.domain.*;
-import me.imrashb.parser.CoursParser;
-import me.imrashb.parser.GenerateurHoraire;
-import me.imrashb.parser.NodeGroupe;
-import me.imrashb.utils.ETSUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.xml.sax.*;
 
-import javax.xml.parsers.*;
-import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class Main {
@@ -68,16 +60,16 @@ public class Main {
 
                         for(Activite a : g.getActivites()) {
 
-                            HeureActivite sch;
+                            HoraireActivite sch;
                             if(i == 0) {
-                                sch = new HeureActivite(6, 0, 12, 0, jour.getNom().substring(0, 3));
+                                sch = new HoraireActivite(6, 0, 12, 0, jour.getNom().substring(0, 3));
                             } else if(i == 1) {
-                                sch = new HeureActivite(13, 0, 17, 0, jour.getNom().substring(0, 3));
+                                sch = new HoraireActivite(13, 0, 17, 0, jour.getNom().substring(0, 3));
                             } else {
-                                sch = new HeureActivite(18, 0, 22, 0, jour.getNom().substring(0, 3));
+                                sch = new HoraireActivite(18, 0, 22, 0, jour.getNom().substring(0, 3));
                             }
 
-                            if(sch.overlapsWith(a.getHeure())) {
+                            if(sch.overlapsWith(a.getHoraire())) {
                                 tab[count][i] = g.getCours().getSigle()+"-"+g.getNumeroGroupe();
                             }
                         }

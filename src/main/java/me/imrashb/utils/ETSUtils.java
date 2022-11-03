@@ -26,6 +26,7 @@ public class ETSUtils {
             "7684", // MEC
             "6556", // GOL
             "6557", // GPA
+            "7086", // TI
     };
 
     public static List<Future<File>> getFichiersHoraireAsync(int annee, Trimestre trimestre) {

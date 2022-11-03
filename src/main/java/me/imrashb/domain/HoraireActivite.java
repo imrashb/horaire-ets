@@ -5,14 +5,13 @@ import org.apache.commons.lang3.*;
 
 @Data
 @NoArgsConstructor
-public class HeureActivite {
+public class HoraireActivite {
 
-    private long id;
     private int heureDepart;
     private int heureFin;
     private Jour jour;
 
-    public HeureActivite(int heureDepart, int minDepart, int heureFin, int minFin, String jour) {
+    public HoraireActivite(int heureDepart, int minDepart, int heureFin, int minFin, String jour) {
         this.heureDepart = heureDepart*100 + minDepart;
         this.heureFin = heureFin*100 + minFin;
         this.jour = stringToJour(jour);
@@ -20,8 +19,8 @@ public class HeureActivite {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof HeureActivite) {
-            HeureActivite sch = (HeureActivite) obj;
+        if(obj instanceof HoraireActivite) {
+            HoraireActivite sch = (HoraireActivite) obj;
             if(sch.heureDepart == this.heureDepart && sch.heureFin == this.heureFin && sch.jour == this.jour) {
                 return true;
             }
@@ -29,7 +28,7 @@ public class HeureActivite {
         return false;
     }
 
-    public boolean overlapsWith(HeureActivite schedule) {
+    public boolean overlapsWith(HoraireActivite schedule) {
 
 
         if(schedule.jour != this.jour) return false;
@@ -63,7 +62,7 @@ public class HeureActivite {
             case "dim":
                 return Jour.DIMANCHE;
             default:
-                return Jour.UNDEFINED;
+                return null;
         }
     }
 

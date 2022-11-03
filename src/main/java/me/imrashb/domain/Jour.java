@@ -1,6 +1,5 @@
 package me.imrashb.domain;
 
-
 public enum Jour {
     LUNDI("Lundi"),
     MARDI("Mardi"),
@@ -8,8 +7,7 @@ public enum Jour {
     JEUDI("Jeudi"),
     VENDREDI("Vendredi"),
     SAMEDI("Samedi"),
-    DIMANCHE("Dimanche"),
-    UNDEFINED("Indéfini");
+    DIMANCHE("Dimanche");
 
     private String nom;
 
