@@ -10,29 +10,31 @@ import me.imrashb.parser.GenerateurHoraire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Service
 @EnableScheduling
 @Slf4j
-public class CombinaisonServiceImpl implements CombinaisonService{
+public class CoursServiceImpl implements CoursService{
 
     @Autowired
     private CoursManager coursManager;
 
+
     @Override
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, String... cours) {
-
-        if(!coursManager.isReady()) {
+    public String[] getListeCours(String trimestre) {
+        if(!coursManager.isReady())
             throw new CoursNotInitializedException();
+
+        List<Cours> liste = coursManager.getListeCours(trimestre);
+
+        String[] arr = new String[liste.size()];
+
+        for(int i = 0; i<liste.size(); i++) {
+            arr[i] = liste.get(i).getSigle();
         }
-
-        List<Cours> coursDuTrimestre = coursManager.getListeCours(trimestre);
-
-        if(coursDuTrimestre == null)
-            throw new TrimestreDoesntExistException(trimestre);
-        return new GenerateurHoraire(coursDuTrimestre).getCombinaisonsHoraire(cours);
+        return arr;
     }
-
 }

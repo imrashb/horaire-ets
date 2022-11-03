@@ -6,11 +6,13 @@ import me.imrashb.domain.Groupe;
 import me.imrashb.domain.HeureActivite;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.text.*;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
+@Component
 public class CoursParser {
 
     private static Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
