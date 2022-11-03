@@ -169,6 +169,7 @@ public class CoursParser {
 
     private String[] getLinesFromPDF(File f) throws IOException {
 
+        if(f == null || !f.exists()) return new String[0];
         PDDocument document = PDDocument.load(f);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);

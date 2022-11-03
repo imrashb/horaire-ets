@@ -54,10 +54,19 @@
     </dependencies>
 
     <build>
+        <finalName>horaire-ets</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${project.parent.version}</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>me.imrashb.Main</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

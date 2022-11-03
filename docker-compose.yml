@@ -1,0 +1,8 @@
+version: "3.5"
+services:
+  horaire-ets-api:
+    image: horaire-ets-api
+    build:
+      context: .
+    ports:
+      - "8080:8080"
