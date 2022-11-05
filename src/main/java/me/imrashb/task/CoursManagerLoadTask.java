@@ -61,6 +61,7 @@ public class CoursManagerLoadTask {
 
             this.coursManager.addTrimestre(trimestre, coursParser.getCours());
         }
+        coursManager.setReady(true);
 
         log.info("method: updateCours() : Fin de la mise à jour des cours");
     }

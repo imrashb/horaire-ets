@@ -29,23 +29,18 @@ public class HoraireActivite {
     }
 
     public boolean overlapsWith(HoraireActivite schedule) {
-
-
         if(schedule.jour != this.jour) return false;
+        return overlapsWithIgnoreJour(schedule);
+    }
 
-        if(this.heureDepart <=schedule.heureDepart && schedule.heureDepart < this.heureFin) {
-            return true;
-        }
-
-        if(this.heureDepart <= schedule.heureFin && schedule.heureFin <= this.heureFin) {
-            return true;
-        }
-
-        return false;
+    public boolean overlapsWithIgnoreJour(HoraireActivite schedule) {
+        return Math.max(this.heureDepart, schedule.heureDepart) <= Math.min(this.heureFin, schedule.heureFin);
     }
 
 
     private Jour stringToJour(String jour) {
+        if(jour == null)
+            return null;
         switch(jour.toLowerCase()) {
             case "lun":
                 return Jour.LUNDI;

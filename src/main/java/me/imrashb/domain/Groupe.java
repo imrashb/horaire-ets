@@ -15,14 +15,7 @@ public class Groupe {
 
     private Cours cours;
     public String toString() {
-
-        StringBuilder sb = new StringBuilder();
-
-        for(Activite a : activites) {
-            sb.append(a.toString()+" ");
-        }
-
-        return cours.getSigle()+"-"+ numeroGroupe +" "+sb.toString();
+        return cours.getSigle()+"-"+ numeroGroupe;
     }
 
     public void addActivite(Activite activite) {
