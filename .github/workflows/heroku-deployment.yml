@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - discord-bot
 
 jobs:
   build:
@@ -16,3 +17,5 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           usedocker: true
+        env:
+          - DISCORD_TOKEN=${{secrets.DISCORD_TOKEN}}
