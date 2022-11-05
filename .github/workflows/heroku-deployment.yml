@@ -18,4 +18,4 @@ jobs:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           usedocker: true
         env:
-          - DISCORD_TOKEN=${{secrets.DISCORD_TOKEN}}
+          DISCORD_TOKEN: ${{secrets.DISCORD_TOKEN}}
