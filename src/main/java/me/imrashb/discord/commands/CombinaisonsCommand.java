@@ -1,15 +1,16 @@
 package me.imrashb.discord.commands;
 
-import me.imrashb.discord.button.*;
 import me.imrashb.discord.embed.*;
+import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.domain.*;
 import me.imrashb.parser.*;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.interactions.commands.*;
 
 import java.util.*;
 
-public class CombinaisonsCommand extends DiscordSlashCommand {
+public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAction> {
 
     private final String ID_COURS = "cours";
     private final String ID_TRIMESTRE = "trimestre";
@@ -41,7 +42,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public EmbedEditDeferredAction execute(SlashCommandInteractionEvent event) {
         List<String> cours = new ArrayList<>();
         String trimestre = event.getOption(ID_TRIMESTRE).getAsString();
 
@@ -64,8 +65,11 @@ public class CombinaisonsCommand extends DiscordSlashCommand {
 
         List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(cours.toArray(new String[0]));
 
-        new CombinaisonsEmbed(combinaisons).queueEmbed(event, true);
-
+        CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
+        embed.queueEmbed(event, true);
+        List<User> users = new ArrayList<>();
+        users.add(event.getUser());
+        return new EmbedEditDeferredAction(users, embed);
     }
 
 }

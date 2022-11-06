@@ -1,6 +1,7 @@
 package me.imrashb.discord.commands;
 
 import lombok.*;
+import me.imrashb.discord.events.action.DeferredAction;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.events.interaction.command.*;
@@ -11,7 +12,7 @@ import net.dv8tion.jda.internal.interactions.*;
 import java.util.*;
 
 @Data
-public abstract class DiscordSlashCommand {
+public abstract class DiscordSlashCommand<Action extends DeferredAction> {
 
     private CommandDataImpl commandData;
 
@@ -42,11 +43,10 @@ public abstract class DiscordSlashCommand {
     }
 
 
-    public abstract void execute(SlashCommandInteractionEvent event);
+    public abstract Action execute(SlashCommandInteractionEvent event);
 
     public void subscribeCommand(JDA jda) {
         jda.upsertCommand(commandData).complete();
-
     }
 
     public boolean isSlashCommandMatching(String name) {

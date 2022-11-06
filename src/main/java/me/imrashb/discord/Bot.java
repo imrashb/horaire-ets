@@ -1,9 +1,10 @@
 package me.imrashb.discord;
 
 
-import me.imrashb.discord.button.*;
 import me.imrashb.discord.commands.*;
-import me.imrashb.discord.events.*;
+import me.imrashb.discord.events.controller.InteractionHandlerController;
+import me.imrashb.discord.events.handler.ComponentControlledEmbedHandler;
+import me.imrashb.discord.events.handler.SlashCommandInteractionEventHandler;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -18,6 +19,8 @@ public class Bot {
     private CoursManager coursManager;
     private JDA jda;
     private Set<DiscordSlashCommand> commands;
+
+    private InteractionHandlerController interactionHandlerController;
     Bot(String token, CoursManager coursManager) throws InterruptedException {
         this.coursManager = coursManager;
         this.commands = new HashSet<>();
@@ -58,9 +61,11 @@ public class Bot {
     }
 
     private void subscribeListeners() {
-        jda.addEventListener(new SlashCommandInteractionEventHandler(commands));
-        jda.addEventListener(new CommandAutoCompleteInteractionEventHandler(commands));
-        jda.addEventListener(new ButtonInteractionEventHandler());
+
+        this.interactionHandlerController = new InteractionHandlerController(jda);
+        interactionHandlerController.addInteractionHandler(new SlashCommandInteractionEventHandler(this.commands));
+        interactionHandlerController.addInteractionHandler(new ComponentControlledEmbedHandler());
+        this.jda.addEventListener(this.interactionHandlerController);
     }
 
     private void subscribeCommands() {

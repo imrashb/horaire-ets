@@ -1,11 +1,11 @@
 package me.imrashb.discord.embed;
 
-import me.imrashb.discord.button.*;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.events.interaction.component.*;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.*;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
+import net.dv8tion.jda.internal.requests.Route;
 
 import java.util.*;
 
@@ -13,8 +13,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private List<CombinaisonHoraire> combinaisons;
 
     private int currentCombinaison = 0;
-
-
 
     public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons) {
         this.combinaisons = combinaisons;
@@ -52,38 +50,35 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     }
 
     @Override
-    protected List<ReactiveButton> buildReactiveButtons() {
-
-        ReactiveButton prochain = new ReactiveButton() {
-            @Override
-            public ItemComponent getItemComponent(String id) {
-                return Button.primary(id, "Prochain");
-            }
-
-            @Override
-            public void execute(ButtonInteractionEvent event) {
-                CombinaisonsEmbed.this.currentCombinaison++;
-                CombinaisonsEmbed.this.fireUpdate(event);
-            }
-        };
-
-        ReactiveButton precedent = new ReactiveButton() {
-            @Override
-            public ItemComponent getItemComponent(String id) {
-                return Button.secondary(id, "Précédent");
-            }
-
-            @Override
-            public void execute(ButtonInteractionEvent event) {
-                CombinaisonsEmbed.this.currentCombinaison--;
-                CombinaisonsEmbed.this.fireUpdate(event);
-            }
-        };
-
-        ReactiveButton[] buttons = {precedent, prochain};
-
-        return Arrays.asList(buttons);
+    protected List<FunctionalItemComponent> buildComponents() {
+        FunctionalItemComponent prochain = new FunctionalItemComponent(
+                Button.primary("prochain", "Prochain")
+                        .withEmoji(Emoji.fromUnicode("➡")),
+                (event) -> {
+                    CombinaisonsEmbed.this.currentCombinaison++;
+                });
+        FunctionalItemComponent precedent = new FunctionalItemComponent(
+                Button.primary("precedent", "Précédent")
+                        .withEmoji(Emoji.fromUnicode("⬅")),
+                (event) -> {
+                    CombinaisonsEmbed.this.currentCombinaison--;
+                });
+        FunctionalItemComponent epingle = new FunctionalItemComponent(
+                Button.secondary("epingle", "Épingler")
+                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCC")),
+                (event) -> {
+                    // TODO - Send Message
+                });
+        FunctionalItemComponent partage = new FunctionalItemComponent(
+                Button.secondary("partage", "Partager")
+                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE")),
+                (event) -> {
+                    setStayAlive(getStayAlive());
+                });
+        FunctionalItemComponent[] comps = {precedent, prochain, epingle, partage};
+        return Arrays.asList(comps);
     }
+
 
     private final HoraireActivite HORAIRE_MATIN = new HoraireActivite(6, 0, 12, 30, null);
     private final HoraireActivite HORAIRE_MIDI = new HoraireActivite(13, 0, 17, 30, null);

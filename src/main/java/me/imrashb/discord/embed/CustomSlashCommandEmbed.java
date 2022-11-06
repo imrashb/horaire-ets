@@ -1,16 +1,14 @@
 package me.imrashb.discord.embed;
 
-import me.imrashb.discord.button.*;
-import me.imrashb.discord.events.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.*;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.events.interaction.component.*;
 import net.dv8tion.jda.api.interactions.*;
 import net.dv8tion.jda.api.interactions.components.*;
 
-import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -18,29 +16,71 @@ public abstract class CustomSlashCommandEmbed {
 
     protected EmbedBuilder embedBuilder = new EmbedBuilder();
 
+    private List<FunctionalItemComponent> components = null;
+
+    private ScheduledFuture<?> scheduledFuture = null;
+
+    @Getter
     private InteractionHook hook;
 
-    private long alive = 30;
+    @Getter
+    private Long messageId;
 
-    public final void queueEmbed(SlashCommandInteractionEvent event, boolean ephemereal) {
-        List<ReactiveButton> buttons = this.buildReactiveButtons();
-        ButtonInteractionEventHandler.buttons.addAll(buttons);
+    private long alive = 60;
 
-        List<ItemComponent> comp = new ArrayList<ItemComponent>();
-        for(ReactiveButton b : buttons) comp.add(b.getComponent());
 
-        event.replyEmbeds(this.update().build()).addActionRow(comp).setEphemeral(ephemereal).timeout(alive, TimeUnit.SECONDS).queue(hook -> {
+    @Getter @Setter
+    private boolean stayAlive = false;
+
+    public boolean getStayAlive() {
+        return this.stayAlive;
+    }
+
+    public final void queueEmbed(SlashCommandInteractionEvent event, boolean ephemeral) {
+        components = this.buildComponents();
+        List<ItemComponent> itemComponents = new ArrayList<>();
+        for(FunctionalItemComponent c : components) itemComponents.add(c.getComponent());
+
+        event.replyEmbeds(this.update().build()).addActionRow(itemComponents).setEphemeral(ephemeral).timeout(alive, TimeUnit.SECONDS).queue((hook) -> {
             this.hook = hook;
+            hook.retrieveOriginal().queue(message -> {
+                this.messageId = message.getIdLong();
+            });
+            this.deleteAfterInactivity();
         });
+
     }
 
     protected abstract EmbedBuilder update();
 
-    public void fireUpdate(ButtonInteractionEvent event) {
-        hook.editOriginalEmbeds(this.update().build()).timeout(alive, TimeUnit.SECONDS).queue();
+    public void fireUpdate(GenericComponentInteractionCreateEvent event) {
+
+        for(FunctionalItemComponent comp : this.components) {
+            if(comp.getComponent().getId().equals(event.getComponentId())) {
+                comp.consume(event);
+                break;
+            }
+        }
+
+        if(this.scheduledFuture != null && this.scheduledFuture.isCancelled() || !this.scheduledFuture.cancel(false)) {
+            return;
+        }
+
+        hook
+                .editOriginalEmbeds(this.update().build())
+                .timeout(alive, TimeUnit.SECONDS)
+                .queue();
         event.deferEdit().queue();
+        this.deleteAfterInactivity();
     }
 
-    protected abstract List<ReactiveButton> buildReactiveButtons();
+    private void deleteAfterInactivity() {
+        if(!stayAlive)
+            this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS);
+    }
+
+    protected abstract List<FunctionalItemComponent> buildComponents();
+
+
 
 }
