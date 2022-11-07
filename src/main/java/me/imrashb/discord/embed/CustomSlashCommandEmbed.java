@@ -1,6 +1,5 @@
 package me.imrashb.discord.embed;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.*;
@@ -16,8 +15,6 @@ public abstract class CustomSlashCommandEmbed {
 
     protected EmbedBuilder embedBuilder = new EmbedBuilder();
 
-    private List<FunctionalItemComponent> components = null;
-
     private ScheduledFuture<?> scheduledFuture = null;
 
     @Getter
@@ -32,16 +29,16 @@ public abstract class CustomSlashCommandEmbed {
     @Getter @Setter
     private boolean stayAlive = false;
 
+    private EmbedLayout layout;
+
     public boolean getStayAlive() {
         return this.stayAlive;
     }
 
     public final void queueEmbed(SlashCommandInteractionEvent event, boolean ephemeral) {
-        components = this.buildComponents();
-        List<ItemComponent> itemComponents = new ArrayList<>();
-        for(FunctionalItemComponent c : components) itemComponents.add(c.getComponent());
+        layout = this.buildLayout();
 
-        event.replyEmbeds(this.update().build()).addActionRow(itemComponents).setEphemeral(ephemeral).timeout(alive, TimeUnit.SECONDS).queue((hook) -> {
+        event.replyEmbeds(this.update().build()).setComponents(layout.getRows()).setEphemeral(ephemeral).timeout(alive, TimeUnit.SECONDS).queue((hook) -> {
             this.hook = hook;
             hook.retrieveOriginal().queue(message -> {
                 this.messageId = message.getIdLong();
@@ -55,19 +52,17 @@ public abstract class CustomSlashCommandEmbed {
 
     public void fireUpdate(GenericComponentInteractionCreateEvent event) {
 
-        for(FunctionalItemComponent comp : this.components) {
-            if(comp.getComponent().getId().equals(event.getComponentId())) {
-                comp.consume(event);
-                break;
-            }
-        }
+        layout.update(event);
 
-        if(this.scheduledFuture != null && this.scheduledFuture.isCancelled() || !this.scheduledFuture.cancel(false)) {
+        System.out.println("hereasdasd");
+        if(this.scheduledFuture != null && (this.scheduledFuture.isDone() && !this.scheduledFuture.cancel(false))) {
             return;
         }
+        System.out.println(layout.getRows());
 
         hook
                 .editOriginalEmbeds(this.update().build())
+                .setComponents(layout.getRows())
                 .timeout(alive, TimeUnit.SECONDS)
                 .queue();
         event.deferEdit().queue();
@@ -79,7 +74,7 @@ public abstract class CustomSlashCommandEmbed {
             this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS);
     }
 
-    protected abstract List<FunctionalItemComponent> buildComponents();
+    protected abstract EmbedLayout buildLayout();
 
 
 

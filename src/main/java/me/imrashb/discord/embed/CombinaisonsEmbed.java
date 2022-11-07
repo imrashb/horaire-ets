@@ -3,9 +3,10 @@ package me.imrashb.discord.embed;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.*;
+import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
-import net.dv8tion.jda.internal.requests.Route;
+import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
 import java.util.*;
 
@@ -50,33 +51,45 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     }
 
     @Override
-    protected List<FunctionalItemComponent> buildComponents() {
-        FunctionalItemComponent prochain = new FunctionalItemComponent(
+    protected EmbedLayout buildLayout() {
+        StatefulActionComponent<Button> prochain = new StatefulActionComponent<Button>(
                 Button.primary("prochain", "Prochain")
-                        .withEmoji(Emoji.fromUnicode("➡")),
-                (event) -> {
-                    CombinaisonsEmbed.this.currentCombinaison++;
-                });
-        FunctionalItemComponent precedent = new FunctionalItemComponent(
+                        .withEmoji(Emoji.fromUnicode("➡"))) {
+            @Override
+            public Button execute(GenericComponentInteractionCreateEvent event, Button button) {
+                CombinaisonsEmbed.this.currentCombinaison++;
+                return button;
+            }
+        };
+
+        StatefulActionComponent<Button> precedent = new StatefulActionComponent<Button>(
                 Button.primary("precedent", "Précédent")
-                        .withEmoji(Emoji.fromUnicode("⬅")),
-                (event) -> {
-                    CombinaisonsEmbed.this.currentCombinaison--;
-                });
-        FunctionalItemComponent epingle = new FunctionalItemComponent(
+                        .withEmoji(Emoji.fromUnicode("⬅"))) {
+            @Override
+            public Button execute(GenericComponentInteractionCreateEvent event, Button button) {
+                CombinaisonsEmbed.this.currentCombinaison--;
+                return button;
+            }
+        };
+
+        StatefulActionComponent<Button> epingle = new StatefulActionComponent<Button>(
                 Button.secondary("epingle", "Épingler")
-                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCC")),
-                (event) -> {
-                    // TODO - Send Message
-                });
-        FunctionalItemComponent partage = new FunctionalItemComponent(
+                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCC"))) {
+            @Override
+            public Button execute(GenericComponentInteractionCreateEvent event, Button button) {
+                setStayAlive(!getStayAlive());
+                return button.withLabel(getStayAlive() ? "Oublier" : "Épingler");
+            }
+        };
+        StatefulActionComponent partage = new StatefulActionComponent<Button>(
                 Button.secondary("partage", "Partager")
-                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE")),
-                (event) -> {
-                    setStayAlive(getStayAlive());
-                });
-        FunctionalItemComponent[] comps = {precedent, prochain, epingle, partage};
-        return Arrays.asList(comps);
+                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
+            @Override
+            public Button execute(GenericComponentInteractionCreateEvent event, Button button) {
+                return button;
+            }
+        };
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(epingle, partage);
     }
 
 
