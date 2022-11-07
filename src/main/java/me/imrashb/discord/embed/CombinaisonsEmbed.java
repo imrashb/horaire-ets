@@ -4,9 +4,12 @@ import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
 import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 import java.util.*;
 
@@ -72,6 +75,27 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             }
         };
 
+        StatefulActionComponent<StringSelectMenu> choix = new StatefulActionComponent<StringSelectMenu>(
+                getCombinaisonSelectMenu()) {
+            @Override
+            public StringSelectMenu execute(GenericComponentInteractionCreateEvent event, StringSelectMenu menu) {
+                StringSelectInteractionEvent e = (StringSelectInteractionEvent) event;
+                String value = e.getValues().get(0);
+                int start = Math.max(0, currentCombinaison-12);
+                int end = Math.min(currentCombinaison+12, combinaisons.size()-1);
+                if(value.equals(ID_HORAIRES_PRECEDENT)) {
+                    currentCombinaison = Math.max(0, end-24);
+                } else if(value.equals(ID_HORAIRES_SUIVANT)) {
+                    currentCombinaison = Math.min(start+24, combinaisons.size()-1);
+                } else {
+                    int index = Integer.parseInt(value);
+                    currentCombinaison = index;
+                }
+                return getCombinaisonSelectMenu();
+            }
+        };
+
+
         StatefulActionComponent<Button> epingle = new StatefulActionComponent<Button>(
                 Button.secondary("epingle", "Épingler")
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCCC"))) {
@@ -89,7 +113,45 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
                 return button;
             }
         };
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(epingle, partage);
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(epingle, partage);
+    }
+
+    private static final String ID_HORAIRES_PRECEDENT = "horaires_precedents";
+    private static final String ID_HORAIRES_SUIVANT = "horaires_suivants";
+
+    public StringSelectMenu getCombinaisonSelectMenu() {
+        StringSelectMenu.Builder menu = StringSelectMenu.create("choix");
+
+        List<SelectOption> options = new ArrayList<>();
+
+        int lowerBound = Math.min(combinaisons.size()-currentCombinaison, 12);
+
+        int start = this.currentCombinaison-(25-lowerBound);
+        if(start<0) start =0;
+        if(start>0) {
+            SelectOption opt = SelectOption.of("Voir les horaires précédents", ID_HORAIRES_PRECEDENT);
+            options.add(opt);
+            start++;
+        }
+
+        for(int i = start; i<combinaisons.size(); i++) {
+            if(options.size() == 24 && i != combinaisons.size()-1) {
+                SelectOption opt = SelectOption.of("Voir les horaires suivants", ID_HORAIRES_SUIVANT);
+                options.add(opt);
+                break;
+            }
+
+
+            CombinaisonHoraire c = combinaisons.get(i);
+            StringBuilder sb = new StringBuilder();
+            c.getConges().forEach(s -> sb.append(s.getNom()+", "));
+
+            SelectOption opt = SelectOption.of("Horaire "+(i+1), i+"").withDescription("Congés: "+sb.toString());
+            if(i == currentCombinaison) opt = opt.withDefault(true);
+            options.add(opt);
+        }
+        menu.addOptions(options);
+        return menu.build();
     }
 
 

@@ -54,11 +54,9 @@ public abstract class CustomSlashCommandEmbed {
 
         layout.update(event);
 
-        System.out.println("hereasdasd");
-        if(this.scheduledFuture != null && (this.scheduledFuture.isDone() && !this.scheduledFuture.cancel(false))) {
+        if(this.scheduledFuture != null && (!this.scheduledFuture.cancel(false) && this.scheduledFuture.isDone())) {
             return;
         }
-        System.out.println(layout.getRows());
 
         hook
                 .editOriginalEmbeds(this.update().build())
