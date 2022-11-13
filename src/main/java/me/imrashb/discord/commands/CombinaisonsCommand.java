@@ -14,6 +14,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
 
     private final String ID_COURS = "cours";
     private final String ID_TRIMESTRE = "trimestre";
+    private final String ID_NB_COURS = "nombrecours";
     private final int NB_COURS_MAX = 6;
 
     public CombinaisonsCommand(CoursManager coursManager) {
@@ -33,6 +34,11 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 true,
                 choicesTrimestre.toArray(new Command.Choice[]{})
                 );
+
+        this.addOption(OptionType.INTEGER,
+                ID_NB_COURS,
+                "Le nombre de cours par horaire générée",
+                true);
 
         for (int i = 0; i < NB_COURS_MAX; i++) {
             boolean required = false;
@@ -61,9 +67,20 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             sb.append("Le dernier trimestre est '"+this.getCoursManager().getDernierTrimestre()+"'. ");
             sb.append("Les trimestres disponibles sont "+this.getCoursManager().getTrimestres().toString()+".");
             event.reply(sb.toString()).setEphemeral(true).queue();
+            return null;
         }
 
-        List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(cours.toArray(new String[0]));
+        int nbCours = event.getOption(ID_NB_COURS).getAsInt();
+
+        if(listeCours.size() < nbCours) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Le nombre de cours '"+nbCours+"' est invalide! ");
+            sb.append("Avec les cours choisis, le nombre de cours maximal est "+listeCours.size()+".");
+            event.reply(sb.toString()).setEphemeral(true).queue();
+            return null;
+        }
+
+        List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
 
         CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
         embed.queueEmbed(event, true);

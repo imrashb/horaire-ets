@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.events.interaction.component.*;
 import net.dv8tion.jda.api.interactions.*;
-import net.dv8tion.jda.api.interactions.components.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -14,22 +13,16 @@ import java.util.concurrent.*;
 public abstract class CustomSlashCommandEmbed {
 
     protected EmbedBuilder embedBuilder = new EmbedBuilder();
-
     private ScheduledFuture<?> scheduledFuture = null;
-
     @Getter
     private InteractionHook hook;
-
     @Getter
     private Long messageId;
-
     private long alive = 60;
-
-
     @Getter @Setter
     private boolean stayAlive = false;
-
     private EmbedLayout layout;
+    private List<EmbedListener> listeners = new ArrayList<EmbedListener>();
 
     public boolean getStayAlive() {
         return this.stayAlive;
@@ -46,6 +39,10 @@ public abstract class CustomSlashCommandEmbed {
             this.deleteAfterInactivity();
         });
 
+    }
+
+    public void addEmbedListener(EmbedListener listener) {
+        this.listeners.add(listener);
     }
 
     protected abstract EmbedBuilder update();
@@ -69,7 +66,11 @@ public abstract class CustomSlashCommandEmbed {
 
     private void deleteAfterInactivity() {
         if(!stayAlive)
-            this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS);
+            this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS, delete -> {
+                for(EmbedListener listener : listeners) {
+                    listener.onEmbedDelete();
+                }
+            });
     }
 
     protected abstract EmbedLayout buildLayout();

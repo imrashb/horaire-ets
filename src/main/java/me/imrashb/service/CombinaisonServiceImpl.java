@@ -22,7 +22,7 @@ public class CombinaisonServiceImpl implements CombinaisonService{
     private CoursManager coursManager;
 
     @Override
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, String... cours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, int nbCours, String... cours) {
 
         if(!coursManager.isReady()) {
             throw new CoursNotInitializedException();
@@ -32,7 +32,7 @@ public class CombinaisonServiceImpl implements CombinaisonService{
 
         if(coursDuTrimestre == null)
             throw new TrimestreDoesntExistException(trimestre);
-        return new GenerateurHoraire(coursDuTrimestre).getCombinaisonsHoraire(cours);
+        return new GenerateurHoraire(coursDuTrimestre).getCombinaisonsHoraire(nbCours, cours);
     }
 
 }

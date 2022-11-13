@@ -5,6 +5,8 @@ import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.ActionComponent;
 
+import java.util.function.*;
+
 public abstract class StatefulActionComponent<Component extends ActionComponent> {
 
     @Getter @Setter

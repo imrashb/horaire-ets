@@ -10,7 +10,6 @@ import java.util.List;
 public class CombinaisonHoraire {
 
     private static final List<Jour> LISTE_JOURS = new ArrayList<>(Arrays.asList(Jour.values()));
-
     private List<Groupe> groupes;
     private List<Jour> conges = new ArrayList<>(LISTE_JOURS);
 

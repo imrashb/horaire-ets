@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CombinaisonService {
 
-    List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, String... cours);
+    List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, int nbCours, String... cours);
 
 }

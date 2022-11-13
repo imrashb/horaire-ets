@@ -24,25 +24,21 @@ public class NodeGroupe {
     }
 
     public boolean isOverlapping(Groupe groupe) {
+        if(groupes.contains(groupe)) return true;
         for(Groupe g : groupes) {
             if(g.overlapsWith(groupe)) return true;
         }
         return false;
     }
 
-    public List<CombinaisonHoraire> getValidCombinaisons(List<Cours> cours) {
+    public List<CombinaisonHoraire> getValidCombinaisons(List<Cours> cours, int nbCours) {
 
         List<CombinaisonHoraire> liste = new ArrayList<>();
 
         if(nodes.size() == 0) {
 
             //Verifie si on a tous les cours voulus
-            if(groupes.size() == cours.size()) {
-                // Retourne liste vide si les cours sont pas valides
-                for(Groupe g : groupes) {
-                    if(!cours.contains(g.getCours())) return liste;
-                }
-
+            if(groupes.size() == nbCours) {
                 liste.add(new CombinaisonHoraire(groupes));
                 return liste;
             }
@@ -52,7 +48,7 @@ public class NodeGroupe {
         } else {
 
             for(NodeGroupe node : nodes) {
-                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(cours);
+                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(cours, nbCours);
                 liste.addAll(tmp);
             }
 

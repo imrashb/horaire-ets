@@ -18,6 +18,19 @@ public class Groupe {
         return cours.getSigle()+"-"+ numeroGroupe;
     }
 
+    public String toPrettyString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.toString());
+        sb.append(" / ");
+
+        for(Activite a : activites) {
+            sb.append(a.toString());
+            sb.append(" / ");
+        }
+        return sb.toString();
+    }
+
     public void addActivite(Activite activite) {
         this.activites.add(activite);
     }
@@ -29,6 +42,11 @@ public class Groupe {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numeroGroupe, activites);
     }
 
 }

@@ -2,6 +2,7 @@ package me.imrashb.discord.embed;
 
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -10,16 +11,25 @@ import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.util.*;
 
 public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private List<CombinaisonHoraire> combinaisons;
-
+    private List<Message> messages = new ArrayList<>();
     private int currentCombinaison = 0;
 
     public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons) {
         this.combinaisons = combinaisons;
+        this.addEmbedListener(new EmbedListener() {
+            @Override
+            public void onEmbedDelete() {
+                for(Message m : messages) {
+                    m.delete().queue();
+                }
+            }
+        });
     }
 
     @Override
@@ -110,6 +120,18 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
             @Override
             public Button execute(GenericComponentInteractionCreateEvent event, Button button) {
+
+                for(Message m : messages) {
+                    m.delete().queue();
+                }
+                messages.clear();
+
+                for(String s : getFullCombinaisonString(combinaisons.get(currentCombinaison))) {
+                    event.getMessageChannel().sendMessage(s).queue(message -> {
+                        messages.add(message);
+                    });
+                }
+
                 return button;
             }
         };
@@ -161,6 +183,81 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
     private static final String[] SYMBOLES_COURS = {":blue_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:", ":white_large_square:"};
     private static final String SYMBOLE_EMPTY = ":black_large_square:";
+
+    private List<String> getFullCombinaisonString(CombinaisonHoraire combinaison) {
+
+        int DEBUT_COURS = Integer.MAX_VALUE;
+        int FIN_COURS = Integer.MIN_VALUE;
+
+        for(Groupe g : combinaison.getGroupes()) {
+            for(Activite a : g.getActivites()) {
+                HoraireActivite h = a.getHoraire();
+                DEBUT_COURS = Math.min(DEBUT_COURS, h.getHeureDepart());
+                FIN_COURS = Math.max(FIN_COURS, h.getHeureFin());
+            }
+        }
+        DEBUT_COURS = DEBUT_COURS/100 - (DEBUT_COURS % 100 == 0 ? 1 : 0);
+        FIN_COURS = FIN_COURS / 100 + 1;
+
+        List<String> messages = new ArrayList<>();
+        int counter = 0;
+        String[][] periodes = new String[7][(FIN_COURS-DEBUT_COURS)*2];
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Groupe groupe : combinaison.getGroupes()) {
+            String symbole = SYMBOLES_COURS[counter];
+            sb.append(symbole+" "+groupe.toPrettyString());
+            sb.append("\n");
+            for(Activite activite : groupe.getActivites()) {
+
+                int id = activite.getHoraire().getJour().getId();
+                HoraireActivite horaire = activite.getHoraire();
+
+                for(int i = 0; i<periodes[0].length/2; i++) {
+
+                    HoraireActivite act1 = new HoraireActivite((i+DEBUT_COURS), 0, (i+DEBUT_COURS), 30, null);
+                    HoraireActivite act2 = new HoraireActivite((i+DEBUT_COURS), 30, (i+DEBUT_COURS+1), 0, null);
+                    if(horaire.overlapsWithIgnoreJour(act1)) {
+                        periodes[id][i*2] = symbole;
+                    }
+                    if(horaire.overlapsWithIgnoreJour(act2)) {
+                        periodes[id][i*2+1] = symbole;
+                    }
+
+                }
+
+
+            }
+            counter++;
+        }
+
+        for(int j = 0; j<periodes[0].length; j++) {
+
+
+            for(int i = 0; i<periodes.length; i++) {
+                String symbole = periodes[i][j];
+                if(symbole == null) sb.append(SYMBOLE_EMPTY+SYMBOLE_EMPTY);
+                else sb.append(symbole+symbole);
+                sb.append(SYMBOLE_EMPTY);
+            }
+
+            if(j%2 == 0) {
+                sb.append((j/2+DEBUT_COURS)+":00");
+            } else {
+                sb.append(((j/2)+DEBUT_COURS)+":30");
+            }
+            sb.append("\n");
+
+            if(sb.length() > 1500) {
+                messages.add(sb.toString());
+                sb.setLength(0);
+            }
+        }
+        if(sb.length() != 0) messages.add(sb.toString());
+
+        return messages;
+    }
 
     private String getCombinaisonString(CombinaisonHoraire combinaison) {
 

@@ -23,4 +23,8 @@ public class Cours {
         this.groupes.add(groupe);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(sigle, programmes);
+    }
 }
