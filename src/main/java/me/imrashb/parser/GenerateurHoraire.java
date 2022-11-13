@@ -22,7 +22,6 @@ public class GenerateurHoraire {
             throw new TooManyCoursException();
         }
 
-        long b = System.currentTimeMillis();
         NodeGroupe node = new NodeGroupe(null, null);
 
         List<Set<Cours>> subsets = getSubsets(cours, nbCours);
@@ -31,11 +30,7 @@ public class GenerateurHoraire {
             recurCreateCombinaisons(new ArrayList<>(sub), 0, node);
         }
 
-        List<CombinaisonHoraire> comb = node.getValidCombinaisons(cours, nbCours);
-        long a = System.currentTimeMillis();
-
-        System.out.println("TEMPS POUR GENERER : "+(a-b)+"ms");
-        return comb;
+        return node.getValidCombinaisons(cours, nbCours);
     }
 
     public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, String... cours) {
