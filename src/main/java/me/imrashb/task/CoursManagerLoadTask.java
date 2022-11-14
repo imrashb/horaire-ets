@@ -40,6 +40,7 @@ public class CoursManagerLoadTask {
         for(String trimestre : trimestres) {
 
             Trimestre trim = Trimestre.getTrimestreFromId(trimestre);
+            int annee = Integer.parseInt(trimestre.substring(0, 4));
             if(trim == null)
                 throw new RuntimeException("ERREUR: Le trimestre "+trimestre+" est invalide.");
 
@@ -47,7 +48,7 @@ public class CoursManagerLoadTask {
 
             List<PdfCours> files = null;
             try {
-                files = ETSUtils.getFichiersHoraireSync(Integer.parseInt(trimestre.substring(0, 4)), trim);
+                files = ETSUtils.getFichiersHoraireSync(annee, trim);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {

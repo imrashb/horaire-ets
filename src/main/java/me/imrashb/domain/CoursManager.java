@@ -21,8 +21,12 @@ public class CoursManager {
 
     public void addTrimestre(String trimestre, List<Cours> cours) {
 
-        if(coursParTrimestre.containsKey(trimestre)) {
-            coursParTrimestre.replace(trimestre, cours);
+        final Trimestre trim = Trimestre.getTrimestreFromId(trimestre);
+        final String nomTrimestre = trim.getNomTrimestre(Integer.parseInt(trimestre.substring(0, 4)));
+
+
+        if(coursParTrimestre.containsKey(nomTrimestre)) {
+            coursParTrimestre.replace(nomTrimestre, cours);
         } else {
 
             final int trimestreInt = Integer.parseInt(trimestre);
@@ -30,7 +34,7 @@ public class CoursManager {
                 dernierTrimestre = trimestre;
             }
 
-            coursParTrimestre.put(trimestre, cours);
+            coursParTrimestre.put(nomTrimestre, cours);
         }
     }
 
