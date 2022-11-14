@@ -1,24 +1,40 @@
 package me.imrashb.utils;
 
-import lombok.*;
 import me.imrashb.domain.*;
 
 import java.awt.*;
-import java.awt.font.*;
-import java.awt.geom.*;
-import java.awt.image.*;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class HoraireImageMaker {
 
-    public static final HoraireImageMakerTheme LIGHT_THEME = new HoraireImageMakerTheme(Color.white, Color.gray, Color.lightGray, Color.white, Color.black);
-    public static final HoraireImageMakerTheme DARK_THEME = new HoraireImageMakerTheme(Color.darkGray, Color.lightGray, Color.gray, Color.black, Color.white);
+    public static final HoraireImageMakerTheme LIGHT_THEME = new HoraireImageMakerTheme(
+            "Thème lumière",Color.white, Color.gray, Color.gray, Color.lightGray, Color.white, Color.black, Color.gray, Color.gray);
+    public static final HoraireImageMakerTheme DARK_THEME = new HoraireImageMakerTheme(
+            "Thème sombre",Color.darkGray, Color.lightGray, Color.lightGray, Color.gray, Color.black, Color.white, Color.white, Color.white);
+    public static final HoraireImageMakerTheme CYAN_THEME = new HoraireImageMakerTheme(
+            "Thème cyan",Color.decode("#023047"),Color.decode("#8ECAE6"), Color.decode("#FFB703"),
+            Color.decode("#219EBC"), Color.black, Color.white, Color.decode("#FB8500"), Color.decode("#FB8500"));
+    public static final HoraireImageMakerTheme FOREST_THEME = new HoraireImageMakerTheme(
+            "Thème forêt",Color.decode("#283618"),Color.decode("#FEFAE0"), Color.decode("#DDA15E"),
+            Color.decode("#606C38"), Color.black, Color.white, Color.decode("#DDA15E"),Color.decode("#DDA15E"));
+    public static final java.util.List<HoraireImageMakerTheme> themes;
+
     private static final Font COURS_FONT;
     private static final Font FONT;
 
     // Load font from resources
     static {
+        themes = new ArrayList<>();
+        themes.add(LIGHT_THEME);
+        themes.add(DARK_THEME);
+        themes.add(CYAN_THEME);
+        themes.add(FOREST_THEME);
+
         final String filename = "/bahnschrift.ttf";
         InputStream is = HoraireImageMaker.class.getResourceAsStream(filename);
         try {
@@ -29,11 +45,6 @@ public class HoraireImageMaker {
             throw new RuntimeException(e);
         }
     }
-    private final Color COLOR_BACKGROUND;
-    private final Color COLOR_LIGNE_SEPARATION;
-    private final Color COLOR_FIN_DE_SEMAINE;
-    private final Color COLOR_TEXTE_COURS;
-    private final Color COLOR_TEXTE_OUTLINE;
     private static final Stroke TEXTE_STROKE = new BasicStroke(4.0f);
     private static final Stroke HEURE_STROKE = new BasicStroke(2);
     private static final Stroke JOUR_STROKE = new BasicStroke(2);
@@ -55,6 +66,7 @@ public class HoraireImageMaker {
     private static final int PX_ENTRE_HEURE = (HEIGHT-TOP_PADDING-BOTTOM_PADDING)/NOMBRE_SEPARATIONS_HEURE;
     private static final int PX_ENTRE_JOUR = (WIDTH-LEFT_PADDING-RIGHT_PADDING)/7;
     private CombinaisonHoraire horaire;
+    private HoraireImageMakerTheme theme;
 
     public HoraireImageMaker(CombinaisonHoraire horaire) {
         this(horaire, LIGHT_THEME);
@@ -62,11 +74,7 @@ public class HoraireImageMaker {
 
     public HoraireImageMaker(CombinaisonHoraire horaire, HoraireImageMakerTheme theme) {
         this.horaire = horaire;
-        this.COLOR_BACKGROUND = theme.getColorBackground();
-        this.COLOR_FIN_DE_SEMAINE = theme.getColorFinDeSemaine();
-        this.COLOR_TEXTE_COURS = theme.getColorTexteCours();
-        this.COLOR_LIGNE_SEPARATION = theme.getColorLigneSeparation();
-        this.COLOR_TEXTE_OUTLINE = theme.getColorTexteOutline();
+        this.theme = theme;
     }
 
 
@@ -97,12 +105,11 @@ public class HoraireImageMaker {
     }
 
     private void drawBackground(Graphics2D g2d) {
-        g2d.setColor(COLOR_BACKGROUND);
+        g2d.setColor(theme.getColorBackground());
         g2d.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
     private void drawHeures(Graphics2D g2d) {
-        g2d.setColor(COLOR_LIGNE_SEPARATION);
         g2d.setFont(FONT);
         int width = PX_ENTRE_JOUR*7;
         for(int i = 0; i<=NOMBRE_SEPARATIONS_HEURE; i++) {
@@ -111,11 +118,14 @@ public class HoraireImageMaker {
             int fontWidth = g2d.getFontMetrics().stringWidth(heure);
             int fontHeight = g2d.getFontMetrics().getAscent()-g2d.getFontMetrics().getDescent();
             int height = TOP_PADDING+i*PX_ENTRE_HEURE;
+            g2d.setColor(this.theme.getColorLigneSeparation());
             g2d.setStroke(HEURE_STROKE);
             g2d.drawLine(LEFT_PADDING,height, LEFT_PADDING+width, height);
+            g2d.setColor(this.theme.getColorHeure());
             g2d.drawString(heure, LEFT_PADDING-fontWidth-TEXT_PADDING, height+fontHeight/2);
 
             if(i != NOMBRE_SEPARATIONS_HEURE) {
+                g2d.setColor(this.theme.getColorDashedLigneSeparation());
                 g2d.setStroke(DEMI_HEURE_STROKE);
                 g2d.drawLine(LEFT_PADDING,height+PX_ENTRE_HEURE/2, LEFT_PADDING+width, height+PX_ENTRE_HEURE/2);
             }
@@ -130,21 +140,23 @@ public class HoraireImageMaker {
         for(Jour j : Jour.values()) {
 
             if(j == Jour.DIMANCHE || j == Jour.SAMEDI) {
-                g2d.setColor(COLOR_FIN_DE_SEMAINE);
+                g2d.setColor(this.theme.getColorFinDeSemaine());
                 g2d.fillRect(LEFT_PADDING+PX_ENTRE_JOUR*i, TOP_PADDING, PX_ENTRE_JOUR, PX_ENTRE_HEURE*(FIN_COURS-DEBUT_COURS));
             }
 
             String texte = j.getNom();
             int fontWidth = g2d.getFontMetrics().stringWidth(texte);
 
-            g2d.setColor(COLOR_LIGNE_SEPARATION);
+            g2d.setColor(this.theme.getColorLigneSeparation());
             g2d.setStroke(JOUR_STROKE);
             g2d.drawLine(LEFT_PADDING+PX_ENTRE_JOUR*i,TOP_PADDING, LEFT_PADDING+PX_ENTRE_JOUR*i, TOP_PADDING+PX_ENTRE_HEURE*(FIN_COURS-DEBUT_COURS));
             g2d.setFont(FONT.deriveFont(Font.BOLD));
+            g2d.setColor(this.theme.getColorJour());
             g2d.drawString(texte, LEFT_PADDING+PX_ENTRE_JOUR*i+PX_ENTRE_JOUR/2-fontWidth/2, TOP_PADDING-TEXT_PADDING);
             i++;
         }
 
+        g2d.setColor(this.theme.getColorLigneSeparation());
         g2d.setStroke(JOUR_STROKE);
         g2d.drawLine(LEFT_PADDING+PX_ENTRE_JOUR*i,TOP_PADDING, LEFT_PADDING+PX_ENTRE_JOUR*i, TOP_PADDING+PX_ENTRE_HEURE*(FIN_COURS-DEBUT_COURS));
     }
@@ -176,12 +188,12 @@ public class HoraireImageMaker {
                 g2d.setFont(COURS_FONT);
                 int currentHeight = y+TEXT_PADDING+g2d.getFontMetrics().getAscent();
                 final int offset = g2d.getFontMetrics().getAscent()+TEXT_PADDING;
-                g2d.setColor(COLOR_TEXTE_COURS);
-                this.drawOutlinedText(g2d, groupe.toString(), x+TEXT_PADDING, currentHeight, COLOR_TEXTE_OUTLINE);
+                g2d.setColor(this.theme.getColorTexteCours());
+                this.drawOutlinedText(g2d, groupe.toString(), x+TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
                 currentHeight+=offset;
-                this.drawOutlinedText(g2d, activite.getNom(), x+TEXT_PADDING, currentHeight, COLOR_TEXTE_OUTLINE);
+                this.drawOutlinedText(g2d, activite.getNom(), x+TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
                 currentHeight+=offset;
-                this.drawOutlinedText(g2d, h.toString(), x+TEXT_PADDING, currentHeight, COLOR_TEXTE_OUTLINE);
+                this.drawOutlinedText(g2d, h.toString(), x+TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
 
             }
 
@@ -195,9 +207,9 @@ public class HoraireImageMaker {
             g2d.fillRoundRect(xListeCours, yListeCours, fontWidth+2*TEXT_PADDING, fontHeight+2*TEXT_PADDING+TEXTURE_COURS/2, ARC_COURS, ARC_COURS);
             g2d.setColor(color);
             g2d.fillRoundRect(xListeCours+BORDER_COURS, yListeCours, fontWidth+2*TEXT_PADDING-2*BORDER_COURS, fontHeight+2*TEXT_PADDING, ARC_COURS, ARC_COURS);
-            g2d.setColor(COLOR_TEXTE_COURS);
+            g2d.setColor(this.theme.getColorTexteCours());
             g2d.drawString(groupe.toString(), xListeCours+TEXT_PADDING, yListeCours+fontHeight+TEXT_PADDING);
-            this.drawOutlinedText(g2d, groupe.toString(), xListeCours+TEXT_PADDING, yListeCours+fontHeight+TEXT_PADDING, COLOR_TEXTE_OUTLINE);
+            this.drawOutlinedText(g2d, groupe.toString(), xListeCours+TEXT_PADDING, yListeCours+fontHeight+TEXT_PADDING, this.theme.getColorTexteOutline());
 
             i++;
         }

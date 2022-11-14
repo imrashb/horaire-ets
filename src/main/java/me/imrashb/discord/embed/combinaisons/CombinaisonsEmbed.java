@@ -63,6 +63,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         return embedBuilder;
     }
 
+    private HoraireImageMakerTheme theme = HoraireImageMaker.LIGHT_THEME;
     @Override
     protected EmbedLayout buildLayout() {
         StatefulActionComponent<Button> prochain = new ProchainCombinaisonButton(this.currentCombinaison);
@@ -71,11 +72,11 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
 
         StatefulActionComponent partageLight = new StatefulActionComponent<Button>(
-                Button.secondary("partageLight", "Partager en Light Theme")
+                Button.secondary("partageLight", "Partager")
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
             @Override
             public void execute(GenericComponentInteractionCreateEvent event) {
-                partagerHoraire(event, HoraireImageMaker.LIGHT_THEME);
+                partagerHoraire(event, CombinaisonsEmbed.this.theme);
             }
 
             @Override
@@ -84,20 +85,36 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             }
         };
 
-        StatefulActionComponent partageDark = new StatefulActionComponent<Button>(
-                Button.secondary("partageDark", "Partager en Dark Theme")
-                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
+        StatefulActionComponent theme = new StatefulActionComponent<StringSelectMenu>(getSelectTheme()) {
             @Override
             public void execute(GenericComponentInteractionCreateEvent event) {
-                partagerHoraire(event, HoraireImageMaker.DARK_THEME);
+                StringSelectInteractionEvent e = (StringSelectInteractionEvent) event;
+                CombinaisonsEmbed.this.theme = HoraireImageMaker.themes.get(Integer.parseInt(e.getValues().get(0)));
             }
 
             @Override
-            public Button draw(Button component) {
-                return component;
+            public StringSelectMenu draw(StringSelectMenu component) {
+                return getSelectTheme();
             }
+
         };
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partageLight, partageDark);
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partageLight).addActionRow(theme);
+    }
+
+    private StringSelectMenu getSelectTheme() {
+        StringSelectMenu.Builder menu = StringSelectMenu.create("theme");
+        List<SelectOption> options = new ArrayList<>();
+        int i = 0;
+        for(HoraireImageMakerTheme t : HoraireImageMaker.themes) {
+            SelectOption opt = SelectOption.of(t.getNom(), i+"");
+            if(t == this.theme) opt = opt.withDefault(true);
+            options.add(opt);
+            i++;
+        }
+
+        menu.addOptions(options);
+
+        return menu.build();
     }
 
     private void partagerHoraire(GenericComponentInteractionCreateEvent event, HoraireImageMakerTheme theme) {
