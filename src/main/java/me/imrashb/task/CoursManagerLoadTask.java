@@ -1,6 +1,7 @@
 package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
+import me.imrashb.domain.Cours;
 import me.imrashb.domain.CoursManager;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -59,6 +61,12 @@ public class CoursManagerLoadTask {
                 coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme());
                 pdf.getPdf().delete();
             }
+            coursParser.getCours().sort(new Comparator<Cours>() {
+                @Override
+                public int compare(Cours o1, Cours o2) {
+                    return o1.getSigle().compareTo(o2.getSigle());
+                }
+            });
 
             this.coursManager.addTrimestre(trimestre, coursParser.getCours());
         }

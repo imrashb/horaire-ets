@@ -81,6 +81,9 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
             options.add(opt);
         }
         menu.addOptions(options);
+        if(options.size() == 0) {
+            return null;
+        }
         return menu.build();
     }
 

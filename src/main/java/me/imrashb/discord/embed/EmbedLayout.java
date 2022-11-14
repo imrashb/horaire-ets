@@ -25,8 +25,10 @@ public class EmbedLayout {
     public EmbedLayout addActionRow(StatefulActionComponent... components) {
         List<ItemComponent> liste = new ArrayList<>();
         for(StatefulActionComponent comp : components) {
+            if(comp.getComponent() == null) continue;
             liste.add(comp.getComponent());
         }
+        if(liste.size() == 0) return this;
         rows.add(ActionRow.of(liste));
         this.components.addAll(Arrays.asList(components));
         return this;
@@ -44,6 +46,7 @@ public class EmbedLayout {
         //Redraw components
         for(StatefulActionComponent c : components) {
             c.setComponent(c.draw(c.getComponent()));
+            if(c.getComponent() == null) continue;
             for(ActionRow a : rows) {
                 a.updateComponent(c.getComponent().getId(), c.getComponent());
             }

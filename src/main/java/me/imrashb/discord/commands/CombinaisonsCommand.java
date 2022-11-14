@@ -102,12 +102,18 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
 
         try {
             List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
+
+            if(combinaisons.size() == 0) {
+                event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").queue();
+                return null;
+            }
+
             CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
             embed.queueEmbed(event, true);
             List<User> users = new ArrayList<>();
             users.add(event.getUser());
             return new EmbedEditDeferredAction(users, embed);
-        } catch(CoursDoesntExistException e) {
+        } catch(CoursDoesntExistException | CoursAlreadyPresentException e) {
             event.reply(e.getMessage()).setEphemeral(true).queue();
             return null;
 

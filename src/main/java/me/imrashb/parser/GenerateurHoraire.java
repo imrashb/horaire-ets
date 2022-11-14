@@ -42,7 +42,7 @@ public class GenerateurHoraire {
             for (String s : cours) {
                 if (c.getSigle().equalsIgnoreCase(s)) {
                     boolean added = coursVoulu.add(c);
-
+                    if(!added) throw new CoursAlreadyPresentException();
                     inexistant.remove(s);
                 }
             }
