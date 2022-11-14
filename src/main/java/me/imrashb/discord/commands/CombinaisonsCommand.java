@@ -1,5 +1,6 @@
 package me.imrashb.discord.commands;
 
+import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
 import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.domain.*;
@@ -44,7 +45,26 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         for (int i = 0; i < NB_COURS_MAX; i++) {
             boolean required = false;
             if (i == 0) required = true;
-            this.addOption(OptionType.STRING, ID_COURS + (i+1), "Le " + (i+1) + "e cours à inclure dans l'horaire", required);
+            String paramName = ID_COURS + (i+1);
+            AutoCompleteStrategy strategy = event -> {
+                if(event.getOption(ID_TRIMESTRE) == null) return null;
+
+                String text = event.getFocusedOption().getValue();
+                List<Cours> cours = coursManager.getListeCours(event.getOption(ID_TRIMESTRE).getAsString());
+                if(cours == null) return null;
+
+                List<Command.Choice> liste = new ArrayList<>();
+                for(Cours c : cours) {
+                    String sigle = c.getSigle();
+                    if(sigle.toLowerCase().contains(text.toLowerCase())) {
+                        liste.add(new Command.Choice(sigle, sigle));
+                        if(liste.size() == AutoCompleteStrategy.NOMBRE_MAX_CHOIX) break;
+                    }
+                }
+                return liste;
+            };
+            this.addOption(OptionType.STRING, paramName, "Le " + (i+1) + "e cours à inclure dans l'horaire", required, strategy);
+
         }
     }
 

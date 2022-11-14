@@ -4,6 +4,7 @@ import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.domain.CombinaisonHoraire;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
@@ -27,7 +28,18 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
 
     @Override
     public void execute(GenericComponentInteractionCreateEvent event) {
-        this.currentCombinaison.decrementAndGet();
+        StringSelectInteractionEvent e = (StringSelectInteractionEvent) event;
+        String value = e.getValues().get(0);
+        int start = Math.max(0, currentCombinaison.get()-12);
+        int end = Math.min(currentCombinaison.get()+12, combinaisons.size()-1);
+        if(value.equals(ID_HORAIRES_PRECEDENT)) {
+            currentCombinaison.set(Math.max(0, end-24));
+        } else if(value.equals(ID_HORAIRES_SUIVANT)) {
+            currentCombinaison.set(Math.min(start+24, combinaisons.size()-1));
+        } else {
+            int index = Integer.parseInt(value);
+            currentCombinaison.set(index);
+        }
     }
 
     @Override
@@ -59,7 +71,6 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
                 options.add(opt);
                 break;
             }
-
 
             CombinaisonHoraire c = combinaisons.get(i);
             StringBuilder sb = new StringBuilder();

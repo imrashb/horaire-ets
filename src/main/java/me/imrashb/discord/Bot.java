@@ -3,11 +3,13 @@ package me.imrashb.discord;
 
 import me.imrashb.discord.commands.*;
 import me.imrashb.discord.events.controller.InteractionHandlerController;
+import me.imrashb.discord.events.handler.CommandAutoCompleteInteractionEventHandler;
 import me.imrashb.discord.events.handler.ComponentControlledEmbedHandler;
 import me.imrashb.discord.events.handler.SlashCommandInteractionEventHandler;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.GenericAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
@@ -64,6 +66,7 @@ public class Bot {
 
         this.interactionHandlerController = new InteractionHandlerController(jda);
         interactionHandlerController.addInteractionHandler(new SlashCommandInteractionEventHandler(this.commands));
+        interactionHandlerController.addInteractionHandler(new CommandAutoCompleteInteractionEventHandler(this.commands));
         interactionHandlerController.addInteractionHandler(new ComponentControlledEmbedHandler());
         this.jda.addEventListener(this.interactionHandlerController);
     }

@@ -3,13 +3,12 @@ package me.imrashb.discord.events.handler;
 import lombok.*;
 import me.imrashb.discord.commands.*;
 import me.imrashb.discord.events.action.DeferredAction;
-import me.imrashb.discord.events.handler.InteractionHandler;
+import net.dv8tion.jda.api.events.interaction.GenericAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.*;
-import net.dv8tion.jda.api.hooks.*;
 
 import java.util.*;
 
-public class SlashCommandInteractionEventHandler extends InteractionHandler<SlashCommandInteractionEvent, DeferredAction> {
+public class SlashCommandInteractionEventHandler<C extends GenericAutoCompleteInteractionEvent, D> extends InteractionHandler<SlashCommandInteractionEvent, DeferredAction> {
 
     @NonNull
     private Set<DiscordSlashCommand> commands;

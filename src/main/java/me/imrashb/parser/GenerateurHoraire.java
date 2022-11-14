@@ -34,14 +34,15 @@ public class GenerateurHoraire {
     }
 
     public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, String... cours) {
-        List<Cours> coursVoulu = new ArrayList<>();
+        Set<Cours> coursVoulu = new HashSet<>();
 
         List<String> inexistant = new ArrayList<>(Arrays.asList(cours));
 
         for (Cours c : listeCours) {
             for (String s : cours) {
                 if (c.getSigle().equalsIgnoreCase(s)) {
-                    coursVoulu.add(c);
+                    boolean added = coursVoulu.add(c);
+
                     inexistant.remove(s);
                 }
             }
@@ -51,7 +52,7 @@ public class GenerateurHoraire {
             throw new CoursDoesntExistException(inexistant);
         }
 
-        return getCombinaisonsHoraire(coursVoulu, nbCours);
+        return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), nbCours);
     }
 
     private static void getSubsets(List<Cours> superSet, int k, int idx, Set<Cours> current, List<Set<Cours>> solution) {
