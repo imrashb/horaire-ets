@@ -7,17 +7,32 @@ import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
 import java.awt.image.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 @AllArgsConstructor
 public class HoraireImageMaker {
 
+    private static final Font COURS_FONT;
+    private static final Font FONT;
+
+    // Load font from resources
+    static {
+        final String filename = "/bahnschrift.ttf";
+        InputStream is = HoraireImageMaker.class.getResourceAsStream(filename);
+        try {
+            COURS_FONT = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.PLAIN, 25f);
+            FONT = COURS_FONT.deriveFont(Font.PLAIN, 30f);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
     private static final Color COLOR_BACKGROUND = Color.white;
     private static final Color COLOR_LIGNE_SEPARATION = Color.gray;
     private static final Color COLOR_FIN_DE_SEMAINE = Color.lightGray;
     private static final Color COLOR_TEXTE_COURS = Color.white;
     private static final Color COLOR_TEXTE_OUTLINE = Color.black;
-    private static final Font COURS_FONT = new Font( "Bahnschrift", Font.BOLD, 25);
-    private static final Font FONT = new Font( "Bahnschrift", Font.PLAIN, 30);
     private static final Stroke TEXTE_STROKE = new BasicStroke(4.0f);
     private static final Stroke HEURE_STROKE = new BasicStroke(2);
     private static final Stroke JOUR_STROKE = new BasicStroke(2);

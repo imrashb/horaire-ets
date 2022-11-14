@@ -2,9 +2,6 @@
 FROM maven:3.8.6 AS maven
 LABEL MAINTAINER="emmanuel.coulombe.1@ens.etsmtl.ca"
 
-# Download font
-COPY ./bahnschrift.ttf /usr/share/fonts/truetype/
-
 EXPOSE 8080
 ENV PORT=8080
 WORKDIR /usr/src/app
