@@ -34,12 +34,18 @@ public class EmbedLayout {
 
     public void update(GenericComponentInteractionCreateEvent event) {
         for(StatefulActionComponent c : components) {
+            // Execute event
             if(c.getComponent().getId().equals(event.getComponentId())) {
-                ActionComponent comp = c.execute(event, c.getComponent());
-                c.setComponent(comp);
-                for(ActionRow a : rows) {
-                    a.updateComponent(c.getComponent().getId(), c.getComponent());
-                }
+                c.execute(event);
+                break;
+            }
+        }
+
+        //Redraw components
+        for(StatefulActionComponent c : components) {
+            c.setComponent(c.draw(c.getComponent()));
+            for(ActionRow a : rows) {
+                a.updateComponent(c.getComponent().getId(), c.getComponent());
             }
         }
     }

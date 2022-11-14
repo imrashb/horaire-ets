@@ -1,6 +1,6 @@
 package me.imrashb.discord.commands;
 
-import me.imrashb.discord.embed.*;
+import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.domain.*;
 import me.imrashb.exception.*;
