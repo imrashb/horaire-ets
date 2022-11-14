@@ -3,6 +3,7 @@ package me.imrashb.discord.commands;
 import me.imrashb.discord.embed.*;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.domain.*;
+import me.imrashb.exception.*;
 import me.imrashb.parser.*;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.*;
@@ -71,22 +72,27 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         }
 
         int nbCours = event.getOption(ID_NB_COURS).getAsInt();
-
-        if(listeCours.size() < nbCours) {
+        if(cours.size() < nbCours) {
             StringBuilder sb = new StringBuilder();
             sb.append("Le nombre de cours '"+nbCours+"' est invalide! ");
-            sb.append("Avec les cours choisis, le nombre de cours maximal est "+listeCours.size()+".");
+            sb.append("Avec les cours choisis, le nombre de cours maximal est "+cours.size()+".");
             event.reply(sb.toString()).setEphemeral(true).queue();
             return null;
         }
 
-        List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
+        try {
+            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
+            CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
+            embed.queueEmbed(event, true);
+            List<User> users = new ArrayList<>();
+            users.add(event.getUser());
+            return new EmbedEditDeferredAction(users, embed);
+        } catch(CoursDoesntExistException e) {
+            event.reply(e.getMessage()).setEphemeral(true).queue();
+            return null;
 
-        CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
-        embed.queueEmbed(event, true);
-        List<User> users = new ArrayList<>();
-        users.add(event.getUser());
-        return new EmbedEditDeferredAction(users, embed);
+        }
+
     }
 
 }

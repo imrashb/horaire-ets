@@ -1,19 +1,27 @@
 package me.imrashb.discord.embed;
 
 import me.imrashb.domain.*;
+import me.imrashb.utils.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.EntitySelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.messages.*;
 
+import javax.imageio.*;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private List<CombinaisonHoraire> combinaisons;
@@ -22,14 +30,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
     public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons) {
         this.combinaisons = combinaisons;
-        this.addEmbedListener(new EmbedListener() {
-            @Override
-            public void onEmbedDelete() {
-                for(Message m : messages) {
-                    m.delete().queue();
-                }
-            }
-        });
     }
 
     @Override
@@ -126,11 +126,20 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
                 }
                 messages.clear();
 
-                for(String s : getFullCombinaisonString(combinaisons.get(currentCombinaison))) {
-                    event.getMessageChannel().sendMessage(s).queue(message -> {
-                        messages.add(message);
-                    });
+                Image image = new HoraireImageMaker(combinaisons.get(currentCombinaison)).drawHoraire();
+
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write((RenderedImage) image, "jpeg", os);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+                event.getMessageChannel()
+                        .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
+                        .setFiles(FileUpload.fromData(os.toByteArray(), "Horaire "+(currentCombinaison+1)+".jpeg"))
+                        .mention(event.getUser()).queue(message -> {
+                    messages.add(message);
+                });
 
                 return button;
             }
@@ -184,7 +193,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private static final String[] SYMBOLES_COURS = {":blue_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:", ":white_large_square:"};
     private static final String SYMBOLE_EMPTY = ":black_large_square:";
 
-    private List<String> getFullCombinaisonString(CombinaisonHoraire combinaison) {
+    /*private List<String> getFullCombinaisonString(CombinaisonHoraire combinaison) {
 
         int DEBUT_COURS = Integer.MAX_VALUE;
         int FIN_COURS = Integer.MIN_VALUE;
@@ -257,7 +266,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         if(sb.length() != 0) messages.add(sb.toString());
 
         return messages;
-    }
+    }*/
 
     private String getCombinaisonString(CombinaisonHoraire combinaison) {
 

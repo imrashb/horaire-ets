@@ -3,13 +3,13 @@ package me.imrashb.domain;
 import com.fasterxml.jackson.annotation.*;
 
 public enum Jour {
-    LUNDI("Lundi", 0),
-    MARDI("Mardi", 1),
-    MERCREDI("Mercredi", 2),
-    JEUDI("Jeudi", 3),
-    VENDREDI("Vendredi", 4),
-    SAMEDI("Samedi", 5),
-    DIMANCHE("Dimanche", 6);
+    DIMANCHE("Dimanche", 0),
+    LUNDI("Lundi", 1),
+    MARDI("Mardi", 2),
+    MERCREDI("Mercredi", 3),
+    JEUDI("Jeudi", 4),
+    VENDREDI("Vendredi", 5),
+    SAMEDI("Samedi", 6);
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private String nom;

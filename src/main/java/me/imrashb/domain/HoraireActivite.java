@@ -64,7 +64,7 @@ public class HoraireActivite {
     public String toString() {
         String heureDepart = this.heureDepart/100+""+":"+StringUtils.rightPad(this.heureDepart%100+"", 2, "0");
         String heureFin = this.heureFin/100+""+":"+StringUtils.rightPad(this.heureFin%100+"", 2, "0");
-        return "("+this.jour.getNom()+" de "+heureDepart+" à "+heureFin+")";
+        return heureDepart+" à "+heureFin;
     }
 
 }
