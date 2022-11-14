@@ -71,8 +71,8 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         StatefulActionComponent<StringSelectMenu> choix = new SelectCombinaisonDropdown(this.currentCombinaison, this.combinaisons);
 
 
-        StatefulActionComponent partageLight = new StatefulActionComponent<Button>(
-                Button.secondary("partageLight", "Partager")
+        StatefulActionComponent partage = new StatefulActionComponent<Button>(
+                Button.secondary("partage", "Partager ("+this.theme.getNom()+")")
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
             @Override
             public void execute(GenericComponentInteractionCreateEvent event) {
@@ -81,7 +81,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
             @Override
             public Button draw(Button component) {
-                return component;
+                return component.withLabel("Partager ("+CombinaisonsEmbed.this.theme.getNom()+")");
             }
         };
 
@@ -98,7 +98,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             }
 
         };
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partageLight).addActionRow(theme);
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partage).addActionRow(theme);
     }
 
     private StringSelectMenu getSelectTheme() {
