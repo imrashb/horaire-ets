@@ -67,7 +67,7 @@ public class TestImageHoraire {
 
         CombinaisonHoraire comb = new CombinaisonHoraire(groupes);
 
-        Image image = new HoraireImageMaker(comb).drawHoraire();
+        Image image = new HoraireImageMaker(comb, HoraireImageMaker.DARK_THEME).drawHoraire();
 
         ImageIO.write((RenderedImage) image, "png", new File("here.png"));
 

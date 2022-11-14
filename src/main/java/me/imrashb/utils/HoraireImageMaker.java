@@ -10,9 +10,10 @@ import java.awt.image.*;
 import java.io.IOException;
 import java.io.InputStream;
 
-@AllArgsConstructor
 public class HoraireImageMaker {
 
+    public static final HoraireImageMakerTheme LIGHT_THEME = new HoraireImageMakerTheme(Color.white, Color.gray, Color.lightGray, Color.white, Color.black);
+    public static final HoraireImageMakerTheme DARK_THEME = new HoraireImageMakerTheme(Color.darkGray, Color.lightGray, Color.gray, Color.black, Color.white);
     private static final Font COURS_FONT;
     private static final Font FONT;
 
@@ -28,11 +29,11 @@ public class HoraireImageMaker {
             throw new RuntimeException(e);
         }
     }
-    private static final Color COLOR_BACKGROUND = Color.white;
-    private static final Color COLOR_LIGNE_SEPARATION = Color.gray;
-    private static final Color COLOR_FIN_DE_SEMAINE = Color.lightGray;
-    private static final Color COLOR_TEXTE_COURS = Color.white;
-    private static final Color COLOR_TEXTE_OUTLINE = Color.black;
+    private final Color COLOR_BACKGROUND;
+    private final Color COLOR_LIGNE_SEPARATION;
+    private final Color COLOR_FIN_DE_SEMAINE;
+    private final Color COLOR_TEXTE_COURS;
+    private final Color COLOR_TEXTE_OUTLINE;
     private static final Stroke TEXTE_STROKE = new BasicStroke(4.0f);
     private static final Stroke HEURE_STROKE = new BasicStroke(2);
     private static final Stroke JOUR_STROKE = new BasicStroke(2);
@@ -54,6 +55,20 @@ public class HoraireImageMaker {
     private static final int PX_ENTRE_HEURE = (HEIGHT-TOP_PADDING-BOTTOM_PADDING)/NOMBRE_SEPARATIONS_HEURE;
     private static final int PX_ENTRE_JOUR = (WIDTH-LEFT_PADDING-RIGHT_PADDING)/7;
     private CombinaisonHoraire horaire;
+
+    public HoraireImageMaker(CombinaisonHoraire horaire) {
+        this(horaire, LIGHT_THEME);
+    }
+
+    public HoraireImageMaker(CombinaisonHoraire horaire, HoraireImageMakerTheme theme) {
+        this.horaire = horaire;
+        this.COLOR_BACKGROUND = theme.getColorBackground();
+        this.COLOR_FIN_DE_SEMAINE = theme.getColorFinDeSemaine();
+        this.COLOR_TEXTE_COURS = theme.getColorTexteCours();
+        this.COLOR_LIGNE_SEPARATION = theme.getColorLigneSeparation();
+        this.COLOR_TEXTE_OUTLINE = theme.getColorTexteOutline();
+    }
+
 
     public Image drawHoraire() {
         return this.drawHoraire(WIDTH);
@@ -209,5 +224,5 @@ public class HoraireImageMaker {
         g2d.drawString(texte, x, y);
     }
 
-
 }
+

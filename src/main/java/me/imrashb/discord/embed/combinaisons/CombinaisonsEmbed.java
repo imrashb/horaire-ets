@@ -70,44 +70,12 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         StatefulActionComponent<StringSelectMenu> choix = new SelectCombinaisonDropdown(this.currentCombinaison, this.combinaisons);
 
 
-        StatefulActionComponent<Button> epingle = new StatefulActionComponent<Button>(
-                Button.secondary("epingle", "Épingler")
-                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCC"))) {
-            @Override
-            public void execute(GenericComponentInteractionCreateEvent event) {
-                setStayAlive(!getStayAlive());
-            }
-
-            @Override
-            public Button draw(Button component) {
-                return component.withLabel(getStayAlive() ? "Oublier" : "Épingler");
-            }
-        };
-        StatefulActionComponent partage = new StatefulActionComponent<Button>(
-                Button.secondary("partage", "Partager")
+        StatefulActionComponent partageLight = new StatefulActionComponent<Button>(
+                Button.secondary("partageLight", "Partager en Light Theme")
                         .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
             @Override
             public void execute(GenericComponentInteractionCreateEvent event) {
-
-                for(Message m : messages) {
-                    m.delete().queue();
-                }
-                messages.clear();
-
-                Image image = new HoraireImageMaker(combinaisons.get(currentCombinaison.get())).drawHoraire();
-
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                try {
-                    ImageIO.write((RenderedImage) image, "jpeg", os);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                event.getMessageChannel()
-                        .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
-                        .setFiles(FileUpload.fromData(os.toByteArray(), "Horaire "+(currentCombinaison.get()+1)+".jpeg"))
-                        .mention(event.getUser()).queue(message -> {
-                    messages.add(message);
-                });
+                partagerHoraire(event, HoraireImageMaker.LIGHT_THEME);
             }
 
             @Override
@@ -115,7 +83,43 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
                 return component;
             }
         };
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(epingle, partage);
+
+        StatefulActionComponent partageDark = new StatefulActionComponent<Button>(
+                Button.secondary("partageDark", "Partager en Dark Theme")
+                        .withEmoji(Emoji.fromUnicode("\uD83D\uDCCE"))) {
+            @Override
+            public void execute(GenericComponentInteractionCreateEvent event) {
+                partagerHoraire(event, HoraireImageMaker.DARK_THEME);
+            }
+
+            @Override
+            public Button draw(Button component) {
+                return component;
+            }
+        };
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partageLight, partageDark);
+    }
+
+    private void partagerHoraire(GenericComponentInteractionCreateEvent event, HoraireImageMakerTheme theme) {
+        for(Message m : messages) {
+            m.delete().queue();
+        }
+        messages.clear();
+
+        Image image = new HoraireImageMaker(combinaisons.get(currentCombinaison.get()), theme).drawHoraire();
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            ImageIO.write((RenderedImage) image, "jpeg", os);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        event.getMessageChannel()
+                .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
+                .setFiles(FileUpload.fromData(os.toByteArray(), "Horaire "+(currentCombinaison.get()+1)+".jpeg"))
+                .mention(event.getUser()).queue(message -> {
+                    messages.add(message);
+                });
     }
 
 }

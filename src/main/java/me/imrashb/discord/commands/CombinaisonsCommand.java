@@ -104,7 +104,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
 
             if(combinaisons.size() == 0) {
-                event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").queue();
+                event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").setEphemeral(true).queue();
                 return null;
             }
 
