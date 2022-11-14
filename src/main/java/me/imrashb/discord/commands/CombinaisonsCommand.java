@@ -15,9 +15,11 @@ import java.util.*;
 public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAction> {
 
     private final String ID_COURS = "cours";
+    private final String ID_CONGE = "conge";
     private final String ID_TRIMESTRE = "trimestre";
     private final String ID_NB_COURS = "nombrecours";
-    private final int NB_COURS_MAX = 6;
+    private final int NB_COURS_MAX = 10;
+    private final int NB_CONGE_MAX = 6;
 
     public CombinaisonsCommand(CoursManager coursManager) {
         super("combinaisons", "Retourne les combinaisons d'horaires en fonction des cours en arguments", coursManager);
@@ -66,6 +68,18 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             this.addOption(OptionType.STRING, paramName, "Le " + (i+1) + "e cours à inclure dans l'horaire", required, strategy);
 
         }
+
+        List<Command.Choice> choicesConge = new ArrayList<>();
+
+        for(Jour j : Jour.values()) {
+            choicesConge.add(new Command.Choice(j.getNom(), j.getId()));
+        }
+
+        for (int i = 0; i < NB_CONGE_MAX; i++) {
+            String paramName = ID_CONGE + (i+1);
+            addOption(
+                    OptionType.STRING, paramName, "Le "+(i+1)+"e congé de l'horaire", false, choicesConge.toArray(new Command.Choice[]{}));
+        }
     }
 
     @Override
@@ -77,6 +91,21 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             OptionMapping mapping = event.getOption(ID_COURS + (i+1));
             if (mapping != null) {
                 cours.add(mapping.getAsString());
+            }
+        }
+
+        Set<Jour> conges = new HashSet<>();
+
+        for (int i = 0; i < NB_CONGE_MAX; i++) {
+            OptionMapping mapping = event.getOption(ID_CONGE + (i+1));
+            if (mapping != null) {
+                for(Jour j : Jour.values()) {
+                    System.out.println(mapping.getAsInt());
+                    if(j.getId() == mapping.getAsInt()) {
+                        conges.add(j);
+                        break;
+                    }
+                }
             }
         }
 
@@ -101,7 +130,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         }
 
         try {
-            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
+            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, conges, cours.toArray(new String[0]));
 
             if(combinaisons.size() == 0) {
                 event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").setEphemeral(true).queue();

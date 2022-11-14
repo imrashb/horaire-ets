@@ -44,6 +44,13 @@ public class Groupe {
         return false;
     }
 
+    public boolean isDuring(Set<Jour> jours) {
+        for(Activite a : activites) {
+            if(jours.contains(a.getHoraire().getJour())) return true;
+        }
+        return false;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(numeroGroupe, activites);
