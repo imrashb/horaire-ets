@@ -15,13 +15,21 @@ public class HoraireImageMaker {
     public static final HoraireImageMakerTheme LIGHT_THEME = new HoraireImageMakerTheme(
             "Thème lumière",Color.white, Color.gray, Color.gray, Color.lightGray, Color.white, Color.black, Color.gray, Color.gray);
     public static final HoraireImageMakerTheme DARK_THEME = new HoraireImageMakerTheme(
-            "Thème sombre",Color.darkGray, Color.lightGray, Color.lightGray, Color.gray, Color.black, Color.white, Color.white, Color.white);
+            "Thème sombre",Color.darkGray, Color.lightGray, Color.lightGray, Color.gray, Color.white, Color.black, Color.white, Color.white);
     public static final HoraireImageMakerTheme CYAN_THEME = new HoraireImageMakerTheme(
             "Thème cyan",Color.decode("#023047"),Color.decode("#8ECAE6"), Color.decode("#FFB703"),
-            Color.decode("#219EBC"), Color.black, Color.white, Color.decode("#FB8500"), Color.decode("#FB8500"));
+            Color.decode("#219EBC"), Color.white, Color.black, Color.decode("#FB8500"), Color.decode("#FB8500"));
     public static final HoraireImageMakerTheme FOREST_THEME = new HoraireImageMakerTheme(
             "Thème forêt",Color.decode("#283618"),Color.decode("#FEFAE0"), Color.decode("#DDA15E"),
-            Color.decode("#606C38"), Color.black, Color.white, Color.decode("#DDA15E"),Color.decode("#DDA15E"));
+            Color.decode("#606C38"), Color.white, Color.black, Color.decode("#DDA15E"),Color.decode("#DDA15E"));
+    public static final HoraireImageMakerTheme NIGHT_THEME = new HoraireImageMakerTheme(
+            "Thème nuit",Color.decode("#000814"), Color.decode("#003566"), Color.decode("#ffc300"), Color.decode("#001d3d"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#ffd60a"), Color.decode("#ffd60a"));
+    public static final HoraireImageMakerTheme PURPLE_THEME = new HoraireImageMakerTheme(
+            "Thème mauve",Color.decode("#240046"), Color.decode("#5a189a"), Color.decode("#7b2cbf"), Color.decode("#3c096c"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#c77dff"), Color.decode("#c77dff"));
+    public static final HoraireImageMakerTheme BLUE_THEME = new HoraireImageMakerTheme(
+            "Thème bleu",Color.decode("#012a4a"), Color.decode("#61a5c2"), Color.decode("#2a6f97"), Color.decode("#013a63"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#89c2d9"), Color.decode("#89c2d9"));
+
+
     public static final java.util.List<HoraireImageMakerTheme> themes;
 
     private static final Font COURS_FONT;
@@ -34,6 +42,9 @@ public class HoraireImageMaker {
         themes.add(DARK_THEME);
         themes.add(CYAN_THEME);
         themes.add(FOREST_THEME);
+        themes.add(NIGHT_THEME);
+        themes.add(PURPLE_THEME);
+        themes.add(BLUE_THEME);
 
         final String filename = "/bahnschrift.ttf";
         InputStream is = HoraireImageMaker.class.getResourceAsStream(filename);
