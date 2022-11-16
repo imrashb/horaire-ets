@@ -1,8 +1,10 @@
 package me.imrashb.discord.embed.combinaisons;
 
+import me.imrashb.discord.BotConstants;
 import me.imrashb.discord.embed.CustomSlashCommandEmbed;
 import me.imrashb.discord.embed.EmbedLayout;
 import me.imrashb.discord.embed.StatefulActionComponent;
+import me.imrashb.discord.utils.MessageUtils;
 import me.imrashb.domain.*;
 import me.imrashb.utils.*;
 import net.dv8tion.jda.api.*;
@@ -42,7 +44,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         }
 
         embedBuilder.clear();
-
         CombinaisonHoraire comb = this.combinaisons.get(currentCombinaison.get());
 
         for(int i = 0; i<comb.getGroupes().size(); i++) {
@@ -51,7 +52,9 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         }
 
         embedBuilder.setTitle("Horaire "+(currentCombinaison.get()+1));
+        embedBuilder.setColor(BotConstants.EMBED_COLOR);
         embedBuilder.appendDescription(combinaisons.size()+" combinaisons trouvés");
+        embedBuilder.addField("Identifiant unique de l'horaire", comb.getEncodedUniqueId(), false);
         String stringCombinaison = CombinaisonUtils.getCombinaisonString(comb);
         embedBuilder.addField("Horaire", stringCombinaison, false);
 
@@ -123,20 +126,9 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         }
         messages.clear();
 
-        Image image = new HoraireImageMaker(combinaisons.get(currentCombinaison.get()), theme).drawHoraire();
-
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            ImageIO.write((RenderedImage) image, "jpeg", os);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        event.getMessageChannel()
-                .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
-                .setFiles(FileUpload.fromData(os.toByteArray(), "Horaire "+(currentCombinaison.get()+1)+".jpeg"))
-                .mention(event.getUser()).queue(message -> {
-                    messages.add(message);
-                });
+        MessageUtils.partagerImageHoraire(event, this.combinaisons.get(currentCombinaison.get()), this.theme, (m) -> {
+            messages.add(m);
+        });
     }
 
 }

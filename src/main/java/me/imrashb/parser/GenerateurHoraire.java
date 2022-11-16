@@ -5,6 +5,7 @@ import lombok.Data;
 import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.Jour;
 import me.imrashb.exception.*;
 
 import java.util.*;
@@ -16,13 +17,13 @@ public class GenerateurHoraire {
     private List<Cours> listeCours;
     public static int MAX_NB_COURS = 15;
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, int nbCours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, Set<Jour> conges, int nbCours) {
 
         if(cours.size() > MAX_NB_COURS) {
             throw new TooManyCoursException();
         }
 
-        NodeGroupe node = new NodeGroupe(null, null);
+        NodeGroupe node = new NodeGroupe(null, null, conges);
 
         List<Set<Cours>> subsets = getSubsets(cours, nbCours);
 
@@ -30,10 +31,14 @@ public class GenerateurHoraire {
             recurCreateCombinaisons(new ArrayList<>(sub), 0, node);
         }
 
-        return node.getValidCombinaisons(cours, nbCours);
+        return node.getValidCombinaisons(nbCours);
     }
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, String... cours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, int nbCours) {
+        return getCombinaisonsHoraire(cours, new HashSet<>(), nbCours);
+    }
+
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, Set<Jour> conges, String... cours) {
         Set<Cours> coursVoulu = new HashSet<>();
 
         List<String> inexistant = new ArrayList<>(Arrays.asList(cours));
@@ -52,7 +57,11 @@ public class GenerateurHoraire {
             throw new CoursDoesntExistException(inexistant);
         }
 
-        return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), nbCours);
+        return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), conges, nbCours);
+    }
+
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, String... cours) {
+        return this.getCombinaisonsHoraire(nbCours, new HashSet<>(), cours);
     }
 
     private static void getSubsets(List<Cours> superSet, int k, int idx, Set<Cours> current, List<Set<Cours>> solution) {
@@ -88,7 +97,7 @@ public class GenerateurHoraire {
 
         for(Groupe g : courant.getGroupes()) {
 
-            if(!node.isOverlapping(g)) {
+            if(!node.isOverlapping(g) && !node.isDuringConges(g)) {
                 NodeGroupe n = node.createNode(g);
                 recurCreateCombinaisons(cours, index+1, n);
             }

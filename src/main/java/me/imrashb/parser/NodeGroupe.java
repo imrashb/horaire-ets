@@ -3,6 +3,7 @@ package me.imrashb.parser;
 import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.Jour;
 
 import java.util.*;
 
@@ -10,15 +11,19 @@ public class NodeGroupe {
 
     private List<Groupe> groupes;
     private List<NodeGroupe> nodes = new ArrayList<>();
-    public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents) {
+
+    private Set<Jour> conges;
+    public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, Set<Jour> conges) {
         if(groupsPrecedents == null) this.groupes = new ArrayList();
         else this.groupes = new ArrayList(groupsPrecedents);
         if(groupe != null)
             this.groupes.add(groupe);
+        this.conges = conges;
+        if(conges == null) this.conges = new HashSet<>();
     }
 
     public NodeGroupe createNode(Groupe groupe) {
-        NodeGroupe node = new NodeGroupe(groupe, groupes);
+        NodeGroupe node = new NodeGroupe(groupe, groupes, conges);
         nodes.add(node);
         return node;
     }
@@ -31,7 +36,11 @@ public class NodeGroupe {
         return false;
     }
 
-    public List<CombinaisonHoraire> getValidCombinaisons(List<Cours> cours, int nbCours) {
+    public boolean isDuringConges(Groupe g) {
+        return g.isDuring(conges);
+    }
+
+    public List<CombinaisonHoraire> getValidCombinaisons(int nbCours) {
 
         List<CombinaisonHoraire> liste = new ArrayList<>();
 
@@ -48,7 +57,7 @@ public class NodeGroupe {
         } else {
 
             for(NodeGroupe node : nodes) {
-                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(cours, nbCours);
+                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(nbCours);
                 liste.addAll(tmp);
             }
 

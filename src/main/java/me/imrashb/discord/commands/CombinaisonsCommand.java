@@ -15,26 +15,28 @@ import java.util.*;
 public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAction> {
 
     private final String ID_COURS = "cours";
-    private final String ID_TRIMESTRE = "trimestre";
+    private final String ID_CONGE = "conge";
+    private final String ID_SESSION = "session";
     private final String ID_NB_COURS = "nombrecours";
-    private final int NB_COURS_MAX = 6;
+    private final int NB_COURS_MAX = 10;
+    private final int NB_CONGE_MAX = 6;
 
     public CombinaisonsCommand(CoursManager coursManager) {
         super("combinaisons", "Retourne les combinaisons d'horaires en fonction des cours en arguments", coursManager);
 
 
-        List<Command.Choice> choicesTrimestre = new ArrayList<>();
+        List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for(String s : this.getCoursManager().getTrimestres()) {
-            choicesTrimestre.add(new Command.Choice(s, s));
+        for(String s : this.getCoursManager().getSessions()) {
+            choicesSession.add(new Command.Choice(s, s));
         }
 
         this.addOption(
                 OptionType.STRING,
-                ID_TRIMESTRE,
-                "Le trimestre dans lequel les combinaisons d'horaires seront générées",
+                ID_SESSION,
+                "La session dans laquelle les combinaisons d'horaires seront générées",
                 true,
-                choicesTrimestre.toArray(new Command.Choice[]{})
+                choicesSession.toArray(new Command.Choice[]{})
                 );
 
         this.addOption(OptionType.INTEGER,
@@ -47,10 +49,10 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             if (i == 0) required = true;
             String paramName = ID_COURS + (i+1);
             AutoCompleteStrategy strategy = event -> {
-                if(event.getOption(ID_TRIMESTRE) == null) return null;
+                if(event.getOption(ID_SESSION) == null) return null;
 
                 String text = event.getFocusedOption().getValue();
-                List<Cours> cours = coursManager.getListeCours(event.getOption(ID_TRIMESTRE).getAsString());
+                List<Cours> cours = coursManager.getListeCours(event.getOption(ID_SESSION).getAsString());
                 if(cours == null) return null;
 
                 List<Command.Choice> liste = new ArrayList<>();
@@ -66,12 +68,24 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             this.addOption(OptionType.STRING, paramName, "Le " + (i+1) + "e cours à inclure dans l'horaire", required, strategy);
 
         }
+
+        List<Command.Choice> choicesConge = new ArrayList<>();
+
+        for(Jour j : Jour.values()) {
+            choicesConge.add(new Command.Choice(j.getNom(), j.getId()));
+        }
+
+        for (int i = 0; i < NB_CONGE_MAX; i++) {
+            String paramName = ID_CONGE + (i+1);
+            addOption(
+                    OptionType.STRING, paramName, "Le "+(i+1)+"e congé de l'horaire", false, choicesConge.toArray(new Command.Choice[]{}));
+        }
     }
 
     @Override
     public EmbedEditDeferredAction execute(SlashCommandInteractionEvent event) {
         List<String> cours = new ArrayList<>();
-        String trimestre = event.getOption(ID_TRIMESTRE).getAsString();
+        String sessionId = event.getOption(ID_SESSION).getAsString();
 
         for (int i = 0; i < NB_COURS_MAX; i++) {
             OptionMapping mapping = event.getOption(ID_COURS + (i+1));
@@ -80,13 +94,27 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             }
         }
 
-        List<Cours> listeCours = this.getCoursManager().getListeCours(trimestre);
+        Set<Jour> conges = new HashSet<>();
+
+        for (int i = 0; i < NB_CONGE_MAX; i++) {
+            OptionMapping mapping = event.getOption(ID_CONGE + (i+1));
+            if (mapping != null) {
+                for(Jour j : Jour.values()) {
+                    if(j.getId() == mapping.getAsInt()) {
+                        conges.add(j);
+                        break;
+                    }
+                }
+            }
+        }
+
+        List<Cours> listeCours = this.getCoursManager().getListeCours(sessionId);
 
         if(listeCours == null) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Le trimestre '"+trimestre+"' est invalide! ");
-            sb.append("Le dernier trimestre est '"+this.getCoursManager().getDernierTrimestre()+"'. ");
-            sb.append("Les trimestres disponibles sont "+this.getCoursManager().getTrimestres().toString()+".");
+            sb.append("La session '"+sessionId+"' est invalide! ");
+            sb.append("La dernière session est '"+this.getCoursManager().getDerniereSession()+"'. ");
+            sb.append("Les sessions disponibles sont "+this.getCoursManager().getSessions().toString()+".");
             event.reply(sb.toString()).setEphemeral(true).queue();
             return null;
         }
@@ -101,7 +129,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         }
 
         try {
-            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, cours.toArray(new String[0]));
+            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, conges, cours.toArray(new String[0]));
 
             if(combinaisons.size() == 0) {
                 event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").setEphemeral(true).queue();

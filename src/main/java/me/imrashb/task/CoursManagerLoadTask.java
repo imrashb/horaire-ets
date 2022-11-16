@@ -3,6 +3,7 @@ package me.imrashb.task;
 import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.CoursManager;
+import me.imrashb.domain.Session;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
@@ -13,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -24,8 +24,8 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class CoursManagerLoadTask {
 
-    @Value("${trimestres}")
-    private String[] trimestres;
+    @Value("${sessions}")
+    private String[] sessions;
 
     @Autowired
     private CoursManager coursManager;
@@ -35,22 +35,23 @@ public class CoursManagerLoadTask {
     public void updateCours() throws IOException {
         log.info("method: updateCours() : Début de la mise à jour des cours");
 
-        if(trimestres.length == 0)
-            throw new RuntimeException("ERREUR: Trimestres ne sont pas définient dans application.properties. Ex: trimestres=20223,20231");
+        if(sessions.length == 0)
+            throw new RuntimeException("ERREUR: Sessions ne sont pas définient dans application.properties. Ex: sessions=20223,20231");
 
 
-        for(String trimestre : trimestres) {
+        for(String sessionId : sessions) {
 
-            Trimestre trim = Trimestre.getTrimestreFromId(trimestre);
-            int annee = Integer.parseInt(trimestre.substring(0, 4));
+            Trimestre trim = Trimestre.getTrimestreFromId(sessionId);
+            int annee = Integer.parseInt(sessionId.substring(0, 4));
+            Session session = trim.getSession(annee);
             if(trim == null)
-                throw new RuntimeException("ERREUR: Le trimestre "+trimestre+" est invalide.");
+                throw new RuntimeException("ERREUR: La session '"+sessionId+"' est invalide.");
 
             CoursParser coursParser = new CoursParser();
 
             List<PdfCours> files = null;
             try {
-                files = ETSUtils.getFichiersHoraireSync(annee, trim);
+                files = ETSUtils.getFichiersHoraireSync(session);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
@@ -58,7 +59,7 @@ public class CoursManagerLoadTask {
             }
 
             for(PdfCours pdf : files) {
-                coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme());
+                coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme(), session);
                 pdf.getPdf().delete();
             }
             coursParser.getCours().sort(new Comparator<Cours>() {
@@ -68,7 +69,7 @@ public class CoursManagerLoadTask {
                 }
             });
 
-            this.coursManager.addTrimestre(trimestre, coursParser.getCours());
+            this.coursManager.addSession(session, coursParser.getCours());
         }
         coursManager.setReady(true);
 

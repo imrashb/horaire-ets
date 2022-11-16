@@ -1,16 +1,12 @@
 package me.imrashb.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.CoursManager;
 import me.imrashb.exception.CoursNotInitializedException;
-import me.imrashb.exception.TrimestreDoesntExistException;
-import me.imrashb.parser.GenerateurHoraire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -24,11 +20,11 @@ public class CoursServiceImpl implements CoursService{
 
 
     @Override
-    public List<Cours> getListeCours(String trimestre) {
+    public List<Cours> getListeCours(String session) {
         if(!coursManager.isReady())
             throw new CoursNotInitializedException();
 
-        List<Cours> liste = coursManager.getListeCours(trimestre);
+        List<Cours> liste = coursManager.getListeCours(session);
         return liste;
     }
 }
