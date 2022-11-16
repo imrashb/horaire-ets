@@ -18,6 +18,7 @@ public class CoursParser {
     private List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
+    private Session session = null;
 
     public CoursParser() {
         this.listeCours = new ArrayList<>();
@@ -27,8 +28,8 @@ public class CoursParser {
         this.listeCours = cours;
     }
 
-    public List<Cours> getCoursFromPDF(File f, Programme programme) throws IOException {
-
+    public List<Cours> getCoursFromPDF(File f, Programme programme, Session session) throws IOException {
+        this.session = session;
         currentCours = null;
         currentGroupe = null;
 
@@ -98,7 +99,7 @@ public class CoursParser {
                 }
             }
 
-            Cours cours = new Cours(id, new ArrayList<>(), new HashSet<>());
+            Cours cours = new Cours(id, new ArrayList<>(), new HashSet<>(), this.session);
             return cours;
         }
         return null;

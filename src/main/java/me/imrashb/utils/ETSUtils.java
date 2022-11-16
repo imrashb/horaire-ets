@@ -1,7 +1,7 @@
 package me.imrashb.utils;
 
 import me.imrashb.domain.Programme;
-import me.imrashb.domain.Trimestre;
+import me.imrashb.domain.Session;
 import me.imrashb.parser.PdfCours;
 
 import java.io.BufferedInputStream;
@@ -21,10 +21,10 @@ import java.util.concurrent.Future;
 
 public class ETSUtils {
 
-    public static Map<Programme, Future<File>> getFichiersHoraireAsync(int annee, Trimestre trimestre) {
+    public static Map<Programme, Future<File>> getFichiersHoraireAsync(Session session) {
         final Map<Programme, Future<File>> futures = new HashMap<>();
 
-        final String idTrimestre = trimestre.getIdTrimestre(annee);
+        final String idSession = session.toId()+"";
 
         final ExecutorService executor
                 = Executors.newFixedThreadPool(Programme.values().length);
@@ -33,7 +33,7 @@ public class ETSUtils {
         new File(tmpFolder).mkdir();
 
         for (Programme programme : Programme.values()) {
-            Future<File> future = downloadHoraire(executor, tmpFolder, programme.getId(), idTrimestre);
+            Future<File> future = downloadHoraire(executor, tmpFolder, programme.getId(), idSession);
             futures.put(programme, future);
         }
 
@@ -42,9 +42,9 @@ public class ETSUtils {
         return futures;
     }
 
-    public static List<PdfCours> getFichiersHoraireSync(int annee, Trimestre trimestre) throws ExecutionException, InterruptedException {
+    public static List<PdfCours> getFichiersHoraireSync(Session session) throws ExecutionException, InterruptedException {
 
-        Map<Programme, Future<File>> futures = getFichiersHoraireAsync(annee, trimestre);
+        Map<Programme, Future<File>> futures = getFichiersHoraireAsync(session);
 
         List<PdfCours> files = new ArrayList<>();
         //Resolve all futures
@@ -58,12 +58,12 @@ public class ETSUtils {
         return files;
     }
 
-    private static Future<File> downloadHoraire(ExecutorService executor, String tmpFolder, String programme, String idTrimestre) {
+    private static Future<File> downloadHoraire(ExecutorService executor, String tmpFolder, String programme, String idSession) {
 
         return executor.submit(() -> {
             URL url = null;
             try {
-                url = new URL("https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idTrimestre + "_" + programme + ".pdf");
+                url = new URL("https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idSession + "_" + programme + ".pdf");
             } catch (MalformedURLException e) {
                 System.err.println(e.getMessage());
                 return null;

@@ -1,21 +1,21 @@
 package me.imrashb.domain;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Groupe {
+public class Groupe implements Comparable<Groupe> {
 
     private String numeroGroupe;
-
     private List<Activite> activites;
-
     private Cours cours;
+    public static final char SEPARATEUR_SIGLE_NUM_GROUPE = '-';
     public String toString() {
-        return cours.getSigle()+"-"+ numeroGroupe;
+        return cours.getSigle()+SEPARATEUR_SIGLE_NUM_GROUPE+ numeroGroupe;
     }
 
     public String toPrettyString() {
@@ -56,4 +56,8 @@ public class Groupe {
         return Objects.hash(numeroGroupe, activites);
     }
 
+    @Override
+    public int compareTo(@NotNull Groupe o) {
+        return this.toString().compareTo(o.toString());
+    }
 }

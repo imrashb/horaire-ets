@@ -40,7 +40,7 @@ public class NodeGroupe {
         return g.isDuring(conges);
     }
 
-    public List<CombinaisonHoraire> getValidCombinaisons(List<Cours> cours, int nbCours) {
+    public List<CombinaisonHoraire> getValidCombinaisons(int nbCours) {
 
         List<CombinaisonHoraire> liste = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class NodeGroupe {
         } else {
 
             for(NodeGroupe node : nodes) {
-                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(cours, nbCours);
+                List<CombinaisonHoraire> tmp = node.getValidCombinaisons(nbCours);
                 liste.addAll(tmp);
             }
 

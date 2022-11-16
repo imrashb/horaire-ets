@@ -31,7 +31,7 @@ public class GenerateurHoraire {
             recurCreateCombinaisons(new ArrayList<>(sub), 0, node);
         }
 
-        return node.getValidCombinaisons(cours, nbCours);
+        return node.getValidCombinaisons(nbCours);
     }
 
     public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, int nbCours) {

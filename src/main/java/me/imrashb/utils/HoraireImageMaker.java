@@ -28,6 +28,8 @@ public class HoraireImageMaker {
             "Thème mauve",Color.decode("#240046"), Color.decode("#5a189a"), Color.decode("#7b2cbf"), Color.decode("#3c096c"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#c77dff"), Color.decode("#c77dff"));
     public static final HoraireImageMakerTheme BLUE_THEME = new HoraireImageMakerTheme(
             "Thème bleu",Color.decode("#012a4a"), Color.decode("#61a5c2"), Color.decode("#2a6f97"), Color.decode("#013a63"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#89c2d9"), Color.decode("#89c2d9"));
+    public static final HoraireImageMakerTheme EMERALD_THEME = new HoraireImageMakerTheme(
+            "Thème emeraude",Color.decode("#004b23"), Color.decode("#38b000"), Color.decode("#ccff33"), Color.decode("#006400"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#9ef01a"), Color.decode("#9ef01a"));
 
 
     public static final java.util.List<HoraireImageMakerTheme> themes;
@@ -45,6 +47,7 @@ public class HoraireImageMaker {
         themes.add(NIGHT_THEME);
         themes.add(PURPLE_THEME);
         themes.add(BLUE_THEME);
+        themes.add(EMERALD_THEME);
 
         final String filename = "/bahnschrift.ttf";
         InputStream is = HoraireImageMaker.class.getResourceAsStream(filename);

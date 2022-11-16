@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CombinaisonControllerAdvice {
 
-    @ExceptionHandler({TrimestreDoesntExistException.class, CoursDoesntExistException.class})
+    @ExceptionHandler({SessionDoesntExistException.class, CoursDoesntExistException.class})
     public ResponseEntity handleNotFoundException(Exception exception) {
         return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
     }

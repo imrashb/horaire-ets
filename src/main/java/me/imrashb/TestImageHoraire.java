@@ -31,7 +31,7 @@ public class TestImageHoraire {
 
             ArrayList<Activite> list = new ArrayList();
             list.add(a);
-            Cours c = new Cours("LOG100", new ArrayList<>(), new HashSet<>());
+            Cours c = new Cours("LOG100", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
             g = new Groupe("01", list, c);
             c.addGroupe(g);
@@ -47,7 +47,7 @@ public class TestImageHoraire {
             ArrayList<Activite> list = new ArrayList();
             list.add(a1);
             list.add(a2);
-            Cours c = new Cours("LOG320", new ArrayList<>(), new HashSet<>());
+            Cours c = new Cours("LOG320", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
             g = new Groupe("02", list, c);
             c.addGroupe(g);
@@ -61,7 +61,7 @@ public class TestImageHoraire {
 
             ArrayList<Activite> list = new ArrayList();
             list.add(a2);
-            Cours c = new Cours("LOG240", new ArrayList<>(), new HashSet<>());
+            Cours c = new Cours("LOG240", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
             g = new Groupe("02", list, c);
             c.addGroupe(g);

@@ -10,40 +10,39 @@ import java.util.*;
 @Scope("singleton")
 public class CoursManager {
 
-    private HashMap<String, List<Cours>> coursParTrimestre = new HashMap<>();
+    private HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
 
     @Getter
-    private String dernierTrimestre = null;
+    private Integer derniereSession = null;
 
     public void addCoursManagerReadyListener(CoursManagerReadyListener listener) {
         this.coursManagerReadyListeners.add(listener);
     }
 
-    public void addTrimestre(String trimestre, List<Cours> cours) {
+    public void addSession(Session session, List<Cours> cours) {
 
-        final Trimestre trim = Trimestre.getTrimestreFromId(trimestre);
-        final String nomTrimestre = trim.getNomTrimestre(Integer.parseInt(trimestre.substring(0, 4)));
+        final String nomSession = session.toString();
+        final int idSession = session.toId();
 
-
-        if(coursParTrimestre.containsKey(nomTrimestre)) {
-            coursParTrimestre.replace(nomTrimestre, cours);
+        if(coursParSessions.containsKey(nomSession)) {
+            coursParSessions.replace(nomSession, cours);
         } else {
 
-            final int trimestreInt = Integer.parseInt(trimestre);
-            if(dernierTrimestre == null || Integer.parseInt(dernierTrimestre) < trimestreInt) {
-                dernierTrimestre = trimestre;
+            final int sessionId = session.toId();
+            if(derniereSession == null || derniereSession < sessionId) {
+                derniereSession = idSession;
             }
 
-            coursParTrimestre.put(nomTrimestre, cours);
+            coursParSessions.put(nomSession, cours);
         }
     }
 
-    public Set<String> getTrimestres() {
-        return coursParTrimestre.keySet();
+    public Set<String> getSessions() {
+        return coursParSessions.keySet();
     }
 
-    public List<Cours> getListeCours(String trimestre) {
-        return coursParTrimestre.get(trimestre);
+    public List<Cours> getListeCours(String sessionId) {
+        return coursParSessions.get(sessionId);
     }
 
     private List<CoursManagerReadyListener> coursManagerReadyListeners = new ArrayList<>();

@@ -14,6 +14,8 @@ public class Cours {
     @JsonIgnore
     private List<Groupe> groupes;
     private Set<Programme> programmes;
+    private Session session;
+
 
     public void addProgramme(Programme programme) {
         this.programmes.add(programme);

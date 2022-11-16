@@ -16,11 +16,11 @@ public class CombinaisonController {
     private CombinaisonService service;
 
     @GetMapping("/combinaisons")
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String trimestre, @RequestParam String[] cours, @RequestParam(required = false) Integer nbCours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String session, @RequestParam String[] cours, @RequestParam(required = false) Integer nbCours) {
         if(nbCours == null) {
             nbCours = cours.length;
         }
-        return service.getCombinaisonsHoraire(trimestre, nbCours, cours);
+        return service.getCombinaisonsHoraire(session, nbCours, cours);
     }
 
 }

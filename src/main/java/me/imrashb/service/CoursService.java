@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CoursService {
 
-    List<Cours> getListeCours(String trimestre);
+    List<Cours> getListeCours(String session);
 
 }
