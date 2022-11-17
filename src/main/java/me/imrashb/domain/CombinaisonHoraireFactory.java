@@ -38,6 +38,7 @@ public class CombinaisonHoraireFactory {
      * @return La combinaison d'horaire
      */
     public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, CoursManager manager) {
+        if(encodedUniqueId.getBytes().length < 2) throw new InvalidEncodedIdException("L'identifiant est trop petit.");
         String decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
 
         String[] split = decoded.split(CombinaisonHoraire.SEPARATEUR_SESSION+"");
