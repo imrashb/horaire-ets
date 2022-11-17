@@ -29,10 +29,10 @@ public class CombinaisonHoraire {
         for(Groupe g : groupes) {
             sb.append(g.toString()).append(SEPARATEUR_GROUPES);
         }
-        this.uniqueId = sb.toString();
+        String tmp = sb.toString();
         // Enleve le '/' à la fin
-        if(this.uniqueId.length() != 0) this.uniqueId = this.uniqueId.substring(0, this.uniqueId.lastIndexOf(SEPARATEUR_GROUPES));
-
+        if(tmp.length() != 0) tmp = tmp.substring(0, tmp.lastIndexOf(SEPARATEUR_GROUPES));
+        this.uniqueId = toEncodedId(tmp);
         for(Groupe g : groupes) {
             for(Activite a : g.getActivites()) {
                 this.conges.remove(a.getHoraire().getJour());
@@ -40,8 +40,8 @@ public class CombinaisonHoraire {
         }
     }
 
-    public String getEncodedUniqueId() {
-        return Base64.getEncoder().encodeToString(this.uniqueId.getBytes());
+    private String toEncodedId(String unencodedId) {
+        return Base64.getEncoder().encodeToString(unencodedId.getBytes());
     }
 
 }

@@ -33,7 +33,7 @@ public class MessageUtils {
         }
         MessageCreateAction action = event.getMessageChannel()
                 .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
-                .setFiles(FileUpload.fromData(os.toByteArray(), combinaison.getEncodedUniqueId()+".jpeg"))
+                .setFiles(FileUpload.fromData(os.toByteArray(), combinaison.getUniqueId()+".jpeg"))
                 .mention(event.getUser());
         if(consumer == null) action.queue();
         else action.queue(consumer);

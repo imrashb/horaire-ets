@@ -1,6 +1,7 @@
 package me.imrashb.discord.commands;
 
 import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
+import me.imrashb.discord.commands.options.CommandOptionUtils;
 import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.domain.*;
@@ -16,7 +17,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
 
     private final String ID_COURS = "cours";
     private final String ID_CONGE = "conge";
-    private final String ID_SESSION = "session";
+    private final String ID_SESSION;
     private final String ID_NB_COURS = "nombrecours";
     private final int NB_COURS_MAX = 10;
     private final int NB_CONGE_MAX = 6;
@@ -31,13 +32,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             choicesSession.add(new Command.Choice(s, s));
         }
 
-        this.addOption(
-                OptionType.STRING,
-                ID_SESSION,
-                "La session dans laquelle les combinaisons d'horaires seront générées",
-                true,
-                choicesSession.toArray(new Command.Choice[]{})
-                );
+        this.ID_SESSION = new CommandOptionUtils().addSessionOption(this);
 
         this.addOption(OptionType.INTEGER,
                 ID_NB_COURS,
@@ -136,7 +131,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 return null;
             }
 
-            CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons);
+            CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons, event.getUser(), sessionId, getCoursManager().getPreferencesUtilisateurService());
             embed.queueEmbed(event, true);
             List<User> users = new ArrayList<>();
             users.add(event.getUser());

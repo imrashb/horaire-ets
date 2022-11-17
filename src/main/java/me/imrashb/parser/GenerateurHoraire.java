@@ -16,11 +16,16 @@ public class GenerateurHoraire {
 
     private List<Cours> listeCours;
     public static int MAX_NB_COURS = 15;
+    public static int MIN_NB_COURS = 1;
 
     public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, Set<Jour> conges, int nbCours) {
 
         if(cours.size() > MAX_NB_COURS) {
-            throw new TooManyCoursException();
+            throw new InvalidCoursAmountException(MAX_NB_COURS);
+        }
+
+        if(cours.size() < MIN_NB_COURS) {
+            throw new InvalidCoursAmountException(MIN_NB_COURS);
         }
 
         NodeGroupe node = new NodeGroupe(null, null, conges);

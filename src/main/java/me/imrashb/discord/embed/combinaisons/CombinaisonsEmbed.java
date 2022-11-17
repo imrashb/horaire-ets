@@ -6,6 +6,7 @@ import me.imrashb.discord.embed.EmbedLayout;
 import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.discord.utils.MessageUtils;
 import me.imrashb.domain.*;
+import me.imrashb.service.PreferencesUtilisateurService;
 import me.imrashb.utils.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -27,11 +28,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private List<CombinaisonHoraire> combinaisons;
+    private String sessionId;
+    private PreferencesUtilisateurService preferencesUtilisateurService;
     private List<Message> messages = new ArrayList<>();
     private AtomicInteger currentCombinaison = new AtomicInteger(0);
+    private PreferencesUtilisateur preferences;
+    private User initialUser;
 
-    public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons) {
+    public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons, User initialUser, String sessionId, PreferencesUtilisateurService preferencesUtilisateurService) {
         this.combinaisons = combinaisons;
+        this.sessionId = sessionId;
+        this.preferencesUtilisateurService = preferencesUtilisateurService;
+        this.initialUser = initialUser;
+        this.preferences = preferencesUtilisateurService.getPreferencesUtilisateur(initialUser.getIdLong());
     }
 
     @Override
@@ -54,7 +63,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         embedBuilder.setTitle("Horaire "+(currentCombinaison.get()+1));
         embedBuilder.setColor(BotConstants.EMBED_COLOR);
         embedBuilder.appendDescription(combinaisons.size()+" combinaisons trouvés");
-        embedBuilder.addField("Identifiant unique de l'horaire", comb.getEncodedUniqueId(), false);
+        embedBuilder.addField("Identifiant unique de l'horaire", comb.getUniqueId(), false);
         String stringCombinaison = CombinaisonUtils.getCombinaisonString(comb);
         embedBuilder.addField("Horaire", stringCombinaison, false);
 
@@ -101,7 +110,46 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             }
 
         };
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(partage).addActionRow(theme);
+
+        StatefulActionComponent monHoraire = new StatefulActionComponent<Button>(getPreferenceButton(null)) {
+            @Override
+            public void execute(GenericComponentInteractionCreateEvent event) {
+
+                CombinaisonHoraire comb = combinaisons.get(currentCombinaison.get());
+
+                if(preferences == null) {
+                    preferences = new PreferencesUtilisateur(initialUser.getIdLong(), new ArrayList<>(), new HashMap<>());
+                }
+
+                if(preferences.getHoraires().containsKey(sessionId)) {
+                    preferences.getHoraires().replace(sessionId, comb.getUniqueId());
+                } else {
+                    preferences.getHoraires().put(sessionId, comb.getUniqueId());
+                }
+
+                preferencesUtilisateurService.savePreferencesUtilisateur(preferences);
+            }
+
+            @Override
+            public Button draw(Button component) {
+                return getPreferenceButton(component);
+            }
+        };
+
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(monHoraire, partage).addActionRow(theme);
+    }
+
+    private Button getPreferenceButton(Button button) {
+        CombinaisonHoraire comb = combinaisons.get(currentCombinaison.get());
+        Button newButton = button == null ? Button.secondary("monhoraire", Emoji.fromUnicode("❤")) : button;
+
+        if(this.preferences != null && comb.getUniqueId().equals(this.preferences.getHoraires().get(sessionId))) {
+            newButton = newButton.withLabel("Déjà mon horaire pour "+this.sessionId).withDisabled(true);
+        } else {
+            newButton = newButton.withLabel("Rendre cela mon horaire pour "+this.sessionId).withDisabled(false);
+        }
+
+        return newButton;
     }
 
     private StringSelectMenu getSelectTheme() {

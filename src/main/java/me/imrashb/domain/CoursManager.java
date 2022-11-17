@@ -1,6 +1,9 @@
 package me.imrashb.domain;
-
 import lombok.*;
+import me.imrashb.repository.PreferencesUtilisateurRepository;
+import me.imrashb.service.PreferencesUtilisateurService;
+import me.imrashb.service.PreferencesUtilisateurServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +14,12 @@ import java.util.*;
 public class CoursManager {
 
     private HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
-
     @Getter
     private Integer derniereSession = null;
+
+    @Autowired
+    @Getter
+    private PreferencesUtilisateurService preferencesUtilisateurService;
 
     public void addCoursManagerReadyListener(CoursManagerReadyListener listener) {
         this.coursManagerReadyListeners.add(listener);

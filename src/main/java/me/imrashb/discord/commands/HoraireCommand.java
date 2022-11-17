@@ -30,7 +30,7 @@ public class HoraireCommand extends DiscordSlashCommand<DeferredAction>{
             CombinaisonHoraire comb = CombinaisonHoraireFactory.fromEncodedUniqueId(id, getCoursManager());
 
             MessageUtils.partagerImageHoraire(event, comb, HoraireImageMaker.LIGHT_THEME, null);
-            event.reply("Voici la combinaison d'horaire relié à '"+comb.getEncodedUniqueId()+"'.")
+            event.reply("Voici la combinaison d'horaire relié à '"+comb.getUniqueId()+"'.")
                     .setEphemeral(true).queue();
         } catch(InvalidEncodedIdException e) {
             event.reply(e.getMessage())

@@ -9,7 +9,6 @@ import me.imrashb.discord.events.handler.SlashCommandInteractionEventHandler;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.GenericAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
@@ -80,6 +79,7 @@ public class Bot {
         this.commands.add(new SessionsCommand(coursManager));
         this.commands.add(new HorairETSCommand(coursManager, this.commands));
         this.commands.add(new HoraireCommand(coursManager));
+        this.commands.add(new MonHoraireCommand(coursManager));
         for(DiscordSlashCommand c : this.commands) {
             c.subscribeCommand(jda);
         }
