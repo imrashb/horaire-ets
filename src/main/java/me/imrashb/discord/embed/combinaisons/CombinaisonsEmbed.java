@@ -34,6 +34,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private AtomicInteger currentCombinaison = new AtomicInteger(0);
     private PreferencesUtilisateur preferences;
     private User initialUser;
+    private HoraireImageMakerTheme theme = HoraireImageMaker.LIGHT_THEME;
 
     public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons, User initialUser, String sessionId, PreferencesUtilisateurService preferencesUtilisateurService) {
         this.combinaisons = combinaisons;
@@ -41,6 +42,8 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         this.preferencesUtilisateurService = preferencesUtilisateurService;
         this.initialUser = initialUser;
         this.preferences = preferencesUtilisateurService.getPreferencesUtilisateur(initialUser.getIdLong());
+
+        this.theme = HoraireImageMaker.getThemeFromId(preferences.getThemeId());
     }
 
     @Override
@@ -75,7 +78,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         return embedBuilder;
     }
 
-    private HoraireImageMakerTheme theme = HoraireImageMaker.LIGHT_THEME;
     @Override
     protected EmbedLayout buildLayout() {
         StatefulActionComponent<Button> prochain = new ProchainCombinaisonButton(this.currentCombinaison);
@@ -102,6 +104,8 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             public void execute(GenericComponentInteractionCreateEvent event) {
                 StringSelectInteractionEvent e = (StringSelectInteractionEvent) event;
                 CombinaisonsEmbed.this.theme = HoraireImageMaker.themes.get(Integer.parseInt(e.getValues().get(0)));
+                CombinaisonsEmbed.this.preferences.setThemeId(CombinaisonsEmbed.this.theme.getId());
+                CombinaisonsEmbed.this.preferences = preferencesUtilisateurService.savePreferencesUtilisateur(CombinaisonsEmbed.this.preferences);
             }
 
             @Override
@@ -116,10 +120,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             public void execute(GenericComponentInteractionCreateEvent event) {
 
                 CombinaisonHoraire comb = combinaisons.get(currentCombinaison.get());
-
-                if(preferences == null) {
-                    preferences = new PreferencesUtilisateur(initialUser.getIdLong(), new ArrayList<>(), new HashMap<>());
-                }
 
                 if(preferences.getHoraires().containsKey(sessionId)) {
                     preferences.getHoraires().replace(sessionId, comb.getUniqueId());

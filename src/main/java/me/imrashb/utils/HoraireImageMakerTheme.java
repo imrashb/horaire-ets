@@ -8,6 +8,7 @@ import java.awt.*;
 @AllArgsConstructor
 @Data
 public class HoraireImageMakerTheme {
+    private String id;
     private String nom;
     private Color colorBackground;
     private Color colorLigneSeparation;

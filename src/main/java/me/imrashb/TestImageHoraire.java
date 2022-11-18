@@ -115,7 +115,7 @@ public class TestImageHoraire {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme(\n" +
-                        "            \"Thème NAME\",Color.decode(\""+hex(theme.getColorBackground())+"\"), Color.decode(\""+hex(theme.getColorLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorDashedLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorFinDeSemaine())+"\"), Color.decode(\""+hex(theme.getColorTexteCours())+"\"), Color.decode(\""+hex(theme.getColorTexteOutline())+"\"), Color.decode(\""+hex(theme.getColorJour())+"\"), Color.decode(\""+hex(theme.getColorHeure())+"\"));");
+                        "            \"themeid\",\"Thème NAME\",Color.decode(\""+hex(theme.getColorBackground())+"\"), Color.decode(\""+hex(theme.getColorLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorDashedLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorFinDeSemaine())+"\"), Color.decode(\""+hex(theme.getColorTexteCours())+"\"), Color.decode(\""+hex(theme.getColorTexteOutline())+"\"), Color.decode(\""+hex(theme.getColorJour())+"\"), Color.decode(\""+hex(theme.getColorHeure())+"\"));");
             }
         });
         for(ButtonConsumer but : buttons) {
@@ -135,7 +135,7 @@ public class TestImageHoraire {
         return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme(
+    public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme("Thème ID",
             "Thème NAME",Color.decode("#001408"), Color.decode("#006635"), Color.decode("#ff0ad6"), Color.decode("#003d1d"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#ff0ad6"), Color.decode("#ff0ad6"));
 
 }

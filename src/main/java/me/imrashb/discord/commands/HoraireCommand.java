@@ -5,8 +5,10 @@ import me.imrashb.discord.utils.MessageUtils;
 import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.CombinaisonHoraireFactory;
 import me.imrashb.domain.CoursManager;
+import me.imrashb.domain.PreferencesUtilisateur;
 import me.imrashb.exception.InvalidEncodedIdException;
 import me.imrashb.utils.HoraireImageMaker;
+import me.imrashb.utils.HoraireImageMakerTheme;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
@@ -29,7 +31,10 @@ public class HoraireCommand extends DiscordSlashCommand<DeferredAction>{
         try {
             CombinaisonHoraire comb = CombinaisonHoraireFactory.fromEncodedUniqueId(id, getCoursManager());
 
-            MessageUtils.partagerImageHoraire(event, comb, HoraireImageMaker.LIGHT_THEME, null);
+            PreferencesUtilisateur pref = getCoursManager().getPreferencesUtilisateurService().getPreferencesUtilisateur(event.getUser().getIdLong());
+            HoraireImageMakerTheme theme = HoraireImageMaker.getThemeFromId(pref.getThemeId());
+
+            MessageUtils.partagerImageHoraire(event, comb, theme, null);
             event.reply("Voici la combinaison d'horaire relié à '"+comb.getUniqueId()+"'.")
                     .setEphemeral(true).queue();
         } catch(InvalidEncodedIdException e) {

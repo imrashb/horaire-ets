@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "preferences_utilisateur")
 @Entity
 public class PreferencesUtilisateur {
@@ -24,5 +25,14 @@ public class PreferencesUtilisateur {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> horaires;
+
+    @Column(name = "theme_id")
+    private String themeId = null;
+
+    public PreferencesUtilisateur(Long userId) {
+        this.userId = userId;
+        this.horaires = new HashMap<>();
+        this.favoris = new ArrayList<>();
+    }
 
 }

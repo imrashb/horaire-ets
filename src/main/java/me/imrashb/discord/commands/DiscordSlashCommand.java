@@ -4,6 +4,7 @@ import lombok.*;
 import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
 import me.imrashb.discord.events.action.DeferredAction;
 import me.imrashb.domain.*;
+import me.imrashb.utils.HoraireImageMakerTheme;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.interactions.AutoCompleteQuery;
