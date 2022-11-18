@@ -48,13 +48,6 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
     @Override
     public EmbedBuilder update() {
-
-        if(currentCombinaison.get() >= combinaisons.size()) {
-            currentCombinaison.set(0);
-        } else if(currentCombinaison.get() < 0 ) {
-            currentCombinaison.set(combinaisons.size()-1);
-        }
-
         embedBuilder.clear();
         CombinaisonHoraire comb = this.combinaisons.get(currentCombinaison.get());
 
@@ -80,8 +73,8 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
     @Override
     protected EmbedLayout buildLayout() {
-        StatefulActionComponent<Button> prochain = new ProchainCombinaisonButton(this.currentCombinaison);
-        StatefulActionComponent<Button> precedent = new PrecedentCombinaisonButton(this.currentCombinaison);
+        StatefulActionComponent<Button> prochain = new ProchainCombinaisonButton(this.currentCombinaison, this.combinaisons);
+        StatefulActionComponent<Button> precedent = new PrecedentCombinaisonButton(this.currentCombinaison, this.combinaisons);
         StatefulActionComponent<StringSelectMenu> choix = new SelectCombinaisonDropdown(this.currentCombinaison, this.combinaisons);
 
 
