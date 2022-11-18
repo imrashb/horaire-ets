@@ -19,24 +19,13 @@ import java.util.function.Consumer;
 
 public class MessageUtils {
 
-    public static void partagerImageHoraire(Interaction event,
-                                            CombinaisonHoraire combinaison,
-                                            HoraireImageMakerTheme theme,
-                                            Consumer<? super Message> consumer) {
-        Image image = new HoraireImageMaker(combinaison, theme).drawHoraire();
-
+    public static FileUpload getFileUploadFromImage(Image image, String name) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ImageIO.write((RenderedImage) image, "jpeg", os);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        MessageCreateAction action = event.getMessageChannel()
-                .sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
-                .setFiles(FileUpload.fromData(os.toByteArray(), combinaison.getUniqueId()+".jpeg"))
-                .mention(event.getUser());
-        if(consumer == null) action.queue();
-        else action.queue(consumer);
+        return FileUpload.fromData(os.toByteArray(), name);
     }
-
 }

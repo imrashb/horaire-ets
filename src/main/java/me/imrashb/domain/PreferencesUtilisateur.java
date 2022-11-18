@@ -29,6 +29,9 @@ public class PreferencesUtilisateur {
     @Column(name = "theme_id")
     private String themeId = null;
 
+    @Column(name = "is_private", columnDefinition = "boolean default true")
+    private boolean isPrivate = true;
+
     public PreferencesUtilisateur(Long userId) {
         this.userId = userId;
         this.horaires = new HashMap<>();

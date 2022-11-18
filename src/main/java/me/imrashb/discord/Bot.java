@@ -79,7 +79,6 @@ public class Bot {
         this.commands.add(new SessionsCommand(coursManager));
         this.commands.add(new HorairETSCommand(coursManager, this.commands));
         this.commands.add(new HoraireCommand(coursManager));
-        this.commands.add(new MonHoraireCommand(coursManager));
         for(DiscordSlashCommand c : this.commands) {
             c.subscribeCommand(jda);
         }

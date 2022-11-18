@@ -86,9 +86,10 @@ public class InteractionHandlerController extends ListenerAdapter {
                 owner.openPrivateChannel().queue((channel) -> {
                     StringBuilder sb = new StringBuilder();
                     sb.append("Erreur lors d'un évènement").append("\n");
-                    if(interaction.getUser() != null)
-                        sb.append("Utilisateur: ").append(interaction.getUser().getIdLong()).append("\n");
-                    if(interaction.getType() != null)
+                    if(interaction.getUser() != null) {
+                        User user = interaction.getUser();
+                        sb.append("Utilisateur: ").append(user.getIdLong()).append("/").append(user.getName() + "#" + user.getDiscriminator()).append("\n");
+                    } if(interaction.getType() != null)
                         sb.append("Type: ").append(interaction.getType().name()).append("\n");
                     if(interaction.getGuild() != null)
                         sb.append("Guild: ").append(interaction.getGuild().getIdLong()).append("/").append(interaction.getGuild().getName()).append("\n");

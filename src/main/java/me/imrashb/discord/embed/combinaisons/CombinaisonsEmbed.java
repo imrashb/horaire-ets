@@ -173,10 +173,16 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             m.delete().queue();
         }
         messages.clear();
-
-        MessageUtils.partagerImageHoraire(event, this.combinaisons.get(currentCombinaison.get()), this.theme, (m) -> {
-            messages.add(m);
-        });
+        CombinaisonHoraire comb = this.combinaisons.get(currentCombinaison.get());
+        Image img = new HoraireImageMaker(comb, this.theme).drawHoraire();
+        final String username =  event.getUser().getName();
+        event
+                .reply(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
+                .setFiles(MessageUtils.getFileUploadFromImage(img, comb.getUniqueId()))
+                .mention(event.getUser()).queue(message -> {
+                    event.reply("Voici l'horaire de "+username+" pour la session '"+sessionId+"'.")
+                            .setEphemeral(true).queue();
+                });
     }
 
 }
