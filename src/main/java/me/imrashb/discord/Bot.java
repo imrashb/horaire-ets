@@ -55,7 +55,7 @@ public class Bot {
         this.jda = jdaBuilder.build().awaitReady();
 
         // Presence
-        jda.getPresence().setPresence(Activity.watching("les combinaisons d'horaires"), true);
+        jda.getPresence().setPresence(Activity.listening("/horairets"), true);
 
         this.subscribeCommands();
         this.subscribeListeners();
