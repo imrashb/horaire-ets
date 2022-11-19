@@ -1,28 +1,34 @@
 package me.imrashb.domain;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Groupe {
+public class Groupe implements Comparable<Groupe> {
 
     private String numeroGroupe;
-
     private List<Activite> activites;
-
     private Cours cours;
+    public static final char SEPARATEUR_SIGLE_NUM_GROUPE = '-';
     public String toString() {
+        return cours.getSigle()+SEPARATEUR_SIGLE_NUM_GROUPE+ numeroGroupe;
+    }
 
+    public String toPrettyString() {
         StringBuilder sb = new StringBuilder();
 
-        for(Activite a : activites) {
-            sb.append(a.toString()+" ");
-        }
+        sb.append(this.toString());
+        sb.append(" / ");
 
-        return cours.getSigle()+"-"+ numeroGroupe +" "+sb.toString();
+        for(Activite a : activites) {
+            sb.append(a.toString());
+            sb.append(" / ");
+        }
+        return sb.toString();
     }
 
     public void addActivite(Activite activite) {
@@ -38,4 +44,20 @@ public class Groupe {
         return false;
     }
 
+    public boolean isDuring(Set<Jour> jours) {
+        for(Activite a : activites) {
+            if(jours.contains(a.getHoraire().getJour())) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numeroGroupe, activites);
+    }
+
+    @Override
+    public int compareTo(@NotNull Groupe o) {
+        return this.toString().compareTo(o.toString());
+    }
 }

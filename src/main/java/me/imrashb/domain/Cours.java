@@ -14,6 +14,8 @@ public class Cours {
     @JsonIgnore
     private List<Groupe> groupes;
     private Set<Programme> programmes;
+    private Session session;
+
 
     public void addProgramme(Programme programme) {
         this.programmes.add(programme);
@@ -23,4 +25,8 @@ public class Cours {
         this.groupes.add(groupe);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(sigle, programmes);
+    }
 }

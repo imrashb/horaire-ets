@@ -5,7 +5,7 @@ import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.CoursManager;
 import me.imrashb.exception.CoursNotInitializedException;
-import me.imrashb.exception.TrimestreDoesntExistException;
+import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -22,17 +22,17 @@ public class CombinaisonServiceImpl implements CombinaisonService{
     private CoursManager coursManager;
 
     @Override
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String trimestre, String... cours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(String sessionId, int nbCours, String... cours) {
 
         if(!coursManager.isReady()) {
             throw new CoursNotInitializedException();
         }
 
-        List<Cours> coursDuTrimestre = coursManager.getListeCours(trimestre);
+        List<Cours> coursSession = coursManager.getListeCours(sessionId);
 
-        if(coursDuTrimestre == null)
-            throw new TrimestreDoesntExistException(trimestre);
-        return new GenerateurHoraire(coursDuTrimestre).getCombinaisonsHoraire(cours);
+        if(coursSession == null)
+            throw new SessionDoesntExistException(sessionId);
+        return new GenerateurHoraire(coursSession).getCombinaisonsHoraire(nbCours, cours);
     }
 
 }

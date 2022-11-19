@@ -1,20 +1,23 @@
 package me.imrashb.domain;
 
+import lombok.Getter;
+
 public enum Trimestre {
 
-    HIVER(1),
-    ETE(2),
-    AUTOMNE(3);
+    HIVER(1, 'H'),
+    ETE(2, 'E'),
+    AUTOMNE(3, 'A');
 
-    private int numeroSession;
+    @Getter private int numeroSession;
 
-    Trimestre(final int numeroSession) {
+    @Getter
+    private char lettre;
+
+    Trimestre(final int numeroSession, final char nom) {
         this.numeroSession = numeroSession;
+        this.lettre = nom;
     }
-
-    public String getIdTrimestre(final int annee) {
-        return annee + "" + numeroSession;
-    }
+    public Session getSession(final int annee) {return new Session(annee, this);}
 
     public static Trimestre getTrimestreFromId(String id) {
         int parsed = Integer.parseInt(id.substring(id.length()-1));
@@ -23,4 +26,5 @@ public enum Trimestre {
         }
         return null;
     }
+
 }

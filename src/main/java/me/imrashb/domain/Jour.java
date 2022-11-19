@@ -1,24 +1,32 @@
 package me.imrashb.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.*;
 
 public enum Jour {
-    LUNDI("Lundi"),
-    MARDI("Mardi"),
-    MERCREDI("Mercredi"),
-    JEUDI("Jeudi"),
-    VENDREDI("Vendredi"),
-    SAMEDI("Samedi"),
-    DIMANCHE("Dimanche");
+    DIMANCHE("Dimanche", 0),
+    LUNDI("Lundi", 1),
+    MARDI("Mardi", 2),
+    MERCREDI("Mercredi", 3),
+    JEUDI("Jeudi", 4),
+    VENDREDI("Vendredi", 5),
+    SAMEDI("Samedi", 6);
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private String nom;
 
-    Jour(String nom) {
+    @JsonIgnore
+    private final int id;
+
+    Jour(String nom, int id) {
         this.nom = nom;
+        this.id = id;
     }
 
     public String getNom() {
         return this.nom;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }
