@@ -3,11 +3,9 @@ package me.imrashb.discord.commands;
 import lombok.*;
 import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
 import me.imrashb.discord.events.action.DeferredAction;
-import me.imrashb.domain.*;
-import me.imrashb.utils.HoraireImageMakerTheme;
+import me.imrashb.service.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.events.interaction.command.*;
-import net.dv8tion.jda.api.interactions.AutoCompleteQuery;
 import net.dv8tion.jda.api.interactions.commands.*;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 import net.dv8tion.jda.internal.interactions.*;
@@ -18,11 +16,11 @@ import java.util.*;
 public abstract class DiscordSlashCommand<Action extends DeferredAction> {
 
     private CommandDataImpl commandData;
-    private CoursManager coursManager;
+    private HorairETSService mediatorService;
     private Map<String, AutoCompleteStrategy> autoCompleteStrategies;
 
-    public DiscordSlashCommand(String name, String description, CoursManager coursManager) {
-        this.coursManager = coursManager;
+    public DiscordSlashCommand(String name, String description, HorairETSService horairETSService) {
+        this.mediatorService = horairETSService;
         this.autoCompleteStrategies = new HashMap<>();
         commandData = new CommandDataImpl(name, description);
         commandData.setGuildOnly(false);

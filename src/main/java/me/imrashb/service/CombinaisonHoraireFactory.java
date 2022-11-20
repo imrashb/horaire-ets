@@ -1,13 +1,12 @@
-package me.imrashb.domain;
+package me.imrashb.service;
 
-import lombok.Data;
+import me.imrashb.domain.*;
 import me.imrashb.exception.InvalidEncodedIdException;
-import me.imrashb.parser.GenerateurHoraire;
-import me.imrashb.parser.NodeGroupe;
+import me.imrashb.service.*;
 
 import java.util.*;
 
-public class CombinaisonHoraireFactory {
+class CombinaisonHoraireFactory {
 
     private static List<Groupe> getGroupes(Map<String, String> mapGroupes, List<Cours> cours) {
         List<Groupe> groupes = new ArrayList<>();
@@ -37,7 +36,7 @@ public class CombinaisonHoraireFactory {
      * @param encodedUniqueId l'id unique encodé en Base64
      * @return La combinaison d'horaire
      */
-    public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, CoursManager manager) {
+    public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, CoursService coursService) {
         if(encodedUniqueId.getBytes().length < 2) throw new InvalidEncodedIdException("L'identifiant est trop petit.");
         String decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
 
@@ -48,7 +47,7 @@ public class CombinaisonHoraireFactory {
         String nomSession = split[0];
         String nomsCours = split[1];
 
-        List<Cours> cours = manager.getListeCours(nomSession);
+        List<Cours> cours = coursService.getListeCours(nomSession);
 
         if(cours == null) throw new InvalidEncodedIdException("La session est invalide.");
 

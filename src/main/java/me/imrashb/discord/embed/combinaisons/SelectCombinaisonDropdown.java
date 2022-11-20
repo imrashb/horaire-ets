@@ -1,6 +1,7 @@
 package me.imrashb.discord.embed.combinaisons;
 
 import me.imrashb.discord.embed.StatefulActionComponent;
+import me.imrashb.discord.utils.*;
 import me.imrashb.domain.CombinaisonHoraire;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
@@ -19,11 +20,9 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
     private List<CombinaisonHoraire> combinaisons;
 
     public SelectCombinaisonDropdown(AtomicInteger currentCombinaison, List<CombinaisonHoraire> combinaisons) {
-        super(null);
+        super("dropdown", null);
         this.currentCombinaison = currentCombinaison;
         this.combinaisons = combinaisons;
-        StringSelectMenu menu = draw(null);
-        setComponent(menu);
     }
 
     @Override
@@ -43,15 +42,8 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
     }
 
     @Override
-    public StringSelectMenu draw(StringSelectMenu component) {
-        return getCombinaisonSelectMenu();
-    }
-
-    private static final String ID_HORAIRES_PRECEDENT = "horaires_precedents";
-    private static final String ID_HORAIRES_SUIVANT = "horaires_suivants";
-
-    public StringSelectMenu getCombinaisonSelectMenu() {
-        StringSelectMenu.Builder menu = StringSelectMenu.create("choix");
+    public StringSelectMenu draw() {
+        StringSelectMenu.Builder menu = StringSelectMenu.create(getId());
 
         List<SelectOption> options = new ArrayList<>();
 
@@ -86,5 +78,9 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
         }
         return menu.build();
     }
+
+
+    private static final String ID_HORAIRES_PRECEDENT = "horaires_precedents";
+    private static final String ID_HORAIRES_SUIVANT = "horaires_suivants";
 
 }

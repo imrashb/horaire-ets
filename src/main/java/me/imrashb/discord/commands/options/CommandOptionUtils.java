@@ -1,11 +1,9 @@
 package me.imrashb.discord.commands.options;
 
 import me.imrashb.discord.commands.DiscordSlashCommand;
-import me.imrashb.domain.CoursManager;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ public class CommandOptionUtils {
     public String addSessionOption(DiscordSlashCommand command) {
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for(String s : command.getCoursManager().getSessions()) {
+        for(String s : command.getMediatorService().getCoursService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 

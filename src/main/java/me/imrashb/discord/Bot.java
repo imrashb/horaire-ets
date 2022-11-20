@@ -6,7 +6,7 @@ import me.imrashb.discord.events.controller.InteractionHandlerController;
 import me.imrashb.discord.events.handler.CommandAutoCompleteInteractionEventHandler;
 import me.imrashb.discord.events.handler.ComponentControlledEmbedHandler;
 import me.imrashb.discord.events.handler.SlashCommandInteractionEventHandler;
-import me.imrashb.domain.*;
+import me.imrashb.service.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.*;
@@ -17,19 +17,18 @@ import java.util.*;
 
 public class Bot {
 
-    private CoursManager coursManager;
+    private HorairETSService mediator;
     private JDA jda;
     private Set<DiscordSlashCommand> commands;
-
     private InteractionHandlerController interactionHandlerController;
-    Bot(String token, CoursManager coursManager) throws InterruptedException {
-        this.coursManager = coursManager;
+    Bot(String token, HorairETSService mediator) throws InterruptedException {
+        this.mediator = mediator;
         this.commands = new HashSet<>();
 
         JDABuilder builder = JDABuilder.createDefault(token);
 
-        if(!this.coursManager.isReady()) {
-            this.coursManager.addCoursManagerReadyListener(ready -> {
+        if(!this.mediator.getCoursService().isReady()) {
+            this.mediator.getCoursService().addCoursManagerReadyListener(ready -> {
                 try {
                     if(Bot.this.jda == null && ready) {
                         Bot.this.configure(builder);
@@ -75,10 +74,10 @@ public class Bot {
         // Update commands
         this.jda.updateCommands().complete();
 
-        this.commands.add(new CombinaisonsCommand(coursManager));
-        this.commands.add(new SessionsCommand(coursManager));
-        this.commands.add(new HorairETSCommand(coursManager, this.commands));
-        this.commands.add(new HoraireCommand(coursManager));
+        this.commands.add(new CombinaisonsCommand(mediator));
+        this.commands.add(new SessionsCommand(mediator));
+        this.commands.add(new HorairETSCommand(mediator, this.commands));
+        this.commands.add(new HoraireCommand(mediator));
         for(DiscordSlashCommand c : this.commands) {
             c.subscribeCommand(jda);
         }

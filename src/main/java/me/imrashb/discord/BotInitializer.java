@@ -1,6 +1,6 @@
 package me.imrashb.discord;
 
-import me.imrashb.domain.*;
+import me.imrashb.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.scheduling.annotation.*;
 import org.springframework.stereotype.*;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.*;
 public class BotInitializer {
 
     @Autowired
-    private CoursManager coursManager;
+    private HorairETSService mediator;
 
     @Value("${discord.token}")
     private String token;
@@ -18,7 +18,7 @@ public class BotInitializer {
     @Scheduled(initialDelay = 0, fixedDelay=Long.MAX_VALUE)
     public void initializeDiscordBot() {
         try {
-            Bot bot = new Bot(token, coursManager);
+            Bot bot = new Bot(token, mediator);
         } catch (InterruptedException e) {
             System.err.println("Erreur lors de l'initialisation du bot Discord.");
             throw new RuntimeException(e);

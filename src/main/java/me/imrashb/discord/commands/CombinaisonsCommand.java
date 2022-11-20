@@ -4,9 +4,11 @@ import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
 import me.imrashb.discord.commands.options.CommandOptionUtils;
 import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
+import me.imrashb.discord.utils.*;
 import me.imrashb.domain.*;
 import me.imrashb.exception.*;
 import me.imrashb.parser.*;
+import me.imrashb.service.*;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.*;
 import net.dv8tion.jda.api.interactions.commands.*;
@@ -22,13 +24,13 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
     private final int NB_COURS_MAX = 10;
     private final int NB_CONGE_MAX = 6;
 
-    public CombinaisonsCommand(CoursManager coursManager) {
-        super("combinaisons", "Retourne les combinaisons d'horaires en fonction des cours en arguments", coursManager);
+    public CombinaisonsCommand(HorairETSService mediator) {
+        super("combinaisons", "Retourne les combinaisons d'horaires en fonction des cours en arguments", mediator);
 
 
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for(String s : this.getCoursManager().getSessions()) {
+        for(String s : this.getMediatorService().getCoursService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 
@@ -47,7 +49,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 if(event.getOption(ID_SESSION) == null) return null;
 
                 String text = event.getFocusedOption().getValue();
-                List<Cours> cours = coursManager.getListeCours(event.getOption(ID_SESSION).getAsString());
+                List<Cours> cours = getMediatorService().getCoursService().getListeCours(event.getOption(ID_SESSION).getAsString());
                 if(cours == null) return null;
 
                 List<Command.Choice> liste = new ArrayList<>();
@@ -103,13 +105,13 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             }
         }
 
-        List<Cours> listeCours = this.getCoursManager().getListeCours(sessionId);
+        List<Cours> listeCours = this.getMediatorService().getCoursService().getListeCours(sessionId);
 
         if(listeCours == null) {
             StringBuilder sb = new StringBuilder();
             sb.append("La session '"+sessionId+"' est invalide! ");
-            sb.append("La dernière session est '"+this.getCoursManager().getDerniereSession()+"'. ");
-            sb.append("Les sessions disponibles sont "+this.getCoursManager().getSessions().toString()+".");
+            sb.append("La dernière session est '"+this.getMediatorService().getCoursService().getDerniereSession()+"'. ");
+            sb.append("Les sessions disponibles sont "+this.getMediatorService().getCoursService().getSessions().toString()+".");
             event.reply(sb.toString()).setEphemeral(true).queue();
             return null;
         }
@@ -124,14 +126,15 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         }
 
         try {
-            List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(listeCours).getCombinaisonsHoraire(nbCours, conges, cours.toArray(new String[0]));
+            List<CombinaisonHoraire> combinaisons = getMediatorService().getCombinaisonService()
+                    .getCombinaisonsHoraire(cours.toArray(new String[0]), conges.toArray(new Jour[0]), sessionId, nbCours);
 
             if(combinaisons.size() == 0) {
                 event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").setEphemeral(true).queue();
                 return null;
             }
 
-            CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons, event.getUser(), sessionId, getCoursManager().getPreferencesUtilisateurService());
+            CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons, sessionId, new DomainUser(event.getUser(), getMediatorService()));
             embed.queueEmbed(event, true);
             List<User> users = new ArrayList<>();
             users.add(event.getUser());
