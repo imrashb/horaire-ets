@@ -43,7 +43,7 @@ public class GenerateurHoraire {
         return getCombinaisonsHoraire(cours, new HashSet<>(), nbCours);
     }
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, Set<Jour> conges, String... cours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, Set<Jour> conges, int nbCours) {
         Set<Cours> coursVoulu = new HashSet<>();
 
         List<String> inexistant = new ArrayList<>(Arrays.asList(cours));
@@ -65,8 +65,8 @@ public class GenerateurHoraire {
         return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), conges, nbCours);
     }
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(int nbCours, String... cours) {
-        return this.getCombinaisonsHoraire(nbCours, new HashSet<>(), cours);
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, int nbCours) {
+        return this.getCombinaisonsHoraire(cours, new HashSet<>(), nbCours);
     }
 
     private static void getSubsets(List<Cours> superSet, int k, int idx, Set<Cours> current, List<Set<Cours>> solution) {

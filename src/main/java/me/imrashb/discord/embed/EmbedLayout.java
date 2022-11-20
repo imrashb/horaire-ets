@@ -1,11 +1,10 @@
 package me.imrashb.discord.embed;
 
 import lombok.Getter;
+import me.imrashb.discord.utils.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
-import net.dv8tion.jda.api.interactions.components.ActionComponent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +24,10 @@ public class EmbedLayout {
     public EmbedLayout addActionRow(StatefulActionComponent... components) {
         List<ItemComponent> liste = new ArrayList<>();
         for(StatefulActionComponent comp : components) {
-            if(comp.getComponent() == null) continue;
+            if(comp.getComponent() == null) {
+                ActionComponent c = comp.draw();
+                comp.setComponent(c);
+            }
             liste.add(comp.getComponent());
         }
         if(liste.size() == 0) return this;
@@ -34,10 +36,10 @@ public class EmbedLayout {
         return this;
     }
 
-    public void update(GenericComponentInteractionCreateEvent event) {
+    public void update(GenericComponentInteractionCreateEvent event, DomainUser user) {
         for(StatefulActionComponent c : components) {
             // Execute event
-            if(c.getComponent().getId().equals(event.getComponentId())) {
+            if(c.getId().equals(event.getComponentId())) {
                 c.execute(event);
                 break;
             }
@@ -45,10 +47,11 @@ public class EmbedLayout {
 
         //Redraw components
         for(StatefulActionComponent c : components) {
-            c.setComponent(c.draw(c.getComponent()));
-            if(c.getComponent() == null) continue;
+            ActionComponent comp = c.draw();
+            c.setComponent(comp);
+            if(comp == null) continue;
             for(ActionRow a : rows) {
-                a.updateComponent(c.getComponent().getId(), c.getComponent());
+                a.updateComponent(comp.getId(), comp);
             }
         }
     }

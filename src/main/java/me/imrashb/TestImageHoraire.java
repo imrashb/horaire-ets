@@ -89,14 +89,12 @@ public class TestImageHoraire {
         panel.setLayout(new GridLayout(buttons.size(), 1));
 
         ActionListener listener = event -> {
-            System.out.println("HERE");
             Image img = new HoraireImageMaker(comb, theme).drawHoraire();
             try {
                 ImageIO.write((RenderedImage) img, "jpeg", new File("save.jpeg"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(theme.getColorBackground());
             Image result = img.getScaledInstance((int) (img.getWidth(null)/2f), (int) (img.getHeight(null)/2f), Image.SCALE_DEFAULT);
             picLabel.setIcon(new ImageIcon(result));
             picLabel.repaint();

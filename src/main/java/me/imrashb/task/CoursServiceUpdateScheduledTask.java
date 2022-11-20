@@ -2,7 +2,7 @@ package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
-import me.imrashb.domain.CoursManager;
+import me.imrashb.service.HorairETSService;
 import me.imrashb.domain.Session;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
@@ -22,13 +22,13 @@ import java.util.concurrent.ExecutionException;
 @Configuration
 @EnableScheduling
 @Slf4j
-public class CoursManagerLoadTask {
+public class CoursServiceUpdateScheduledTask {
 
     @Value("${sessions}")
     private String[] sessions;
 
     @Autowired
-    private CoursManager coursManager;
+    private HorairETSService horairETSService;
 
     //Update les horaires a chaque heure
     @Scheduled(fixedDelay = 3600000)
@@ -43,18 +43,15 @@ public class CoursManagerLoadTask {
 
             Trimestre trim = Trimestre.getTrimestreFromId(sessionId);
             int annee = Integer.parseInt(sessionId.substring(0, 4));
+            assert trim != null;
             Session session = trim.getSession(annee);
-            if(trim == null)
-                throw new RuntimeException("ERREUR: La session '"+sessionId+"' est invalide.");
 
             CoursParser coursParser = new CoursParser();
 
             List<PdfCours> files = null;
             try {
                 files = ETSUtils.getFichiersHoraireSync(session);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
@@ -62,16 +59,11 @@ public class CoursManagerLoadTask {
                 coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme(), session);
                 pdf.getPdf().delete();
             }
-            coursParser.getCours().sort(new Comparator<Cours>() {
-                @Override
-                public int compare(Cours o1, Cours o2) {
-                    return o1.getSigle().compareTo(o2.getSigle());
-                }
-            });
+            coursParser.getCours().sort(Comparator.comparing(Cours::getSigle));
 
-            this.coursManager.addSession(session, coursParser.getCours());
+            this.horairETSService.getCoursService().addSession(session, coursParser.getCours());
         }
-        coursManager.setReady(true);
+        horairETSService.getCoursService().setReady(true);
 
         log.info("method: updateCours() : Fin de la mise à jour des cours");
     }
