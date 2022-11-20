@@ -37,7 +37,6 @@ public class PartageHoraireButton extends StatefulActionComponent<Button> {
         messages.clear();
         CombinaisonHoraire comb = this.combinaisons.get(currentCombinaison.get());
         Image img = new HoraireImageMaker(comb, getTheme(user)).drawHoraire();
-        final String username =  event.getUser().getName();
         event.getMessageChannel().sendMessage(":newspaper: Horaire partagée par <@"+event.getUser().getIdLong()+"> :newspaper:")
                 .setFiles(MessageUtils.getFileUploadFromImage(img, comb.getUniqueId()+".jpeg"))
                 .mention(event.getUser()).queue(message -> {

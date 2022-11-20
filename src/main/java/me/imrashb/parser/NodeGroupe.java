@@ -1,9 +1,9 @@
 package me.imrashb.parser;
 
 import me.imrashb.domain.CombinaisonHoraire;
-import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
-import me.imrashb.domain.Jour;
+import me.imrashb.parser.strategy.*;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
@@ -11,33 +11,27 @@ public class NodeGroupe {
 
     private List<Groupe> groupes;
     private List<NodeGroupe> nodes = new ArrayList<>();
-
-    private Set<Jour> conges;
-    public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, Set<Jour> conges) {
+    private Set<HoraireValidationStrategy> validationStrategies;
+    public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, @NotNull Set<HoraireValidationStrategy> validationStrategies) {
         if(groupsPrecedents == null) this.groupes = new ArrayList();
         else this.groupes = new ArrayList(groupsPrecedents);
         if(groupe != null)
             this.groupes.add(groupe);
-        this.conges = conges;
-        if(conges == null) this.conges = new HashSet<>();
+
+        this.validationStrategies = validationStrategies;
     }
 
     public NodeGroupe createNode(Groupe groupe) {
-        NodeGroupe node = new NodeGroupe(groupe, groupes, conges);
+        NodeGroupe node = new NodeGroupe(groupe, groupes, validationStrategies);
         nodes.add(node);
         return node;
     }
 
-    public boolean isOverlapping(Groupe groupe) {
-        if(groupes.contains(groupe)) return true;
-        for(Groupe g : groupes) {
-            if(g.overlapsWith(groupe)) return true;
+    public boolean isValid(Groupe groupe) {
+        for(HoraireValidationStrategy strategy : validationStrategies) {
+            if(!strategy.isValid(groupes, groupe)) return false;
         }
-        return false;
-    }
-
-    public boolean isDuringConges(Groupe g) {
-        return g.isDuring(conges);
+        return true;
     }
 
     public List<CombinaisonHoraire> getValidCombinaisons(int nbCours) {

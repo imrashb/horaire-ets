@@ -1,24 +1,32 @@
 package me.imrashb.parser;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
-import me.imrashb.domain.Jour;
 import me.imrashb.exception.*;
+import me.imrashb.parser.strategy.*;
 
 import java.util.*;
 
 @Data
-@AllArgsConstructor
 public class GenerateurHoraire {
 
     private List<Cours> listeCours;
     public static int MAX_NB_COURS = 15;
     public static int MIN_NB_COURS = 1;
+    private Set<HoraireValidationStrategy> strategies = new HashSet<>();
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, Set<Jour> conges, int nbCours) {
+    public GenerateurHoraire(List<Cours> cours) {
+        this.listeCours = cours;
+        strategies.add(new GroupeOverlapStrategy());
+    }
+    public GenerateurHoraire addValidationStrategy(HoraireValidationStrategy strategy) {
+        this.strategies.add(strategy);
+        return this;
+    }
+
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, int nbCours) {
 
         if(cours.size() > MAX_NB_COURS) {
             throw new InvalidCoursAmountException(MAX_NB_COURS);
@@ -28,7 +36,7 @@ public class GenerateurHoraire {
             throw new InvalidCoursAmountException(MIN_NB_COURS);
         }
 
-        NodeGroupe node = new NodeGroupe(null, null, conges);
+        NodeGroupe node = new NodeGroupe(null, null, strategies);
 
         List<Set<Cours>> subsets = getSubsets(cours, nbCours);
 
@@ -39,11 +47,7 @@ public class GenerateurHoraire {
         return node.getValidCombinaisons(nbCours);
     }
 
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(List<Cours> cours, int nbCours) {
-        return getCombinaisonsHoraire(cours, new HashSet<>(), nbCours);
-    }
-
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, Set<Jour> conges, int nbCours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, int nbCours) {
         Set<Cours> coursVoulu = new HashSet<>();
 
         List<String> inexistant = new ArrayList<>(Arrays.asList(cours));
@@ -62,11 +66,7 @@ public class GenerateurHoraire {
             throw new CoursDoesntExistException(inexistant);
         }
 
-        return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), conges, nbCours);
-    }
-
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, int nbCours) {
-        return this.getCombinaisonsHoraire(cours, new HashSet<>(), nbCours);
+        return getCombinaisonsHoraire(new ArrayList<>(coursVoulu), nbCours);
     }
 
     private static void getSubsets(List<Cours> superSet, int k, int idx, Set<Cours> current, List<Set<Cours>> solution) {
@@ -88,7 +88,7 @@ public class GenerateurHoraire {
 
     private List<Set<Cours>> getSubsets(List<Cours> superSet, int k) {
         List<Set<Cours>> res = new ArrayList<>();
-        getSubsets(superSet, k, 0, new HashSet<Cours>(), res);
+        getSubsets(superSet, k, 0, new HashSet<>(), res);
         return res;
     }
 
@@ -101,12 +101,10 @@ public class GenerateurHoraire {
         Cours courant = cours.get(index);
 
         for(Groupe g : courant.getGroupes()) {
-
-            if(!node.isOverlapping(g) && !node.isDuringConges(g)) {
+            if(node.isValid(g)) {
                 NodeGroupe n = node.createNode(g);
                 recurCreateCombinaisons(cours, index+1, n);
             }
-
         }
 
     }

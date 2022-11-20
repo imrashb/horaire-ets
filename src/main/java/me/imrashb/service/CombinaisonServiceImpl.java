@@ -5,6 +5,7 @@ import me.imrashb.domain.*;
 import me.imrashb.exception.CoursNotInitializedException;
 import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;
+import me.imrashb.parser.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -34,9 +35,12 @@ public class CombinaisonServiceImpl implements CombinaisonService{
             throw new SessionDoesntExistException(sessionId);
 
         if(conges == null) {
-            return new GenerateurHoraire(coursSession).getCombinaisonsHoraire(cours, nbCours);
+            return new GenerateurHoraire(coursSession)
+                    .getCombinaisonsHoraire(cours, nbCours);
         } else {
-            return new GenerateurHoraire(coursSession).getCombinaisonsHoraire(cours, new HashSet<>(Arrays.asList(conges)), nbCours);
+            return new GenerateurHoraire(coursSession)
+                    .addValidationStrategy(new CongeStrategy(new HashSet<>(Arrays.asList(conges))))
+                    .getCombinaisonsHoraire(cours, nbCours);
         }
     }
 
