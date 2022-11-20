@@ -2,19 +2,17 @@ package me.imrashb.discord.commands;
 
 import me.imrashb.discord.BotConstants;
 import me.imrashb.discord.events.action.DeferredAction;
-import me.imrashb.domain.CoursManager;
+import me.imrashb.service.HorairETSService;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-import java.awt.*;
-import java.util.List;
 import java.util.Set;
 
 public class HorairETSCommand extends DiscordSlashCommand<DeferredAction>{
 
     private Set<DiscordSlashCommand> commands;
 
-    public HorairETSCommand(CoursManager coursManager, Set<DiscordSlashCommand> commands) {
+    public HorairETSCommand(HorairETSService coursManager, Set<DiscordSlashCommand> commands) {
         super("horairets", "Retourne la liste des commandes disponibles", coursManager);
         this.commands = commands;
     }

@@ -1,6 +1,7 @@
 package me.imrashb.discord.embed.combinaisons;
 
 import me.imrashb.discord.embed.StatefulActionComponent;
+import me.imrashb.discord.utils.*;
 import me.imrashb.domain.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
@@ -15,8 +16,7 @@ public class PrecedentCombinaisonButton extends StatefulActionComponent<Button> 
     private List<CombinaisonHoraire> combinaisons;
 
     public PrecedentCombinaisonButton(AtomicInteger currentCombinaison, List<CombinaisonHoraire> combinaisons) {
-        super(Button.primary("precedent", "Précédent")
-                .withEmoji(Emoji.fromUnicode("⬅")));
+        super("precedent", null);
         this.currentCombinaison = currentCombinaison;
         this.combinaisons = combinaisons;
     }
@@ -32,7 +32,8 @@ public class PrecedentCombinaisonButton extends StatefulActionComponent<Button> 
     }
 
     @Override
-    public Button draw(Button component) {
-        return component;
+    public Button draw() {
+        return Button.primary(getId(), "Précédent")
+                .withEmoji(Emoji.fromUnicode("⬅"));
     }
 }
