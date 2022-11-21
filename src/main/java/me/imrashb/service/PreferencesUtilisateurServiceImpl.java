@@ -20,7 +20,7 @@ public class PreferencesUtilisateurServiceImpl implements PreferencesUtilisateur
 
         Optional<PreferencesUtilisateur> preferences = repository.findById(userId);
 
-        if(preferences.isPresent()) {
+        if (preferences.isPresent()) {
             return preferences.get();
         } else {
             return new PreferencesUtilisateur(userId);

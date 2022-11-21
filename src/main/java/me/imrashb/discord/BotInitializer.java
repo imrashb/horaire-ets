@@ -1,9 +1,11 @@
 package me.imrashb.discord;
 
-import me.imrashb.service.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.scheduling.annotation.*;
-import org.springframework.stereotype.*;
+import me.imrashb.service.HorairETSService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Component
 @EnableScheduling
@@ -15,7 +17,7 @@ public class BotInitializer {
     @Value("${discord.token}")
     private String token;
 
-    @Scheduled(initialDelay = 0, fixedDelay=Long.MAX_VALUE)
+    @Scheduled(initialDelay = 0, fixedDelay = Long.MAX_VALUE)
     public void initializeDiscordBot() {
         try {
             Bot bot = new Bot(token, mediator);

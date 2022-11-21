@@ -1,9 +1,9 @@
 package me.imrashb.discord.utils;
 
-import lombok.*;
-import me.imrashb.domain.*;
-import me.imrashb.service.*;
-import net.dv8tion.jda.api.entities.*;
+import lombok.Getter;
+import me.imrashb.domain.PreferencesUtilisateur;
+import me.imrashb.service.HorairETSService;
+import net.dv8tion.jda.api.entities.User;
 
 public class DomainUser {
 

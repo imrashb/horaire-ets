@@ -1,11 +1,9 @@
 package me.imrashb.service;
-import lombok.*;
-import me.imrashb.domain.*;
+
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.*;
-
-import java.util.*;
+import org.springframework.stereotype.Service;
 
 @Service
 @Scope("singleton")

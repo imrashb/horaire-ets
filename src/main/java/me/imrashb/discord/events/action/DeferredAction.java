@@ -4,7 +4,9 @@ import lombok.Data;
 import me.imrashb.discord.events.handler.InteractionHandler;
 import net.dv8tion.jda.api.interactions.Interaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Data
 public abstract class DeferredAction<ReturnAction extends DeferredAction> {
@@ -26,15 +28,14 @@ public abstract class DeferredAction<ReturnAction extends DeferredAction> {
     }
 
     public abstract ReturnAction execute(Interaction interaction);
+
     public final void cleanup() {
-        for(DeferredActionListener listener : listeners) {
+        for (DeferredActionListener listener : listeners) {
             listener.onCleanup();
         }
     }
 
     public abstract boolean isProcessable(Interaction event);
-
-
 
 
 }

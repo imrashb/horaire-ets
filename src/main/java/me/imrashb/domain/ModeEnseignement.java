@@ -1,7 +1,5 @@
 package me.imrashb.domain;
 
-import lombok.Data;
-
 public enum ModeEnseignement {
 
     COMODAL("Comodal"),
@@ -11,11 +9,12 @@ public enum ModeEnseignement {
 
     private String nom;
 
-    public String getNom() {
-        return this.nom;
-    }
     ModeEnseignement(String nom) {
         this.nom = nom;
+    }
+
+    public String getNom() {
+        return this.nom;
     }
 
 }

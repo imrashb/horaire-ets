@@ -1,6 +1,6 @@
 package me.imrashb.domain;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class Activite {
@@ -16,7 +16,7 @@ public class Activite {
     }
 
     private ModeEnseignement stringToModeEnseignement(String modeEnseignement) {
-        switch(modeEnseignement.trim()) {
+        switch (modeEnseignement.trim()) {
             case "P":
                 return ModeEnseignement.PRESENTIEL;
             case "D":
@@ -31,15 +31,15 @@ public class Activite {
     }
 
     public String toString() {
-        return this.nom +" "+ horaire;
+        return this.nom + " " + horaire;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Activite) {
+        if (obj instanceof Activite) {
             Activite a = (Activite) obj;
 
-            if(this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire)) {
+            if (this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire)) {
                 return true;
             }
         }

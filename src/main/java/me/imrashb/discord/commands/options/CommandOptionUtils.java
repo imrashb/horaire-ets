@@ -15,11 +15,11 @@ public class CommandOptionUtils {
     public String addSessionOption(DiscordSlashCommand command) {
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for(String s : command.getMediatorService().getCoursService().getSessions()) {
+        for (String s : command.getMediatorService().getCoursService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 
-        OptionData opt =new OptionData(
+        OptionData opt = new OptionData(
                 OptionType.STRING,
                 ID_SESSION,
                 "La session dans laquelle les combinaisons d'horaires seront générées",

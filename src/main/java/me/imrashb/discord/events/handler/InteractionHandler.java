@@ -2,17 +2,15 @@ package me.imrashb.discord.events.handler;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import me.imrashb.discord.events.action.*;
+import me.imrashb.discord.events.action.DeferredAction;
 import net.dv8tion.jda.api.interactions.Interaction;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public abstract class InteractionHandler<I extends Interaction,A extends DeferredAction> {
+public abstract class InteractionHandler<I extends Interaction, A extends DeferredAction> {
     private Class<I> interactionType;
     @Getter
     private boolean initialHandler;
@@ -34,7 +32,6 @@ public abstract class InteractionHandler<I extends Interaction,A extends Deferre
     }
 
     public final boolean isMatchingInteractionType(Class<I> interactionType) {
-        System.out.println(actions.size());
         return this.interactionType.isAssignableFrom(interactionType);
     }
 
@@ -46,10 +43,10 @@ public abstract class InteractionHandler<I extends Interaction,A extends Deferre
     protected abstract A processInteraction(I interaction, A action);
 
     public DeferredAction getProcessableDeferredAction(I interaction) {
-        if(this.initialHandler) return null;
+        if (this.initialHandler) return null;
 
-        for(DeferredAction action : this.getActions()) {
-            if(action.isProcessable(interaction)) {
+        for (DeferredAction action : this.getActions()) {
+            if (action.isProcessable(interaction)) {
                 return action;
             }
         }

@@ -24,7 +24,7 @@ public class ETSUtils {
     public static Map<Programme, Future<File>> getFichiersHoraireAsync(Session session) {
         final Map<Programme, Future<File>> futures = new HashMap<>();
 
-        final String idSession = session.toId()+"";
+        final String idSession = session.toId() + "";
 
         final ExecutorService executor
                 = Executors.newFixedThreadPool(Programme.values().length);
@@ -48,9 +48,9 @@ public class ETSUtils {
 
         List<PdfCours> files = new ArrayList<>();
         //Resolve all futures
-        for(Programme programme : futures.keySet()) {
+        for (Programme programme : futures.keySet()) {
             File f = futures.get(programme).get();
-            if(f != null) {
+            if (f != null) {
                 files.add(new PdfCours(f, programme));
             }
         }

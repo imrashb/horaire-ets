@@ -1,6 +1,6 @@
 package me.imrashb.discord.events.action;
 
-import me.imrashb.discord.embed.*;
+import me.imrashb.discord.embed.CustomSlashCommandEmbed;
 import me.imrashb.discord.events.handler.ComponentControlledEmbedHandler;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
@@ -23,7 +23,8 @@ public class EmbedEditDeferredAction extends DeferredAction<EmbedEditDeferredAct
     @Override
     public EmbedEditDeferredAction execute(Interaction interaction) {
 
-        if(!(interaction instanceof GenericComponentInteractionCreateEvent)) throw new RuntimeException("IMPOSSIBLE WTF");
+        if (!(interaction instanceof GenericComponentInteractionCreateEvent))
+            throw new RuntimeException("IMPOSSIBLE WTF");
 
         this.embed.fireUpdate((GenericComponentInteractionCreateEvent) interaction);
 

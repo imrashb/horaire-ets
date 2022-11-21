@@ -1,6 +1,7 @@
 package me.imrashb.controller;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.Jour;
 import me.imrashb.service.CombinaisonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class CombinaisonController {
                                                            @RequestParam String[] cours,
                                                            @RequestParam(required = false) Jour[] conges,
                                                            @RequestParam(required = false) Integer nbCours) {
-        if(nbCours == null) {
+        if (nbCours == null) {
             nbCours = cours.length;
         }
         return service.getCombinaisonsHoraire(cours, conges, session, nbCours);

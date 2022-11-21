@@ -1,8 +1,10 @@
 package me.imrashb.service;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.Cours;
+import me.imrashb.domain.Session;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 public interface CoursService {
 
@@ -16,7 +18,7 @@ public interface CoursService {
 
     List<Cours> getListeCours(String session);
 
-    void setReady(boolean ready);
-
     boolean isReady();
+
+    void setReady(boolean ready);
 }

@@ -1,6 +1,9 @@
 package me.imrashb.controller;
 
-import me.imrashb.exception.*;
+import me.imrashb.exception.CoursDoesntExistException;
+import me.imrashb.exception.CoursNotInitializedException;
+import me.imrashb.exception.InvalidCoursAmountException;
+import me.imrashb.exception.SessionDoesntExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,13 +1,17 @@
 package me.imrashb.parser;
 
 import me.imrashb.domain.*;
-import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.text.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CoursParser {
@@ -170,7 +174,7 @@ public class CoursParser {
 
     private String[] getLinesFromPDF(File f) throws IOException {
 
-        if(f == null || !f.exists()) return new String[0];
+        if (f == null || !f.exists()) return new String[0];
         PDDocument document = PDDocument.load(f);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);

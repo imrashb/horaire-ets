@@ -1,13 +1,17 @@
 package me.imrashb.service;
 
-import lombok.*;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.*;
-import org.springframework.context.annotation.*;
+import me.imrashb.domain.Cours;
+import me.imrashb.domain.Session;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @EnableScheduling
@@ -27,12 +31,12 @@ public class CoursServiceImpl implements CoursService {
         final String nomSession = session.toString();
         final int idSession = session.toId();
 
-        if(coursParSessions.containsKey(nomSession)) {
+        if (coursParSessions.containsKey(nomSession)) {
             coursParSessions.replace(nomSession, cours);
         } else {
 
             final int sessionId = session.toId();
-            if(derniereSession == null || derniereSession < sessionId) {
+            if (derniereSession == null || derniereSession < sessionId) {
                 derniereSession = idSession;
             }
 
@@ -59,18 +63,19 @@ public class CoursServiceImpl implements CoursService {
     public void addCoursManagerReadyListener(CoursServiceReadyListener listener) {
         this.coursServiceReadyListener.add(listener);
     }
+
     @Override
     public void setReady(boolean ready) {
         boolean tmp = this.ready;
         this.ready = ready;
         //Fire events
-        if(tmp != ready) {
+        if (tmp != ready) {
             fireReadyListeners();
         }
     }
 
     private void fireReadyListeners() {
-        for(CoursServiceReadyListener listener : coursServiceReadyListener) {
+        for (CoursServiceReadyListener listener : coursServiceReadyListener) {
             listener.onCoursServiceReady(ready);
         }
     }

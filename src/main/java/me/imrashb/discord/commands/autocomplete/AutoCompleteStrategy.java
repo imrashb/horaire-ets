@@ -8,6 +8,7 @@ import java.util.List;
 public interface AutoCompleteStrategy {
 
     int NOMBRE_MAX_CHOIX = 25;
+
     public List<Command.Choice> getAutoCompleteChoices(CommandAutoCompleteInteractionEvent event);
 
 }
