@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
-@Table(name = "preferences_utilisateur")
+@Table(name = "preferences_utilisation")
 @Entity
 public class PreferencesUtilisateur {
 

@@ -2,7 +2,7 @@ package me.imrashb.discord.events.handler;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import me.imrashb.discord.events.action.DeferredAction;
+import me.imrashb.discord.events.action.*;
 import net.dv8tion.jda.api.interactions.Interaction;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,11 +34,13 @@ public abstract class InteractionHandler<I extends Interaction,A extends Deferre
     }
 
     public final boolean isMatchingInteractionType(Class<I> interactionType) {
+        System.out.println(actions.size());
         return this.interactionType.isAssignableFrom(interactionType);
     }
 
     public final void addDeferredAction(DeferredAction action) {
         this.actions.add(action);
+        action.addDeferredActionListener(() -> actions.remove(action));
     }
 
     protected abstract A processInteraction(I interaction, A action);
