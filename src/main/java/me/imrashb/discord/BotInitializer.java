@@ -11,11 +11,14 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class BotInitializer {
 
-    @Autowired
-    private HorairETSService mediator;
+    private final HorairETSService mediator;
 
     @Value("${discord.token}")
     private String token;
+
+    public BotInitializer(HorairETSService mediator) {
+        this.mediator = mediator;
+    }
 
     @Scheduled(initialDelay = 0, fixedDelay = Long.MAX_VALUE)
     public void initializeDiscordBot() {

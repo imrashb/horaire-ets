@@ -24,11 +24,13 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class CoursServiceUpdateScheduledTask {
 
+    private final HorairETSService horairETSService;
     @Value("${sessions}")
     private String[] sessions;
 
-    @Autowired
-    private HorairETSService horairETSService;
+    public CoursServiceUpdateScheduledTask(HorairETSService horairETSService) {
+        this.horairETSService = horairETSService;
+    }
 
     //Update les horaires a chaque heure
     @Scheduled(fixedDelay = 3600000)

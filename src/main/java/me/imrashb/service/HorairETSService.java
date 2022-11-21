@@ -1,7 +1,6 @@
 package me.imrashb.service;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -10,14 +9,15 @@ import org.springframework.stereotype.Service;
 @Getter
 public class HorairETSService {
 
-    @Autowired
+    private final CombinaisonService combinaisonService;
     private CoursService coursService;
-
-    @Autowired
     private PreferencesUtilisateurService preferencesService;
 
-    @Autowired
-    private CombinaisonService combinaisonService;
+    public HorairETSService(CombinaisonService combinaisonService, CoursService coursService, PreferencesUtilisateurService preferencesService) {
+        this.combinaisonService = combinaisonService;
+        this.coursService = coursService;
+        this.preferencesService = preferencesService;
+    }
 
 }
 

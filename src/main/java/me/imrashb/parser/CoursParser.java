@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 @Component
 public class CoursParser {
 
-    private static Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*(D|P|H|C)\\b");
+    private static final Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
+    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*([DPHC])\\b");
 
-    private List<Cours> listeCours;
+    private final List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
     private Session session = null;

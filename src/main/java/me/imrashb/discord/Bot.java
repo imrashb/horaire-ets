@@ -20,10 +20,9 @@ import java.util.Set;
 
 public class Bot {
 
-    private HorairETSService mediator;
+    private final HorairETSService mediator;
+    private final Set<DiscordSlashCommand> commands;
     private JDA jda;
-    private Set<DiscordSlashCommand> commands;
-    private InteractionHandlerController interactionHandlerController;
 
     Bot(String token, HorairETSService mediator) throws InterruptedException {
         this.mediator = mediator;
@@ -66,11 +65,11 @@ public class Bot {
 
     private void subscribeListeners() {
 
-        this.interactionHandlerController = new InteractionHandlerController(jda);
+        InteractionHandlerController interactionHandlerController = new InteractionHandlerController(jda);
         interactionHandlerController.addInteractionHandler(new SlashCommandInteractionEventHandler(this.commands));
         interactionHandlerController.addInteractionHandler(new CommandAutoCompleteInteractionEventHandler(this.commands));
         interactionHandlerController.addInteractionHandler(new ComponentControlledEmbedHandler());
-        this.jda.addEventListener(this.interactionHandlerController);
+        this.jda.addEventListener(interactionHandlerController);
     }
 
     private void subscribeCommands() {

@@ -15,7 +15,7 @@ public enum Jour {
     @JsonIgnore
     private final int id;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private String nom;
+    private final String nom;
 
     Jour(String nom, int id) {
         this.nom = nom;

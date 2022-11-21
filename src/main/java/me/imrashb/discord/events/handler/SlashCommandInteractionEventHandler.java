@@ -11,7 +11,7 @@ import java.util.Set;
 public class SlashCommandInteractionEventHandler<C extends GenericAutoCompleteInteractionEvent, D> extends InteractionHandler<SlashCommandInteractionEvent, DeferredAction> {
 
     @NonNull
-    private Set<DiscordSlashCommand> commands;
+    private final Set<DiscordSlashCommand> commands;
 
     public SlashCommandInteractionEventHandler(Set<DiscordSlashCommand> commands) {
         super(true);

@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class HorairETSCommand extends DiscordSlashCommand<DeferredAction> {
 
-    private Set<DiscordSlashCommand> commands;
+    private final Set<DiscordSlashCommand> commands;
 
     public HorairETSCommand(HorairETSService coursManager, Set<DiscordSlashCommand> commands) {
         super("horairets", "Retourne la liste des commandes disponibles", coursManager);

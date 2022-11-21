@@ -15,8 +15,8 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
 
     private static final String ID_HORAIRES_PRECEDENT = "horaires_precedents";
     private static final String ID_HORAIRES_SUIVANT = "horaires_suivants";
-    private AtomicInteger currentCombinaison;
-    private List<CombinaisonHoraire> combinaisons;
+    private final AtomicInteger currentCombinaison;
+    private final List<CombinaisonHoraire> combinaisons;
 
     public SelectCombinaisonDropdown(AtomicInteger currentCombinaison, List<CombinaisonHoraire> combinaisons) {
         super("dropdown", null);
@@ -67,7 +67,7 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
             StringBuilder sb = new StringBuilder();
             c.getConges().forEach(s -> sb.append(s.getNom() + ", "));
 
-            SelectOption opt = SelectOption.of("Horaire " + (i + 1), i + "").withDescription("Congés: " + sb.toString());
+            SelectOption opt = SelectOption.of("Horaire " + (i + 1), i + "").withDescription("Congés: " + sb);
             if (i == currentCombinaison.get()) opt = opt.withDefault(true);
             options.add(opt);
         }

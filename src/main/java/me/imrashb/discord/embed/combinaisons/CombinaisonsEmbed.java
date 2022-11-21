@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
-    private List<CombinaisonHoraire> combinaisons;
-    private String sessionId;
-    private List<Message> messages = new ArrayList<>();
-    private AtomicInteger currentCombinaison = new AtomicInteger(0);
+    private final List<CombinaisonHoraire> combinaisons;
+    private final String sessionId;
+    private final List<Message> messages = new ArrayList<>();
+    private final AtomicInteger currentCombinaison = new AtomicInteger(0);
     private PreferencesUtilisateur preferences;
 
     public CombinaisonsEmbed(List<CombinaisonHoraire> combinaisons, String sessionId, DomainUser user) {

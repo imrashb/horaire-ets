@@ -20,8 +20,8 @@ import java.awt.*;
 
 public class HoraireCommand extends DiscordSlashCommand<DeferredAction> {
 
-    private String ID_UTILISATEUR = "utilisateur";
-    private String ID_SESSION;
+    private final String ID_UTILISATEUR = "utilisateur";
+    private final String ID_SESSION;
 
     public HoraireCommand(HorairETSService coursManager) {
         super("horaire", "Retourne l'horaire d'un utilisateur", coursManager);

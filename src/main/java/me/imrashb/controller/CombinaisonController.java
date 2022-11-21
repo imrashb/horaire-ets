@@ -13,8 +13,11 @@ import java.util.List;
 @RestController
 public class CombinaisonController {
 
-    @Autowired
-    private CombinaisonService service;
+    private final CombinaisonService service;
+
+    public CombinaisonController(CombinaisonService service) {
+        this.service = service;
+    }
 
     @GetMapping("/combinaisons")
     public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String session,

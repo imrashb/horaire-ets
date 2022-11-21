@@ -12,13 +12,12 @@ import java.util.Map;
 public abstract class StatefulActionComponent<Component extends ActionComponent> {
 
     protected final DomainUser user;
-    private Map<String, Object> states = new HashMap<>();
+    private final Map<String, Object> states = new HashMap<>();
+    @Getter
+    private final String id;
     @Getter
     @Setter
     private Component component;
-
-    @Getter
-    private String id;
 
     public StatefulActionComponent(String id, DomainUser user) {
         this.user = user;

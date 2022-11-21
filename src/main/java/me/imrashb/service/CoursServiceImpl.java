@@ -19,8 +19,8 @@ import java.util.Set;
 @Scope("singleton")
 public class CoursServiceImpl implements CoursService {
 
-    private HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
-    private List<CoursServiceReadyListener> coursServiceReadyListener = new ArrayList<>();
+    private final HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
+    private final List<CoursServiceReadyListener> coursServiceReadyListener = new ArrayList<>();
     private Integer derniereSession = null;
     @Getter
     private boolean ready = false;

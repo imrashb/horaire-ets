@@ -15,14 +15,12 @@ import java.util.List;
 
 public class InteractionHandlerController extends ListenerAdapter {
 
-    private JDA jda;
-    private List<InteractionHandler> handlers;
+    private final List<InteractionHandler> handlers;
     private User owner;
-    private String ownerId = "231139969089929218";
 
     public InteractionHandlerController(JDA jda) {
-        this.jda = jda;
         this.handlers = new ArrayList<>();
+        String ownerId = "231139969089929218";
         jda.retrieveUserById(ownerId).queue(user -> {
             owner = user;
         });

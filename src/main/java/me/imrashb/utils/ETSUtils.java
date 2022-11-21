@@ -72,7 +72,7 @@ public class ETSUtils {
             File file = new File(tmpFolder + "/" + programme + ".pdf");
             try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
-                byte dataBuffer[] = new byte[1024];
+                byte[] dataBuffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                     fileOutputStream.write(dataBuffer, 0, bytesRead);

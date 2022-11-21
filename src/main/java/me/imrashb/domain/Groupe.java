@@ -26,7 +26,7 @@ public class Groupe implements Comparable<Groupe> {
     public String toPrettyString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.toString());
+        sb.append(this);
         sb.append(" / ");
 
         for (Activite a : activites) {

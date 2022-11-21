@@ -14,8 +14,8 @@ import java.util.List;
 public class EmbedLayout {
 
     @Getter
-    private List<ActionRow> rows;
-    private List<StatefulActionComponent> components;
+    private final List<ActionRow> rows;
+    private final List<StatefulActionComponent> components;
 
     public EmbedLayout() {
         this.rows = new ArrayList<>();

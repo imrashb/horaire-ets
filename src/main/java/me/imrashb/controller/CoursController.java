@@ -14,8 +14,11 @@ import java.util.List;
 @RequestMapping("/cours")
 public class CoursController {
 
-    @Autowired
-    private CoursService service;
+    private final CoursService service;
+
+    public CoursController(CoursService service) {
+        this.service = service;
+    }
 
     @GetMapping("")
     public List<Cours> getCours(@RequestParam String session) {

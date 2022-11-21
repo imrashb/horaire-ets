@@ -80,8 +80,9 @@ public class HoraireImageMaker {
         }
     }
 
-    private CombinaisonHoraire horaire;
-    private HoraireImageMakerTheme theme;
+    private final CombinaisonHoraire horaire;
+    private final HoraireImageMakerTheme theme;
+
     public HoraireImageMaker(CombinaisonHoraire horaire) {
         this(horaire, LIGHT_THEME);
     }
@@ -91,7 +92,7 @@ public class HoraireImageMaker {
         this.theme = theme;
     }
 
-    public static final HoraireImageMakerTheme getThemeFromId(String themeId) {
+    public static HoraireImageMakerTheme getThemeFromId(String themeId) {
         if (themeId == null) return LIGHT_THEME;
 
         for (HoraireImageMakerTheme t : HoraireImageMaker.themes) {

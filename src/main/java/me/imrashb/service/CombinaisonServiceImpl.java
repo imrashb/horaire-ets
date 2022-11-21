@@ -23,8 +23,11 @@ import java.util.List;
 @Scope("singleton")
 public class CombinaisonServiceImpl implements CombinaisonService {
 
-    @Autowired
-    private CoursService coursService;
+    private final CoursService coursService;
+
+    public CombinaisonServiceImpl(CoursService coursService) {
+        this.coursService = coursService;
+    }
 
     @Override
     public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, Jour[] conges, String sessionId, int nbCours) {

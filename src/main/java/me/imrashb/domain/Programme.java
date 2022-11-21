@@ -16,8 +16,8 @@ public enum Programme {
     GPA("6557", "Génie de la production automatisée"),
     TI("7086", "Génie en technologie de l'information");
 
-    private String id;
-    private String nom;
+    private final String id;
+    private final String nom;
 
     Programme(String id, String nom) {
         this.id = id;

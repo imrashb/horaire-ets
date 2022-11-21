@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProchainCombinaisonButton extends StatefulActionComponent<Button> {
 
-    private AtomicInteger currentCombinaison;
-    private List<CombinaisonHoraire> combinaisons;
+    private final AtomicInteger currentCombinaison;
+    private final List<CombinaisonHoraire> combinaisons;
 
     public ProchainCombinaisonButton(AtomicInteger currentCombinaison, List<CombinaisonHoraire> combinaisons) {
         super("prochain", null);

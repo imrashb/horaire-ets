@@ -141,11 +141,8 @@ public class TestImageHoraire {
 
 class ButtonConsumer extends JButton {
 
-    private Consumer<Color> consumer;
-
     public ButtonConsumer(String label, Consumer<Color> consumer, ActionListener listener) {
         this.setText(label);
-        this.consumer = consumer;
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

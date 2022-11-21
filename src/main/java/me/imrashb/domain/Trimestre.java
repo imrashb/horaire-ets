@@ -9,10 +9,10 @@ public enum Trimestre {
     AUTOMNE(3, 'A');
 
     @Getter
-    private int numeroSession;
+    private final int numeroSession;
 
     @Getter
-    private char lettre;
+    private final char lettre;
 
     Trimestre(final int numeroSession, final char nom) {
         this.numeroSession = numeroSession;

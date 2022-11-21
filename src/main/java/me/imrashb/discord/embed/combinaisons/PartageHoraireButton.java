@@ -21,14 +21,12 @@ public class PartageHoraireButton extends StatefulActionComponent<Button> {
 
     private final AtomicInteger currentCombinaison;
     private final List<CombinaisonHoraire> combinaisons;
-    private final String sessionId;
-    private List<Message> messages = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<>();
 
     public PartageHoraireButton(AtomicInteger currentCombinaison, List<CombinaisonHoraire> combinaisons, String sessionId, DomainUser user) {
         super("partage", user);
         this.currentCombinaison = currentCombinaison;
         this.combinaisons = combinaisons;
-        this.sessionId = sessionId;
     }
 
     @Override

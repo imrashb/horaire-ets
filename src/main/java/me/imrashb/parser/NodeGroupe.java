@@ -11,9 +11,9 @@ import java.util.Set;
 
 public class NodeGroupe {
 
-    private List<Groupe> groupes;
-    private List<NodeGroupe> nodes = new ArrayList<>();
-    private Set<HoraireValidationStrategy> validationStrategies;
+    private final List<Groupe> groupes;
+    private final List<NodeGroupe> nodes = new ArrayList<>();
+    private final Set<HoraireValidationStrategy> validationStrategies;
 
     public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, @NotNull Set<HoraireValidationStrategy> validationStrategies) {
         if (groupsPrecedents == null) this.groupes = new ArrayList();

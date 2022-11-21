@@ -12,7 +12,7 @@ import java.util.Set;
 public class CommandAutoCompleteInteractionEventHandler extends InteractionHandler<CommandAutoCompleteInteractionEvent, DeferredAction> {
 
     @NonNull
-    private Set<DiscordSlashCommand> commands;
+    private final Set<DiscordSlashCommand> commands;
 
     public CommandAutoCompleteInteractionEventHandler(Set<DiscordSlashCommand> commands) {
         super(true);

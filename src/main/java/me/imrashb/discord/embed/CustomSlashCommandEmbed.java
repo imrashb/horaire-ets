@@ -16,21 +16,21 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CustomSlashCommandEmbed {
 
+    private final long alive = 60;
+    private final List<EmbedListener> listeners = new ArrayList<EmbedListener>();
+    @Getter
+    private final DomainUser user;
+    private final boolean withComponents;
     protected EmbedBuilder embedBuilder = new EmbedBuilder();
     private ScheduledFuture<?> scheduledFuture = null;
     @Getter
     private InteractionHook hook;
     @Getter
     private Long messageId;
-    private long alive = 60;
     @Getter
     @Setter
     private boolean stayAlive = false;
     private EmbedLayout layout = null;
-    private List<EmbedListener> listeners = new ArrayList<EmbedListener>();
-    @Getter
-    private DomainUser user;
-    private boolean withComponents;
 
     public CustomSlashCommandEmbed(DomainUser user, boolean withComponents) {
         this.user = user;

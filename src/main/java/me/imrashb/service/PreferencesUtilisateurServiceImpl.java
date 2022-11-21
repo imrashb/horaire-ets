@@ -12,19 +12,18 @@ import java.util.Optional;
 @Scope("singleton")
 public class PreferencesUtilisateurServiceImpl implements PreferencesUtilisateurService {
 
-    @Autowired
-    private PreferencesUtilisateurRepository repository;
+    private final PreferencesUtilisateurRepository repository;
+
+    public PreferencesUtilisateurServiceImpl(PreferencesUtilisateurRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public PreferencesUtilisateur getPreferencesUtilisateur(Long userId) {
 
         Optional<PreferencesUtilisateur> preferences = repository.findById(userId);
 
-        if (preferences.isPresent()) {
-            return preferences.get();
-        } else {
-            return new PreferencesUtilisateur(userId);
-        }
+        return preferences.orElseGet(() -> new PreferencesUtilisateur(userId));
     }
 
     @Override

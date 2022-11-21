@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class InteractionHandler<I extends Interaction, A extends DeferredAction> {
-    private Class<I> interactionType;
+    private final Class<I> interactionType;
     @Getter
-    private boolean initialHandler;
+    private final boolean initialHandler;
     @Getter(value = AccessLevel.PROTECTED)
-    private List<DeferredAction> actions;
+    private final List<DeferredAction> actions;
 
     public InteractionHandler(boolean initialHandler) {
         this.actions = new ArrayList<>();

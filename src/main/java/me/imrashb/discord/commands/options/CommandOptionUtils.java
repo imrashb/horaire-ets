@@ -10,8 +10,6 @@ import java.util.List;
 
 public class CommandOptionUtils {
 
-    private final String ID_SESSION = "session";
-
     public String addSessionOption(DiscordSlashCommand command) {
         List<Command.Choice> choicesSession = new ArrayList<>();
 
@@ -19,6 +17,7 @@ public class CommandOptionUtils {
             choicesSession.add(new Command.Choice(s, s));
         }
 
+        String ID_SESSION = "session";
         OptionData opt = new OptionData(
                 OptionType.STRING,
                 ID_SESSION,

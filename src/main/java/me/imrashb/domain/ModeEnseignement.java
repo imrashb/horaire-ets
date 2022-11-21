@@ -7,7 +7,7 @@ public enum ModeEnseignement {
     DISTANCE("Distance"),
     HYBRIDE("Hybride");
 
-    private String nom;
+    private final String nom;
 
     ModeEnseignement(String nom) {
         this.nom = nom;
