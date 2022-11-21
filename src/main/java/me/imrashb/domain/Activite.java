@@ -2,6 +2,9 @@ package me.imrashb.domain;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class Activite {
 
@@ -9,10 +12,22 @@ public class Activite {
     private ModeEnseignement modeEnseignement;
     private HoraireActivite horaire;
 
+    private List<String> charges = new ArrayList<>();
+
+    private List<String> locaux = new ArrayList<>();
+
     public Activite(String nom, String modeEnseignement, HoraireActivite horaire) {
         this.horaire = horaire;
         this.nom = nom.trim();
         this.modeEnseignement = stringToModeEnseignement(modeEnseignement);
+    }
+
+    public void addCharge(String charge) {
+        this.charges.add(charge);
+    }
+
+    public void addLocal(String local) {
+        this.locaux.add(local);
     }
 
     private ModeEnseignement stringToModeEnseignement(String modeEnseignement) {

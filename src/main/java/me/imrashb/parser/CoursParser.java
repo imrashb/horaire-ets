@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class CoursParser {
 
     private static final Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*([DPHC])\\b");
+    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\s*?([a-zA-Z]{3})\\s(\\d{2}):(\\d{2})\\s-\\s(\\d{2}):(\\d{2})\\s(.*)\\s.*([DPHC])($|\\s+(([A-Z]-\\d{4}.?,?\\s?)*)(.*))");
 
     private final List<Cours> listeCours;
     private Cours currentCours = null;
@@ -40,7 +40,6 @@ public class CoursParser {
         String[] lines = getLinesFromPDF(f);
 
         for (String line : lines) {
-
             Cours cours = getCoursFromLine(line);
 
             if (handleCours(cours, programme) || currentCours == null) {
@@ -146,6 +145,24 @@ public class CoursParser {
                     match.group(2));
 
             Activite activite = new Activite(match.group(7), match.group(8), sch);
+
+            String locaux = match.group(10);
+            String profs = match.group(12);
+            if (locaux != null) {
+                for (String s : locaux.split(",")) {
+                    String trimmed = s.trim();
+                    if (trimmed.length() != 0)
+                        activite.addLocal(trimmed);
+                }
+            }
+
+            if (profs != null) {
+                for (String s : profs.split("/")) {
+                    String trimmed = s.trim();
+                    if (trimmed.length() != 0)
+                        activite.addCharge(trimmed);
+                }
+            }
 
             if (match.group(1) == null) {
                 return activite;
