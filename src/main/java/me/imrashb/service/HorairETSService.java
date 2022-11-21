@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 public class HorairETSService {
 
     private final CombinaisonService combinaisonService;
-    private CoursService coursService;
-    private PreferencesUtilisateurService preferencesService;
+    private final CoursService coursService;
+    private final PreferencesUtilisateurService preferencesService;
 
     public HorairETSService(CombinaisonService combinaisonService, CoursService coursService, PreferencesUtilisateurService preferencesService) {
         this.combinaisonService = combinaisonService;

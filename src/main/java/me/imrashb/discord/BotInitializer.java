@@ -1,7 +1,6 @@
 package me.imrashb.discord;
 
 import me.imrashb.service.HorairETSService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

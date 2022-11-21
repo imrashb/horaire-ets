@@ -14,6 +14,7 @@ public abstract class DeferredAction<ReturnAction extends DeferredAction> {
     private List<Class<? extends InteractionHandler>> supportedHandlers;
     private List<DeferredActionListener> listeners;
 
+    @SafeVarargs
     public DeferredAction(Class<? extends InteractionHandler>... supportedInteractions) {
         this.supportedHandlers = Arrays.asList(supportedInteractions);
         this.listeners = new ArrayList<>();

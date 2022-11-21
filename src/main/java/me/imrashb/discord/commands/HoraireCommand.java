@@ -55,9 +55,9 @@ public class HoraireCommand extends DiscordSlashCommand<DeferredAction> {
                 if (user == event.getUser()) {
                     sb.append("Vous n'avez ");
                 } else {
-                    sb.append(user.getName() + " n'a ");
+                    sb.append(user.getName()).append(" n'a ");
                 }
-                sb.append("pas encore sauvegardé d'horaire pour la session " + sessionId + ".");
+                sb.append("pas encore sauvegardé d'horaire pour la session ").append(sessionId).append(".");
                 event.reply(sb.toString()).setEphemeral(true).queue();
                 return null;
             }

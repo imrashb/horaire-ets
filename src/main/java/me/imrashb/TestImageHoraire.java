@@ -33,7 +33,7 @@ public class TestImageHoraire {
             Activite a = new Activite("Labo", "D", new HoraireActivite(8, 30, 10, 30, "lun"));
 
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a);
             Cours c = new Cours("LOG100", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
@@ -48,7 +48,7 @@ public class TestImageHoraire {
 
             Activite a2 = new Activite("TP A + B", "C", new HoraireActivite(8, 30, 12, 30, "mar"));
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a1);
             list.add(a2);
             Cours c = new Cours("LOG320", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
@@ -63,7 +63,7 @@ public class TestImageHoraire {
 
             Activite a2 = new Activite("TP A + B", "C", new HoraireActivite(8, 30, 12, 30, "mar"));
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a2);
             Cours c = new Cours("LOG240", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
@@ -153,9 +153,7 @@ class ButtonConsumer extends JButton {
                     consumer.accept(Color.decode("#" + data));
 
                     listener.actionPerformed(null);
-                } catch (UnsupportedFlavorException ex) {
-                    throw new RuntimeException(ex);
-                } catch (IOException ex) {
+                } catch (UnsupportedFlavorException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }

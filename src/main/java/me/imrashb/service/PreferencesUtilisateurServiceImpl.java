@@ -2,7 +2,6 @@ package me.imrashb.service;
 
 import me.imrashb.domain.PreferencesUtilisateur;
 import me.imrashb.repository.PreferencesUtilisateurRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

@@ -8,7 +8,6 @@ import me.imrashb.exception.CoursNotInitializedException;
 import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;
 import me.imrashb.parser.strategy.CongeStrategy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;

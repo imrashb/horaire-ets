@@ -16,8 +16,8 @@ public class NodeGroupe {
     private final Set<HoraireValidationStrategy> validationStrategies;
 
     public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, @NotNull Set<HoraireValidationStrategy> validationStrategies) {
-        if (groupsPrecedents == null) this.groupes = new ArrayList();
-        else this.groupes = new ArrayList(groupsPrecedents);
+        if (groupsPrecedents == null) this.groupes = new ArrayList<>();
+        else this.groupes = new ArrayList<>(groupsPrecedents);
         if (groupe != null)
             this.groupes.add(groupe);
 
@@ -49,7 +49,6 @@ public class NodeGroupe {
                 return liste;
             }
             // Retourne liste vide si pas bonne branche de l'arbre
-            return liste;
 
         } else {
 
@@ -58,8 +57,8 @@ public class NodeGroupe {
                 liste.addAll(tmp);
             }
 
-            return liste;
         }
+        return liste;
 
     }
 

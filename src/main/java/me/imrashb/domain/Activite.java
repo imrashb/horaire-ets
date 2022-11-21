@@ -39,9 +39,7 @@ public class Activite {
         if (obj instanceof Activite) {
             Activite a = (Activite) obj;
 
-            if (this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire)) {
-                return true;
-            }
+            return this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire);
         }
         return false;
     }

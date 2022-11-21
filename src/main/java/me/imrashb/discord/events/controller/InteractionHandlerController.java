@@ -84,7 +84,7 @@ public class InteractionHandlerController extends ListenerAdapter {
                     sb.append("Erreur lors d'un évènement").append("\n");
                     if (interaction.getUser() != null) {
                         User user = interaction.getUser();
-                        sb.append("Utilisateur: ").append(user.getIdLong()).append("/").append(user.getName() + "#" + user.getDiscriminator()).append("\n");
+                        sb.append("Utilisateur: ").append(user.getIdLong()).append("/").append(user.getName()).append("#").append(user.getDiscriminator()).append("\n");
                     }
                     if (interaction.getType() != null)
                         sb.append("Type: ").append(interaction.getType().name()).append("\n");

@@ -103,8 +103,7 @@ public class CoursParser {
                 }
             }
 
-            Cours cours = new Cours(id, new ArrayList<>(), new HashSet<>(), this.session);
-            return cours;
+            return new Cours(id, new ArrayList<>(), new HashSet<>(), this.session);
         }
         return null;
     }
@@ -165,7 +164,7 @@ public class CoursParser {
                 }
             }
 
-            Groupe groupe = new Groupe(id, new ArrayList<Activite>(), currentCours);
+            Groupe groupe = new Groupe(id, new ArrayList<>(), currentCours);
             groupe.addActivite(activite);
             return groupe;
         }

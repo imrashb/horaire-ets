@@ -43,8 +43,8 @@ public class CombinaisonUtils {
         StringBuilder sb = new StringBuilder();
 
         for (int j = 0; j < periodes[0].length; j++) {
-            for (int i = 0; i < periodes.length; i++) {
-                String symbole = periodes[i][j];
+            for (String[] periode : periodes) {
+                String symbole = periode[j];
                 if (symbole == null) sb.append(SYMBOLE_EMPTY);
                 else sb.append(symbole);
             }

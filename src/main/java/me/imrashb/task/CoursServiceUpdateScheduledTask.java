@@ -8,7 +8,6 @@ import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
 import me.imrashb.service.HorairETSService;
 import me.imrashb.utils.ETSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

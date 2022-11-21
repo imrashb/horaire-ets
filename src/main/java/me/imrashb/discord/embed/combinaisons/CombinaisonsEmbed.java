@@ -48,7 +48,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         embedBuilder.addField("Horaire", stringCombinaison, false);
 
         StringBuilder conges = new StringBuilder();
-        comb.getConges().forEach(conge -> conges.append(conge.getNom() + ", "));
+        comb.getConges().forEach(conge -> conges.append(conge.getNom()).append(", "));
 
         embedBuilder.addField("Congés", conges.toString(), true);
 
@@ -60,9 +60,9 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         StatefulActionComponent<Button> prochain = new ProchainCombinaisonButton(this.currentCombinaison, this.combinaisons);
         StatefulActionComponent<Button> precedent = new PrecedentCombinaisonButton(this.currentCombinaison, this.combinaisons);
         StatefulActionComponent<StringSelectMenu> choix = new SelectCombinaisonDropdown(this.currentCombinaison, this.combinaisons);
-        StatefulActionComponent partage = new PartageHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
-        StatefulActionComponent theme = new ThemeCombinaisonMenu(getUser());
-        StatefulActionComponent monHoraire = new MonHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
+        StatefulActionComponent<Button> partage = new PartageHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
+        StatefulActionComponent<StringSelectMenu> theme = new ThemeCombinaisonMenu(getUser());
+        StatefulActionComponent<Button> monHoraire = new MonHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
 
 
         return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(monHoraire, partage).addActionRow(theme);

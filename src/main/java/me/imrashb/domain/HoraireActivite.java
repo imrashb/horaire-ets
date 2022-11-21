@@ -22,9 +22,7 @@ public class HoraireActivite {
     public boolean equals(Object obj) {
         if (obj instanceof HoraireActivite) {
             HoraireActivite sch = (HoraireActivite) obj;
-            if (sch.heureDepart == this.heureDepart && sch.heureFin == this.heureFin && sch.jour == this.jour) {
-                return true;
-            }
+            return sch.heureDepart == this.heureDepart && sch.heureFin == this.heureFin && sch.jour == this.jour;
         }
         return false;
     }

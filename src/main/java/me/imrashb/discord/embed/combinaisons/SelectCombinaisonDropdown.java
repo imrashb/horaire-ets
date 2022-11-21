@@ -65,7 +65,7 @@ public class SelectCombinaisonDropdown extends StatefulActionComponent<StringSel
 
             CombinaisonHoraire c = combinaisons.get(i);
             StringBuilder sb = new StringBuilder();
-            c.getConges().forEach(s -> sb.append(s.getNom() + ", "));
+            c.getConges().forEach(s -> sb.append(s.getNom()).append(", "));
 
             SelectOption opt = SelectOption.of("Horaire " + (i + 1), i + "").withDescription("Congés: " + sb);
             if (i == currentCombinaison.get()) opt = opt.withDefault(true);

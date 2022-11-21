@@ -49,8 +49,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 true);
 
         for (int i = 0; i < NB_COURS_MAX; i++) {
-            boolean required = false;
-            if (i == 0) required = true;
+            boolean required = i == 0;
             String paramName = ID_COURS + (i + 1);
             AutoCompleteStrategy strategy = event -> {
                 if (event.getOption(ID_SESSION) == null) return null;
@@ -115,20 +114,18 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         List<Cours> listeCours = this.getMediatorService().getCoursService().getListeCours(sessionId);
 
         if (listeCours == null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("La session '" + sessionId + "' est invalide! ");
-            sb.append("La dernière session est '" + this.getMediatorService().getCoursService().getDerniereSession() + "'. ");
-            sb.append("Les sessions disponibles sont " + this.getMediatorService().getCoursService().getSessions().toString() + ".");
-            event.reply(sb.toString()).setEphemeral(true).queue();
+            String sb = "La session '" + sessionId + "' est invalide! " +
+                    "La dernière session est '" + this.getMediatorService().getCoursService().getDerniereSession() + "'. " +
+                    "Les sessions disponibles sont " + this.getMediatorService().getCoursService().getSessions().toString() + ".";
+            event.reply(sb).setEphemeral(true).queue();
             return null;
         }
 
         int nbCours = event.getOption(ID_NB_COURS).getAsInt();
         if (cours.size() < nbCours) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Le nombre de cours '" + nbCours + "' est invalide! ");
-            sb.append("Avec les cours choisis, le nombre de cours maximal est " + cours.size() + ".");
-            event.reply(sb.toString()).setEphemeral(true).queue();
+            String sb = "Le nombre de cours '" + nbCours + "' est invalide! " +
+                    "Avec les cours choisis, le nombre de cours maximal est " + cours.size() + ".";
+            event.reply(sb).setEphemeral(true).queue();
             return null;
         }
 

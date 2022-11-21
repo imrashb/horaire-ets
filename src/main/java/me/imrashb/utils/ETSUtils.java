@@ -33,7 +33,7 @@ public class ETSUtils {
         new File(tmpFolder).mkdir();
 
         for (Programme programme : Programme.values()) {
-            Future<File> future = downloadHoraire(executor, tmpFolder, programme.getId(), idSession);
+            Future<File> future = downloadHoraire(executor, programme.getId(), idSession);
             futures.put(programme, future);
         }
 
@@ -58,7 +58,7 @@ public class ETSUtils {
         return files;
     }
 
-    private static Future<File> downloadHoraire(ExecutorService executor, String tmpFolder, String programme, String idSession) {
+    private static Future<File> downloadHoraire(ExecutorService executor, String programme, String idSession) {
 
         return executor.submit(() -> {
             URL url = null;
@@ -69,7 +69,7 @@ public class ETSUtils {
                 return null;
             }
 
-            File file = new File(tmpFolder + "/" + programme + ".pdf");
+            File file = new File("./pdf" + "/" + programme + ".pdf");
             try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                 byte[] dataBuffer = new byte[1024];
