@@ -14,9 +14,53 @@ public class CombinaisonHoraire {
     private List<Jour> conges = new ArrayList<>(LISTE_JOURS);
     private String uniqueId = "";
 
+    private Integer tempsPerdu = null;
+
     public CombinaisonHoraire(List<Groupe> groupes) {
         this.groupes = groupes;
         Collections.sort(this.groupes);
+        generateUniqueId();
+        configureConges();
+    }
+
+    public int getTempsPerdu() {
+        if (tempsPerdu == null) calculateTempsPerdu();
+        return this.tempsPerdu;
+    }
+
+    private void calculateTempsPerdu() {
+
+        Map<Jour, TempsPerduParJour> tempsParJour = new HashMap<>();
+
+        for (Groupe g : groupes) {
+            for (Activite activite : g.getActivites()) {
+                TempsPerduParJour j = tempsParJour.get(activite.getHoraire().getJour());
+                if (j == null) {
+                    j = new TempsPerduParJour();
+                    tempsParJour.put(activite.getHoraire().getJour(), j);
+                }
+                j.setMin(activite.getHoraire().getHeureDepart());
+                j.setMax(activite.getHoraire().getHeureFin());
+                j.incrementTotal(activite.getHoraire().getHeureFin() - activite.getHoraire().getHeureDepart());
+            }
+        }
+
+        int total = 0;
+        for (TempsPerduParJour j : tempsParJour.values()) {
+            total += j.getTempsPerdu();
+        }
+        this.tempsPerdu = total;
+    }
+
+    private void configureConges() {
+        for (Groupe g : groupes) {
+            for (Activite a : g.getActivites()) {
+                this.conges.remove(a.getHoraire().getJour());
+            }
+        }
+    }
+
+    private void generateUniqueId() {
 
         StringBuilder sb = new StringBuilder();
 
@@ -30,16 +74,32 @@ public class CombinaisonHoraire {
         String tmp = sb.toString();
         // Enleve le '/' à la fin
         if (tmp.length() != 0) tmp = tmp.substring(0, tmp.lastIndexOf(SEPARATEUR_GROUPES));
-        this.uniqueId = toEncodedId(tmp);
-        for (Groupe g : groupes) {
-            for (Activite a : g.getActivites()) {
-                this.conges.remove(a.getHoraire().getJour());
-            }
-        }
+        this.uniqueId = Base64.getEncoder().encodeToString(tmp.getBytes());
     }
 
-    private String toEncodedId(String unencodedId) {
-        return Base64.getEncoder().encodeToString(unencodedId.getBytes());
+    private class TempsPerduParJour {
+
+        private int min = Integer.MAX_VALUE;
+        private int max = Integer.MIN_VALUE;
+        private int total = 0;
+
+        public void setMin(int min) {
+            this.min = Math.min(this.min, min);
+        }
+
+        public void setMax(int max) {
+            this.max = Math.max(this.max, max);
+        }
+
+        public void incrementTotal(int increment) {
+            this.total += increment;
+        }
+
+        public int getTempsPerdu() {
+            return (max - min) - total;
+        }
+
     }
 
 }
+

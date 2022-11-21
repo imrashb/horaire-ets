@@ -26,13 +26,7 @@ public class MonHoraireButton extends StatefulActionComponent<Button> {
     @Override
     public void execute(GenericComponentInteractionCreateEvent event) {
         CombinaisonHoraire comb = combinaisons.get(currentCombinaison.get());
-
-        if (user.getPreferences().getHoraires().containsKey(sessionId)) {
-            user.getPreferences().getHoraires().replace(sessionId, comb.getUniqueId());
-        } else {
-            user.getPreferences().getHoraires().put(sessionId, comb.getUniqueId());
-        }
-
+        user.getPreferences().getHoraires().put(sessionId, comb.getUniqueId());
         user.savePreferences();
     }
 
