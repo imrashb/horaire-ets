@@ -14,7 +14,9 @@ public enum Programme {
     MEC("7684", "Génie mécanique"),
     GOL("6556", "Génie des opérations et de la logistique"),
     GPA("6557", "Génie de la production automatisée"),
-    TI("7086", "Génie en technologie de l'information");
+    TI("7086", "Génie en technologie de l'information"),
+    MAITRISE("cyclessuperieurs", "Cycles supérieurs");
+
 
     private final String id;
     private final String nom;
