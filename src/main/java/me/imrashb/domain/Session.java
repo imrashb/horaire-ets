@@ -3,8 +3,6 @@ package me.imrashb.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 public class Session {
@@ -13,11 +11,11 @@ public class Session {
     private Trimestre trimestre;
 
     public int toId() {
-        return Integer.parseInt(""+this.annee+trimestre.getNumeroSession());
+        return Integer.parseInt("" + this.annee + trimestre.getNumeroSession());
     }
 
     public String toString() {
-        return ""+trimestre.getLettre()+this.annee;
+        return "" + trimestre.getLettre() + this.annee;
     }
 
 }

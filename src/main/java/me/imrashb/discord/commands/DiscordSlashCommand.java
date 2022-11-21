@@ -1,16 +1,20 @@
 package me.imrashb.discord.commands;
 
-import lombok.*;
+import lombok.Data;
 import me.imrashb.discord.commands.autocomplete.AutoCompleteStrategy;
 import me.imrashb.discord.events.action.DeferredAction;
-import me.imrashb.service.*;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.events.interaction.command.*;
-import net.dv8tion.jda.api.interactions.commands.*;
-import net.dv8tion.jda.api.interactions.commands.build.*;
-import net.dv8tion.jda.internal.interactions.*;
+import me.imrashb.service.HorairETSService;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public abstract class DiscordSlashCommand<Action extends DeferredAction> {
@@ -50,7 +54,7 @@ public abstract class DiscordSlashCommand<Action extends DeferredAction> {
 
     public List<Command.Choice> getAutoCompleteChoices(CommandAutoCompleteInteractionEvent event) {
         AutoCompleteStrategy strategy = autoCompleteStrategies.get(event.getFocusedOption().getName());
-        if(strategy == null) return null;
+        if (strategy == null) return null;
         return strategy.getAutoCompleteChoices(event);
     }
 

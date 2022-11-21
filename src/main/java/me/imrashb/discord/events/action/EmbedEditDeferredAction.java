@@ -10,33 +10,25 @@ import java.util.List;
 
 public class EmbedEditDeferredAction extends DeferredAction<EmbedEditDeferredAction> {
 
-    private List<User> authorizedUsers;
-    private CustomSlashCommandEmbed embed;
+    private final List<User> authorizedUsers;
+    private final CustomSlashCommandEmbed embed;
 
     public EmbedEditDeferredAction(List<User> authorizedUsers, CustomSlashCommandEmbed embed) {
         super(ComponentControlledEmbedHandler.class);
         this.authorizedUsers = authorizedUsers;
         this.embed = embed;
-    }
-
-    @Override
-    public void start(Interaction interaction) {
-
+        embed.addEmbedListener(this::cleanup);
     }
 
     @Override
     public EmbedEditDeferredAction execute(Interaction interaction) {
 
-        if(!(interaction instanceof GenericComponentInteractionCreateEvent)) throw new RuntimeException("IMPOSSIBLE WTF");
+        if (!(interaction instanceof GenericComponentInteractionCreateEvent))
+            throw new RuntimeException("IMPOSSIBLE WTF");
 
         this.embed.fireUpdate((GenericComponentInteractionCreateEvent) interaction);
 
         return this;
-    }
-
-    @Override
-    public void cleanup(Interaction interaction) {
-        embed.getHook().deleteOriginal().queue();
     }
 
     @Override

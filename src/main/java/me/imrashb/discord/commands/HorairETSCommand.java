@@ -8,9 +8,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 import java.util.Set;
 
-public class HorairETSCommand extends DiscordSlashCommand<DeferredAction>{
+public class HorairETSCommand extends DiscordSlashCommand<DeferredAction> {
 
-    private Set<DiscordSlashCommand> commands;
+    private final Set<DiscordSlashCommand> commands;
 
     public HorairETSCommand(HorairETSService coursManager, Set<DiscordSlashCommand> commands) {
         super("horairets", "Retourne la liste des commandes disponibles", coursManager);
@@ -24,8 +24,8 @@ public class HorairETSCommand extends DiscordSlashCommand<DeferredAction>{
         eb.setTitle("Utilisation de HorairÉTS");
         eb.setDescription("Les commandes disponibles par HorairÉTS se retrouvent ci-dessous");
         eb.setColor(BotConstants.EMBED_COLOR);
-        for(DiscordSlashCommand c : commands) {
-            eb.addField("/"+c.getCommandData().getName(), c.getCommandData().getDescription(), false);
+        for (DiscordSlashCommand c : commands) {
+            eb.addField("/" + c.getCommandData().getName(), c.getCommandData().getDescription(), false);
         }
         event.replyEmbeds(eb.build()).setEphemeral(true).queue();
 

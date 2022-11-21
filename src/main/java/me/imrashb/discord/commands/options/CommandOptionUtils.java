@@ -10,16 +10,15 @@ import java.util.List;
 
 public class CommandOptionUtils {
 
-    private final String ID_SESSION = "session";
-
     public String addSessionOption(DiscordSlashCommand command) {
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for(String s : command.getMediatorService().getCoursService().getSessions()) {
+        for (String s : command.getMediatorService().getCoursService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 
-        OptionData opt =new OptionData(
+        String ID_SESSION = "session";
+        OptionData opt = new OptionData(
                 OptionType.STRING,
                 ID_SESSION,
                 "La session dans laquelle les combinaisons d'horaires seront générées",

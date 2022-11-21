@@ -1,8 +1,6 @@
 package me.imrashb.domain;
 
 import lombok.Data;
-import me.imrashb.exception.InvalidEncodedIdException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -22,19 +20,19 @@ public class CombinaisonHoraire {
 
         StringBuilder sb = new StringBuilder();
 
-        if(groupes.size() != 0) {
+        if (groupes.size() != 0) {
             sb.append(groupes.get(0).getCours().getSession().toString()).append(SEPARATEUR_SESSION);
         }
 
-        for(Groupe g : groupes) {
+        for (Groupe g : groupes) {
             sb.append(g.toString()).append(SEPARATEUR_GROUPES);
         }
         String tmp = sb.toString();
         // Enleve le '/' à la fin
-        if(tmp.length() != 0) tmp = tmp.substring(0, tmp.lastIndexOf(SEPARATEUR_GROUPES));
+        if (tmp.length() != 0) tmp = tmp.substring(0, tmp.lastIndexOf(SEPARATEUR_GROUPES));
         this.uniqueId = toEncodedId(tmp);
-        for(Groupe g : groupes) {
-            for(Activite a : g.getActivites()) {
+        for (Groupe g : groupes) {
+            for (Activite a : g.getActivites()) {
                 this.conges.remove(a.getHoraire().getJour());
             }
         }

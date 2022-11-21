@@ -12,7 +12,7 @@ public class GenericControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity handleMissingParams(MissingServletRequestParameterException ex) {
         String name = ex.getParameterName();
-        return new ResponseEntity("Missing parameter '"+name+"'. Type: '"+ex.getParameterType()+"'", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity("Missing parameter '" + name + "'. Type: '" + ex.getParameterType() + "'", HttpStatus.BAD_REQUEST);
     }
 
 }

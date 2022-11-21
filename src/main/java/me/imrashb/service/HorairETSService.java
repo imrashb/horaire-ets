@@ -1,25 +1,23 @@
 package me.imrashb.service;
-import lombok.*;
-import me.imrashb.domain.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.*;
 
-import java.util.*;
+import lombok.Getter;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 @Service
 @Scope("singleton")
 @Getter
 public class HorairETSService {
 
-    @Autowired
-    private CoursService coursService;
+    private final CombinaisonService combinaisonService;
+    private final CoursService coursService;
+    private final PreferencesUtilisateurService preferencesService;
 
-    @Autowired
-    private PreferencesUtilisateurService preferencesService;
-
-    @Autowired
-    private CombinaisonService combinaisonService;
+    public HorairETSService(CombinaisonService combinaisonService, CoursService coursService, PreferencesUtilisateurService preferencesService) {
+        this.combinaisonService = combinaisonService;
+        this.coursService = coursService;
+        this.preferencesService = preferencesService;
+    }
 
 }
 

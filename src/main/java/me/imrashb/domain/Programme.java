@@ -1,7 +1,6 @@
 package me.imrashb.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Programme {
@@ -17,12 +16,12 @@ public enum Programme {
     GPA("6557", "Génie de la production automatisée"),
     TI("7086", "Génie en technologie de l'information");
 
-    private String id;
-    private String nom;
+    private final String id;
+    private final String nom;
 
     Programme(String id, String nom) {
-        this.id =id;
-        this.nom =nom;
+        this.id = id;
+        this.nom = nom;
     }
 
     public String getId() {

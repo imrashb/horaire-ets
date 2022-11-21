@@ -2,33 +2,35 @@ package me.imrashb.discord.embed;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.imrashb.discord.utils.*;
-import me.imrashb.service.*;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.events.interaction.command.*;
-import net.dv8tion.jda.api.events.interaction.component.*;
-import net.dv8tion.jda.api.interactions.*;
-import net.dv8tion.jda.api.requests.restaction.interactions.*;
+import me.imrashb.discord.utils.DomainUser;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public abstract class CustomSlashCommandEmbed {
 
-    protected EmbedBuilder embedBuilder = new EmbedBuilder();
+    protected final EmbedBuilder embedBuilder = new EmbedBuilder();
+    private final long alive = 60;
+    private final List<EmbedListener> listeners = new ArrayList<>();
+    @Getter
+    private final DomainUser user;
+    private final boolean withComponents;
     private ScheduledFuture<?> scheduledFuture = null;
     @Getter
     private InteractionHook hook;
     @Getter
     private Long messageId;
-    private long alive = 60;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean stayAlive = false;
     private EmbedLayout layout = null;
-    private List<EmbedListener> listeners = new ArrayList<EmbedListener>();
-    @Getter
-    private DomainUser user;
-    private boolean withComponents;
 
     public CustomSlashCommandEmbed(DomainUser user, boolean withComponents) {
         this.user = user;
@@ -40,13 +42,13 @@ public abstract class CustomSlashCommandEmbed {
     }
 
     public final void queueEmbed(SlashCommandInteractionEvent event, boolean ephemeral) {
-        if(withComponents) {
+        if (withComponents) {
             layout = this.buildLayout();
         }
 
         ReplyCallbackAction cb = event.replyEmbeds(this.update().build());
 
-        if(layout != null) {
+        if (layout != null) {
             cb = cb.setComponents(layout.getRows());
         }
 
@@ -68,7 +70,7 @@ public abstract class CustomSlashCommandEmbed {
 
     public void fireUpdate(GenericComponentInteractionCreateEvent event) {
         layout.update(event, user);
-        if(this.scheduledFuture != null && (!this.scheduledFuture.cancel(false) && this.scheduledFuture.isDone())) {
+        if (this.scheduledFuture != null && (!this.scheduledFuture.cancel(false) && this.scheduledFuture.isDone())) {
             return;
         }
 
@@ -82,16 +84,15 @@ public abstract class CustomSlashCommandEmbed {
     }
 
     private void deleteAfterInactivity() {
-        if(!stayAlive)
+        if (!stayAlive)
             this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS, delete -> {
-                for(EmbedListener listener : listeners) {
+                for (EmbedListener listener : listeners) {
                     listener.onEmbedDelete();
                 }
             });
     }
 
     protected abstract EmbedLayout buildLayout();
-
 
 
 }

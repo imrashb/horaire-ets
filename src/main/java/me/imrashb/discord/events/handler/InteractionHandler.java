@@ -8,16 +8,14 @@ import net.dv8tion.jda.api.interactions.Interaction;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public abstract class InteractionHandler<I extends Interaction,A extends DeferredAction> {
-    private Class<I> interactionType;
+public abstract class InteractionHandler<I extends Interaction, A extends DeferredAction> {
+    private final Class<I> interactionType;
     @Getter
-    private boolean initialHandler;
+    private final boolean initialHandler;
     @Getter(value = AccessLevel.PROTECTED)
-    private List<DeferredAction> actions;
+    private final List<DeferredAction> actions;
 
     public InteractionHandler(boolean initialHandler) {
         this.actions = new ArrayList<>();
@@ -39,15 +37,16 @@ public abstract class InteractionHandler<I extends Interaction,A extends Deferre
 
     public final void addDeferredAction(DeferredAction action) {
         this.actions.add(action);
+        action.addDeferredActionListener(() -> actions.remove(action));
     }
 
     protected abstract A processInteraction(I interaction, A action);
 
     public DeferredAction getProcessableDeferredAction(I interaction) {
-        if(this.initialHandler) return null;
+        if (this.initialHandler) return null;
 
-        for(DeferredAction action : this.getActions()) {
-            if(action.isProcessable(interaction)) {
+        for (DeferredAction action : this.getActions()) {
+            if (action.isProcessable(interaction)) {
                 return action;
             }
         }

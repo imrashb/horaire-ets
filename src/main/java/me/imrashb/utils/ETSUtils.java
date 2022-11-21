@@ -24,7 +24,7 @@ public class ETSUtils {
     public static Map<Programme, Future<File>> getFichiersHoraireAsync(Session session) {
         final Map<Programme, Future<File>> futures = new HashMap<>();
 
-        final String idSession = session.toId()+"";
+        final String idSession = session.toId() + "";
 
         final ExecutorService executor
                 = Executors.newFixedThreadPool(Programme.values().length);
@@ -33,7 +33,7 @@ public class ETSUtils {
         new File(tmpFolder).mkdir();
 
         for (Programme programme : Programme.values()) {
-            Future<File> future = downloadHoraire(executor, tmpFolder, programme.getId(), idSession);
+            Future<File> future = downloadHoraire(executor, programme.getId(), idSession);
             futures.put(programme, future);
         }
 
@@ -48,9 +48,9 @@ public class ETSUtils {
 
         List<PdfCours> files = new ArrayList<>();
         //Resolve all futures
-        for(Programme programme : futures.keySet()) {
+        for (Programme programme : futures.keySet()) {
             File f = futures.get(programme).get();
-            if(f != null) {
+            if (f != null) {
                 files.add(new PdfCours(f, programme));
             }
         }
@@ -58,7 +58,7 @@ public class ETSUtils {
         return files;
     }
 
-    private static Future<File> downloadHoraire(ExecutorService executor, String tmpFolder, String programme, String idSession) {
+    private static Future<File> downloadHoraire(ExecutorService executor, String programme, String idSession) {
 
         return executor.submit(() -> {
             URL url = null;
@@ -69,10 +69,10 @@ public class ETSUtils {
                 return null;
             }
 
-            File file = new File(tmpFolder + "/" + programme + ".pdf");
+            File file = new File("./pdf" + "/" + programme + ".pdf");
             try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
-                byte dataBuffer[] = new byte[1024];
+                byte[] dataBuffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                     fileOutputStream.write(dataBuffer, 0, bytesRead);

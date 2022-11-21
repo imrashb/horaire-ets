@@ -1,9 +1,9 @@
 package me.imrashb.service;
 
-import me.imrashb.domain.*;
-import org.springframework.stereotype.Service;
+import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.Jour;
 
-import java.util.*;
+import java.util.List;
 
 public interface CombinaisonService {
 

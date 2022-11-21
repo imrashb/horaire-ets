@@ -2,13 +2,12 @@ package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
-import me.imrashb.service.HorairETSService;
 import me.imrashb.domain.Session;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
+import me.imrashb.service.HorairETSService;
 import me.imrashb.utils.ETSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,22 +23,24 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class CoursServiceUpdateScheduledTask {
 
+    private final HorairETSService horairETSService;
     @Value("${sessions}")
     private String[] sessions;
 
-    @Autowired
-    private HorairETSService horairETSService;
+    public CoursServiceUpdateScheduledTask(HorairETSService horairETSService) {
+        this.horairETSService = horairETSService;
+    }
 
     //Update les horaires a chaque heure
     @Scheduled(fixedDelay = 3600000)
     public void updateCours() throws IOException {
         log.info("method: updateCours() : Début de la mise à jour des cours");
 
-        if(sessions.length == 0)
+        if (sessions.length == 0)
             throw new RuntimeException("ERREUR: Sessions ne sont pas définient dans application.properties. Ex: sessions=20223,20231");
 
 
-        for(String sessionId : sessions) {
+        for (String sessionId : sessions) {
 
             Trimestre trim = Trimestre.getTrimestreFromId(sessionId);
             int annee = Integer.parseInt(sessionId.substring(0, 4));
@@ -55,7 +56,7 @@ public class CoursServiceUpdateScheduledTask {
                 throw new RuntimeException(e);
             }
 
-            for(PdfCours pdf : files) {
+            for (PdfCours pdf : files) {
                 coursParser.getCoursFromPDF(pdf.getPdf(), pdf.getProgramme(), session);
                 pdf.getPdf().delete();
             }
