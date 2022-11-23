@@ -1,7 +1,5 @@
 package me.imrashb.exception;
 
-import java.util.List;
-
 public class CoursAlreadyPresentException extends RuntimeException {
 
     public CoursAlreadyPresentException() {

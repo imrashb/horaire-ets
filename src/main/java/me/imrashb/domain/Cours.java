@@ -1,8 +1,14 @@
 package me.imrashb.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import java.util.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor

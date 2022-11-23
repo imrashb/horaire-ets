@@ -1,8 +1,8 @@
 package me.imrashb.parser.strategy;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.Groupe;
 
-import java.util.*;
+import java.util.List;
 
 public interface HoraireValidationStrategy {
 

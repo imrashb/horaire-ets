@@ -1,25 +1,29 @@
 package me.imrashb;
 
 import me.imrashb.domain.*;
-import me.imrashb.utils.*;
+import me.imrashb.utils.HoraireImageMaker;
+import me.imrashb.utils.HoraireImageMakerTheme;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.colorchooser.*;
-import javax.swing.event.*;
 import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.Consumer;
 
 public class TestImageHoraire {
 
-    public static int pdfCount=0;
+    public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme("Thème ID",
+            "Thème NAME", Color.decode("#001408"), Color.decode("#006635"), Color.decode("#ff0ad6"), Color.decode("#003d1d"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#ff0ad6"), Color.decode("#ff0ad6"));
+    public static int pdfCount = 0;
 
     public static void main(String[] args) throws IOException {
 
@@ -29,7 +33,7 @@ public class TestImageHoraire {
             Activite a = new Activite("Labo", "D", new HoraireActivite(8, 30, 10, 30, "lun"));
 
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a);
             Cours c = new Cours("LOG100", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
@@ -44,7 +48,7 @@ public class TestImageHoraire {
 
             Activite a2 = new Activite("TP A + B", "C", new HoraireActivite(8, 30, 12, 30, "mar"));
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a1);
             list.add(a2);
             Cours c = new Cours("LOG320", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
@@ -59,7 +63,7 @@ public class TestImageHoraire {
 
             Activite a2 = new Activite("TP A + B", "C", new HoraireActivite(8, 30, 12, 30, "mar"));
 
-            ArrayList<Activite> list = new ArrayList();
+            ArrayList<Activite> list = new ArrayList<>();
             list.add(a2);
             Cours c = new Cours("LOG240", new ArrayList<>(), new HashSet<>(), new Session(1234, Trimestre.HIVER));
             c.addProgramme(Programme.TI);
@@ -79,11 +83,11 @@ public class TestImageHoraire {
         List<ButtonConsumer> buttons = new ArrayList<>();
 
 
-        Image resultingImage = image.getScaledInstance((int) (image.getWidth(null)/2f), (int) (image.getHeight(null)/2f), Image.SCALE_DEFAULT);
+        Image resultingImage = image.getScaledInstance((int) (image.getWidth(null) / 2f), (int) (image.getHeight(null) / 2f), Image.SCALE_DEFAULT);
         JLabel picLabel = new JLabel(new ImageIcon(resultingImage));
         JFrame frame = new JFrame();
         frame.add(picLabel);
-        frame.setLayout(new GridLayout(1,2));
+        frame.setLayout(new GridLayout(1, 2));
         JPanel panel = new JPanel();
         frame.add(panel);
         panel.setLayout(new GridLayout(buttons.size(), 1));
@@ -95,30 +99,30 @@ public class TestImageHoraire {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Image result = img.getScaledInstance((int) (img.getWidth(null)/2f), (int) (img.getHeight(null)/2f), Image.SCALE_DEFAULT);
+            Image result = img.getScaledInstance((int) (img.getWidth(null) / 2f), (int) (img.getHeight(null) / 2f), Image.SCALE_DEFAULT);
             picLabel.setIcon(new ImageIcon(result));
             picLabel.repaint();
         };
 
-        buttons.add(new ButtonConsumer("Background",theme::setColorBackground, listener));
-        buttons.add(new ButtonConsumer("Jour",theme::setColorJour, listener));
-        buttons.add(new ButtonConsumer("Heure",theme::setColorHeure, listener));
-        buttons.add(new ButtonConsumer("Ligne separation ",theme::setColorLigneSeparation, listener));
-        buttons.add(new ButtonConsumer("Dash Ligne Separation",theme::setColorDashedLigneSeparation, listener));
-        buttons.add(new ButtonConsumer("Fin de semaine",theme::setColorFinDeSemaine, listener));
-        buttons.add(new ButtonConsumer("Texte cours",theme::setColorTexteCours, listener));
-        buttons.add(new ButtonConsumer("Texte outline",theme::setColorTexteOutline, listener));
+        buttons.add(new ButtonConsumer("Background", theme::setColorBackground, listener));
+        buttons.add(new ButtonConsumer("Jour", theme::setColorJour, listener));
+        buttons.add(new ButtonConsumer("Heure", theme::setColorHeure, listener));
+        buttons.add(new ButtonConsumer("Ligne separation ", theme::setColorLigneSeparation, listener));
+        buttons.add(new ButtonConsumer("Dash Ligne Separation", theme::setColorDashedLigneSeparation, listener));
+        buttons.add(new ButtonConsumer("Fin de semaine", theme::setColorFinDeSemaine, listener));
+        buttons.add(new ButtonConsumer("Texte cours", theme::setColorTexteCours, listener));
+        buttons.add(new ButtonConsumer("Texte outline", theme::setColorTexteOutline, listener));
         JButton generate = new JButton("Generate");
         generate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme(\n" +
-                        "            \"themeid\",\"Thème NAME\",Color.decode(\""+hex(theme.getColorBackground())+"\"), Color.decode(\""+hex(theme.getColorLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorDashedLigneSeparation())+"\"), Color.decode(\""+hex(theme.getColorFinDeSemaine())+"\"), Color.decode(\""+hex(theme.getColorTexteCours())+"\"), Color.decode(\""+hex(theme.getColorTexteOutline())+"\"), Color.decode(\""+hex(theme.getColorJour())+"\"), Color.decode(\""+hex(theme.getColorHeure())+"\"));");
+                        "            \"themeid\",\"Thème NAME\",Color.decode(\"" + hex(theme.getColorBackground()) + "\"), Color.decode(\"" + hex(theme.getColorLigneSeparation()) + "\"), Color.decode(\"" + hex(theme.getColorDashedLigneSeparation()) + "\"), Color.decode(\"" + hex(theme.getColorFinDeSemaine()) + "\"), Color.decode(\"" + hex(theme.getColorTexteCours()) + "\"), Color.decode(\"" + hex(theme.getColorTexteOutline()) + "\"), Color.decode(\"" + hex(theme.getColorJour()) + "\"), Color.decode(\"" + hex(theme.getColorHeure()) + "\"));");
             }
         });
-        for(ButtonConsumer but : buttons) {
+        for (ButtonConsumer but : buttons) {
             panel.add(but);
-            panel.setPreferredSize(new Dimension(200,10000));
+            panel.setPreferredSize(new Dimension(200, 10000));
         }
         panel.add(generate);
 
@@ -133,18 +137,12 @@ public class TestImageHoraire {
         return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    public static final HoraireImageMakerTheme THEME_NAME = new HoraireImageMakerTheme("Thème ID",
-            "Thème NAME",Color.decode("#001408"), Color.decode("#006635"), Color.decode("#ff0ad6"), Color.decode("#003d1d"), Color.decode("#ffffff"), Color.decode("#000000"), Color.decode("#ff0ad6"), Color.decode("#ff0ad6"));
-
 }
 
 class ButtonConsumer extends JButton {
 
-    private Consumer<Color> consumer;
-
     public ButtonConsumer(String label, Consumer<Color> consumer, ActionListener listener) {
         this.setText(label);
-        this.consumer = consumer;
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,12 +150,10 @@ class ButtonConsumer extends JButton {
                 try {
                     data = (String) Toolkit.getDefaultToolkit()
                             .getSystemClipboard().getData(DataFlavor.stringFlavor);
-                    consumer.accept(Color.decode("#"+data));
+                    consumer.accept(Color.decode("#" + data));
 
                     listener.actionPerformed(null);
-                } catch (UnsupportedFlavorException ex) {
-                    throw new RuntimeException(ex);
-                } catch (IOException ex) {
+                } catch (UnsupportedFlavorException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }

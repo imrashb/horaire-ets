@@ -1,21 +1,25 @@
 package me.imrashb.parser;
 
 import me.imrashb.domain.*;
-import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.text.*;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CoursParser {
 
-    private static Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*(D|P|H|C)\\b");
+    private static final Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
+    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*([DPHC])\\b");
 
-    private List<Cours> listeCours;
+    private final List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
     private Session session = null;
@@ -99,8 +103,7 @@ public class CoursParser {
                 }
             }
 
-            Cours cours = new Cours(id, new ArrayList<>(), new HashSet<>(), this.session);
-            return cours;
+            return new Cours(id, new ArrayList<>(), new HashSet<>(), this.session);
         }
         return null;
     }
@@ -161,7 +164,7 @@ public class CoursParser {
                 }
             }
 
-            Groupe groupe = new Groupe(id, new ArrayList<Activite>(), currentCours);
+            Groupe groupe = new Groupe(id, new ArrayList<>(), currentCours);
             groupe.addActivite(activite);
             return groupe;
         }
@@ -170,7 +173,7 @@ public class CoursParser {
 
     private String[] getLinesFromPDF(File f) throws IOException {
 
-        if(f == null || !f.exists()) return new String[0];
+        if (f == null || !f.exists()) return new String[0];
         PDDocument document = PDDocument.load(f);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);

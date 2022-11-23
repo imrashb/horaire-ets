@@ -1,6 +1,5 @@
 package me.imrashb.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
-@Table(name = "preferences_utilisateur")
+@Table(name = "preferences_utilisation")
 @Entity
 public class PreferencesUtilisateur {
 
