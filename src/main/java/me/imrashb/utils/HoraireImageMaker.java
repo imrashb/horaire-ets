@@ -1,6 +1,10 @@
 package me.imrashb.utils;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.Activite;
+import me.imrashb.domain.Groupe;
+import me.imrashb.domain.HoraireActivite;
+import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 
 import java.awt.*;
 import java.awt.font.GlyphVector;

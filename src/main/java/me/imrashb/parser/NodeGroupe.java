@@ -1,7 +1,7 @@
 package me.imrashb.parser;
 
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.parser.strategy.HoraireValidationStrategy;
 import org.jetbrains.annotations.NotNull;
 

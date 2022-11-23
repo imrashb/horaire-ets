@@ -5,15 +5,20 @@ import me.imrashb.discord.embed.CustomSlashCommandEmbed;
 import me.imrashb.discord.embed.EmbedLayout;
 import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.discord.utils.DomainUser;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Groupe;
 import me.imrashb.domain.PreferencesUtilisateur;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
+import me.imrashb.domain.combinaison.comparator.CombinaisonHoraireComparator;
+import me.imrashb.domain.combinaison.comparator.LostTimeComparator;
+import me.imrashb.domain.combinaison.comparator.NombreJoursAvecCoursComparator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,6 +33,18 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         super(user, true);
         this.combinaisons = combinaisons;
         this.sessionId = sessionId;
+
+        CombinaisonHoraireComparator comparator = null;
+        try {
+            comparator = new CombinaisonHoraireComparator.Builder()
+                    .addComparator(NombreJoursAvecCoursComparator.class)
+                    .addComparator(LostTimeComparator.class).build();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        Collections.sort(combinaisons, comparator);
     }
 
     @Override

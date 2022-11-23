@@ -1,9 +1,9 @@
 package me.imrashb.parser;
 
 import lombok.Data;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.CoursAlreadyPresentException;
 import me.imrashb.exception.CoursDoesntExistException;
 import me.imrashb.exception.InvalidCoursAmountException;

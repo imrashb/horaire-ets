@@ -1,6 +1,7 @@
 package me.imrashb;
 
 import me.imrashb.domain.*;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.utils.HoraireImageMaker;
 import me.imrashb.utils.HoraireImageMakerTheme;
 

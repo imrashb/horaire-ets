@@ -1,8 +1,8 @@
 package me.imrashb.service;
 
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.InvalidEncodedIdException;
 
 import java.util.*;

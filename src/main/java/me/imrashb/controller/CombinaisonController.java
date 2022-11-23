@@ -1,7 +1,7 @@
 package me.imrashb.controller;
 
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.service.CombinaisonService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

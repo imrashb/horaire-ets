@@ -1,7 +1,7 @@
 package me.imrashb.service;
 
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 
 import java.util.List;
 

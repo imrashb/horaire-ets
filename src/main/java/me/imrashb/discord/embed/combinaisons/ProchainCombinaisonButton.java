@@ -1,7 +1,7 @@
 package me.imrashb.discord.embed.combinaisons;
 
 import me.imrashb.discord.embed.StatefulActionComponent;
-import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;

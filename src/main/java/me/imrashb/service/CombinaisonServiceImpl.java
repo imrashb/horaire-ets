@@ -1,9 +1,9 @@
 package me.imrashb.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.CoursNotInitializedException;
 import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;

@@ -3,7 +3,7 @@ package me.imrashb.discord.embed.combinaisons;
 import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.discord.utils.DomainUser;
 import me.imrashb.discord.utils.MessageUtils;
-import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.utils.HoraireImageMaker;
 import me.imrashb.utils.HoraireImageMakerTheme;
 import net.dv8tion.jda.api.entities.Message;

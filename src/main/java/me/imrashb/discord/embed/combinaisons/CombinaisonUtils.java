@@ -1,9 +1,9 @@
 package me.imrashb.discord.embed.combinaisons;
 
 import me.imrashb.domain.Activite;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Groupe;
 import me.imrashb.domain.HoraireActivite;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 
 public class CombinaisonUtils {
 
