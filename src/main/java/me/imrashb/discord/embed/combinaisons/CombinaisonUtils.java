@@ -7,7 +7,7 @@ import me.imrashb.domain.HoraireActivite;
 
 public class CombinaisonUtils {
 
-    public static final String[] SYMBOLES_COURS = {":blue_square:", ":orange_square:", ":purple_square:", ":red_square:", ":yellow_square:", ":white_large_square:"};
+    public static final String[] SYMBOLES_COURS = {":green_square:", ":blue_square:", ":purple_square:", ":red_square:", ":orange_square:", ":yellow_square:", ":white_large_square:", ":brown_square:"};
     private static final HoraireActivite HORAIRE_MATIN = new HoraireActivite(6, 0, 12, 30, null);
     private static final HoraireActivite HORAIRE_MIDI = new HoraireActivite(13, 0, 17, 30, null);
     private static final HoraireActivite HORAIRE_SOIR = new HoraireActivite(18, 0, 23, 0, null);
