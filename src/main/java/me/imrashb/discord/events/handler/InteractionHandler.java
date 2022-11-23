@@ -28,6 +28,7 @@ public abstract class InteractionHandler<I extends Interaction, A extends Deferr
     public final A process(I interaction, A action) {
         A deferredAction = this.processInteraction(interaction, action);
         this.actions.remove(action);
+        System.gc();
         return deferredAction;
     }
 
