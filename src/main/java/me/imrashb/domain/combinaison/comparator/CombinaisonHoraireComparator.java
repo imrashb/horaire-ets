@@ -35,7 +35,6 @@ public abstract class CombinaisonHoraireComparator implements Comparator<Combina
         }
 
         public CombinaisonHoraireComparator build() {
-            System.out.println(comparator);
             return comparator;
         }
 
