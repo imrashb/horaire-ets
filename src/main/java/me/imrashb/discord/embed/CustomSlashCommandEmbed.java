@@ -1,7 +1,6 @@
 package me.imrashb.discord.embed;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.imrashb.discord.utils.DomainUser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -27,18 +26,11 @@ public abstract class CustomSlashCommandEmbed {
     private InteractionHook hook;
     @Getter
     private Long messageId;
-    @Getter
-    @Setter
-    private boolean stayAlive = false;
     private EmbedLayout layout = null;
 
     public CustomSlashCommandEmbed(DomainUser user, boolean withComponents) {
         this.user = user;
         this.withComponents = withComponents;
-    }
-
-    public boolean getStayAlive() {
-        return this.stayAlive;
     }
 
     public final void queueEmbed(SlashCommandInteractionEvent event, boolean ephemeral) {
@@ -84,12 +76,22 @@ public abstract class CustomSlashCommandEmbed {
     }
 
     private void deleteAfterInactivity() {
-        if (!stayAlive)
-            this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS, delete -> {
+        this.scheduledFuture = hook.deleteOriginal().queueAfter(alive, TimeUnit.SECONDS, delete -> {
+            for (EmbedListener listener : listeners) {
+                listener.onEmbedDelete();
+            }
+        });
+    }
+
+    public void delete() {
+        if (this.scheduledFuture.cancel(false)) {
+            this.scheduledFuture = null;
+            hook.deleteOriginal().queue(delete -> {
                 for (EmbedListener listener : listeners) {
                     listener.onEmbedDelete();
                 }
             });
+        }
     }
 
     protected abstract EmbedLayout buildLayout();

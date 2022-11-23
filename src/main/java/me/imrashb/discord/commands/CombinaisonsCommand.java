@@ -17,10 +17,7 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAction> {
 
@@ -31,9 +28,12 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
     private final int NB_COURS_MAX = 10;
     private final int NB_CONGE_MAX = 6;
 
+    private final Map<Long, CombinaisonsEmbed> embeds;
+
     public CombinaisonsCommand(HorairETSService mediator) {
         super("combinaisons", "Retourne les combinaisons d'horaires en fonction des cours en arguments", mediator);
 
+        this.embeds = new HashMap<Long, CombinaisonsEmbed>();
 
         List<Command.Choice> choicesSession = new ArrayList<>();
 
@@ -138,10 +138,16 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 return null;
             }
 
+            CombinaisonsEmbed old = embeds.get(event.getUser().getIdLong());
+            if (old != null) {
+                old.delete();
+            }
+
             CombinaisonsEmbed embed = new CombinaisonsEmbed(combinaisons, sessionId, new DomainUser(event.getUser(), getMediatorService()));
             embed.queueEmbed(event, true);
             List<User> users = new ArrayList<>();
             users.add(event.getUser());
+            embeds.put(event.getUser().getIdLong(), embed);
             return new EmbedEditDeferredAction(users, embed);
         } catch (CoursDoesntExistException | CoursAlreadyPresentException e) {
             event.reply(e.getMessage()).setEphemeral(true).queue();
