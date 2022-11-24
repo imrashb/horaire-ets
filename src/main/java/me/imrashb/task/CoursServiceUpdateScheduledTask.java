@@ -67,6 +67,7 @@ public class CoursServiceUpdateScheduledTask {
         horairETSService.getCoursService().setReady(true);
 
         log.info("method: updateCours() : Fin de la mise à jour des cours");
+        System.gc();
     }
 
 }
