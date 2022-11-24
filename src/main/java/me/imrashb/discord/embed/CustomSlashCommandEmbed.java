@@ -27,6 +27,7 @@ public abstract class CustomSlashCommandEmbed {
     @Getter
     private Long messageId;
     private EmbedLayout layout = null;
+    private boolean toDelete = false;
 
     public CustomSlashCommandEmbed(DomainUser user, boolean withComponents) {
         this.user = user;
@@ -46,6 +47,12 @@ public abstract class CustomSlashCommandEmbed {
 
         cb.setEphemeral(ephemeral).timeout(alive, TimeUnit.SECONDS).queue((hook) -> {
             this.hook = hook;
+
+            if (toDelete) {
+                delete();
+                return;
+            }
+
             hook.retrieveOriginal().queue(message -> {
                 this.messageId = message.getIdLong();
             });
@@ -84,8 +91,12 @@ public abstract class CustomSlashCommandEmbed {
     }
 
     public void delete() {
-        if (this.scheduledFuture != null && this.scheduledFuture.cancel(false)) {
+        if (this.scheduledFuture == null || this.scheduledFuture.cancel(false)) {
             this.scheduledFuture = null;
+            if (this.hook == null) {
+                toDelete = true;
+                return;
+            }
             hook.deleteOriginal().queue(delete -> {
                 for (EmbedListener listener : listeners) {
                     listener.onEmbedDelete();
