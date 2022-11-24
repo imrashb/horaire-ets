@@ -84,7 +84,7 @@ public abstract class CustomSlashCommandEmbed {
     }
 
     public void delete() {
-        if (this.scheduledFuture.cancel(false)) {
+        if (this.scheduledFuture != null && this.scheduledFuture.cancel(false)) {
             this.scheduledFuture = null;
             hook.deleteOriginal().queue(delete -> {
                 for (EmbedListener listener : listeners) {
