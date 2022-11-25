@@ -35,8 +35,12 @@ public class HoraireCommand extends DiscordSlashCommand<DeferredAction> {
         OptionMapping mapping = event.getOption(ID_UTILISATEUR);
 
         User user = event.getUser();
-
-        if (mapping != null) user = mapping.getAsUser();
+        try {
+            if (mapping != null) user = mapping.getAsUser();
+        } catch (IllegalStateException ex) {
+            event.reply("L'utilisateur que vous tentez de chercher n'existe pas. Veuillez entrer un utilisateur valide").setEphemeral(true).queue();
+            return null;
+        }
 
         String sessionId = event.getOption(ID_SESSION).getAsString();
         try {
