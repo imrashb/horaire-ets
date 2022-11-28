@@ -12,7 +12,7 @@ public class LostTimeComparator extends CombinaisonHoraireComparator {
     private Map<CombinaisonHoraire, Integer> memoization = new HashMap<>();
 
     public LostTimeComparator(CombinaisonHoraireComparator comparator) {
-        super(comparator);
+        super("temps_perdu", "temps perdu par jour", comparator);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class NombreJoursAvecCoursComparator extends CombinaisonHoraireComparator
     private Map<CombinaisonHoraire, Integer> memoization = new HashMap<>();
 
     public NombreJoursAvecCoursComparator(CombinaisonHoraireComparator comparator) {
-        super(comparator);
+        super("nb_jours", "nombre de jours ayant des cours", comparator);
     }
 
     @Override

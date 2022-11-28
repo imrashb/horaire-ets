@@ -7,9 +7,13 @@ import java.util.Comparator;
 
 public abstract class CombinaisonHoraireComparator implements Comparator<CombinaisonHoraire> {
 
-    private CombinaisonHoraireComparator comparator;
+    private final String description;
+    private final CombinaisonHoraireComparator comparator;
+    private final String id;
 
-    public CombinaisonHoraireComparator(CombinaisonHoraireComparator comparator) {
+    public CombinaisonHoraireComparator(String id, String description, CombinaisonHoraireComparator comparator) {
+        this.id = id;
+        this.description = description;
         this.comparator = comparator;
     }
 
@@ -24,6 +28,16 @@ public abstract class CombinaisonHoraireComparator implements Comparator<Combina
     }
 
     public abstract int compareCombinaisons(CombinaisonHoraire o1, CombinaisonHoraire o2);
+
+    public String getId() {
+        if (this.comparator == null) return this.id;
+        return this.comparator.getId() + "," + this.id;
+    }
+
+    public String getDescription() {
+        if (this.comparator == null) return "Filtrer par " + this.description;
+        return this.comparator.getDescription() + ", par " + this.description;
+    }
 
     public static class Builder {
 

@@ -80,9 +80,9 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         StatefulActionComponent<Button> partage = new PartageHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
         StatefulActionComponent<StringSelectMenu> theme = new ThemeCombinaisonMenu(getUser());
         StatefulActionComponent<Button> monHoraire = new MonHoraireButton(currentCombinaison, combinaisons, sessionId, getUser());
+        StatefulActionComponent<StringSelectMenu> filtre = new ComparateurHoraireDropdown(currentCombinaison, combinaisons);
 
-
-        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(monHoraire, partage).addActionRow(theme);
+        return new EmbedLayout().addActionRow(precedent, prochain).addActionRow(choix).addActionRow(filtre).addActionRow(monHoraire, partage).addActionRow(theme);
     }
 
 }
