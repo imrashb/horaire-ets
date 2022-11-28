@@ -5,6 +5,7 @@ import me.imrashb.discord.embed.CustomSlashCommandEmbed;
 import me.imrashb.discord.embed.EmbedLayout;
 import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.discord.utils.DomainUser;
+import me.imrashb.domain.Activite;
 import me.imrashb.domain.Groupe;
 import me.imrashb.domain.PreferencesUtilisateur;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
@@ -54,7 +55,14 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
 
         for (int i = 0; i < comb.getGroupes().size(); i++) {
             Groupe groupe = comb.getGroupes().get(i);
-            embedBuilder.addField(groupe.toString(), CombinaisonUtils.SYMBOLES_COURS[i], true);
+            StringBuilder sb = new StringBuilder();
+            sb.append(CombinaisonUtils.SYMBOLES_COURS[i] + "\n");
+            for (Activite a : groupe.getActivites()) {
+                if (a.getCharges().size() > 0)
+                    sb.append(a.getNom()).append(": ").append(a.getCharges().toString().replaceAll("\\[", "").replaceAll("]", "")).append("\n");
+            }
+
+            embedBuilder.addField(groupe.toString(), sb.toString(), true);
         }
 
         embedBuilder.setTitle("Horaire " + (currentCombinaison.get() + 1));
