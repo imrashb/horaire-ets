@@ -18,8 +18,8 @@ public class Activite {
 
     public Activite(String nom, String modeEnseignement, HoraireActivite horaire) {
         this.horaire = horaire;
-        this.nom = nom.trim();
-        this.modeEnseignement = stringToModeEnseignement(modeEnseignement);
+        this.nom = toPrettyNomActivite(nom.trim());
+        this.modeEnseignement = convertToModeEnseignement(modeEnseignement);
     }
 
     public void addCharge(String charge) {
@@ -30,7 +30,7 @@ public class Activite {
         this.locaux.add(local);
     }
 
-    private ModeEnseignement stringToModeEnseignement(String modeEnseignement) {
+    private ModeEnseignement convertToModeEnseignement(String modeEnseignement) {
         switch (modeEnseignement.trim()) {
             case "P":
                 return ModeEnseignement.PRESENTIEL;
@@ -43,6 +43,17 @@ public class Activite {
             default:
                 return null;
         }
+    }
+
+    private String toPrettyNomActivite(String nomActivite) {
+
+        switch(nomActivite) {
+            case "C":
+                return "Cours";
+            default:
+                return nomActivite;
+        }
+
     }
 
     public String toString() {

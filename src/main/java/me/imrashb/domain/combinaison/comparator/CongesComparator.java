@@ -6,12 +6,11 @@ import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NombreJoursAvecCoursComparator extends CombinaisonHoraireComparator {
+public class CongesComparator extends CombinaisonHoraireComparator {
     private final int NB_JOURS_SEMAINE = Jour.values().length;
-    private Map<CombinaisonHoraire, Integer> memoization = new HashMap<>();
 
-    public NombreJoursAvecCoursComparator(CombinaisonHoraireComparator comparator) {
-        super("nb_jours", "nombre de jours ayant des cours", comparator);
+    public CongesComparator(CombinaisonHoraireComparator comparator) {
+        super("nb_jours", "nombre de congés", comparator);
     }
 
     @Override

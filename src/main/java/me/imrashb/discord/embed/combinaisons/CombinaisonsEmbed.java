@@ -4,14 +4,12 @@ import me.imrashb.discord.BotConstants;
 import me.imrashb.discord.embed.CustomSlashCommandEmbed;
 import me.imrashb.discord.embed.EmbedLayout;
 import me.imrashb.discord.embed.StatefulActionComponent;
-import me.imrashb.discord.utils.DomainUser;
-import me.imrashb.domain.Activite;
-import me.imrashb.domain.Groupe;
-import me.imrashb.domain.PreferencesUtilisateur;
+import me.imrashb.discord.utils.*;
+import me.imrashb.domain.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.domain.combinaison.comparator.CombinaisonHoraireComparator;
 import me.imrashb.domain.combinaison.comparator.LostTimeComparator;
-import me.imrashb.domain.combinaison.comparator.NombreJoursAvecCoursComparator;
+import me.imrashb.domain.combinaison.comparator.CongesComparator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -22,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.*;
+
+import static me.imrashb.discord.utils.MessageUtils.bold;
+import static me.imrashb.discord.utils.MessageUtils.italic;
 
 public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
     private final List<CombinaisonHoraire> combinaisons;
@@ -38,7 +40,7 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         CombinaisonHoraireComparator comparator = null;
         try {
             comparator = new CombinaisonHoraireComparator.Builder()
-                    .addComparator(NombreJoursAvecCoursComparator.class)
+                    .addComparator(CongesComparator.class)
                     .addComparator(LostTimeComparator.class).build();
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
@@ -58,8 +60,13 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
             StringBuilder sb = new StringBuilder();
             sb.append(CombinaisonUtils.SYMBOLES_COURS[i] + "\n");
             for (Activite a : groupe.getActivites()) {
-                if (a.getCharges().size() > 0)
-                    sb.append(a.getNom()).append(": ").append(a.getCharges().toString().replaceAll("\\[", "").replaceAll("]", "")).append("\n");
+                if (a.getCharges().size() > 0) {
+                    sb.append(bold(a.getNom()));
+                    if (a.getLocaux().size() > 0) {
+                        sb.append(" (").append(italic(String.join(", ", a.getLocaux()))).append(")");
+                    }
+                    sb.append("\n").append(String.join("\n", a.getCharges())).append("\n\n");
+                }
             }
 
             embedBuilder.addField(groupe.toString(), sb.toString(), true);
@@ -68,14 +75,11 @@ public class CombinaisonsEmbed extends CustomSlashCommandEmbed {
         embedBuilder.setTitle("Horaire " + (currentCombinaison.get() + 1));
         embedBuilder.setColor(BotConstants.EMBED_COLOR);
         embedBuilder.appendDescription(combinaisons.size() + " combinaisons trouvés");
-        embedBuilder.addField("Identifiant unique de l'horaire", comb.getUniqueId(), false);
+
+        String conges = comb.getConges().stream().map(Jour::getNom).collect(Collectors.joining(", "));
         String stringCombinaison = CombinaisonUtils.getCombinaisonString(comb);
         embedBuilder.addField("Horaire", stringCombinaison, false);
-
-        StringBuilder conges = new StringBuilder();
-        comb.getConges().forEach(conge -> conges.append(conge.getNom()).append(", "));
-
-        embedBuilder.addField("Congés", conges.toString(), true);
+        embedBuilder.addField("Congés", conges, true);
 
         return embedBuilder;
     }

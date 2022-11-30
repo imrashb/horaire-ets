@@ -4,7 +4,7 @@ import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.domain.combinaison.comparator.CombinaisonHoraireComparator;
 import me.imrashb.domain.combinaison.comparator.LostTimeComparator;
-import me.imrashb.domain.combinaison.comparator.NombreJoursAvecCoursComparator;
+import me.imrashb.domain.combinaison.comparator.CongesComparator;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
@@ -27,9 +27,9 @@ public class ComparateurHoraireDropdown extends StatefulActionComponent<StringSe
         this.currentCombinaison = currentCombinaison;
         this.combinaisons = combinaisons;
         COMPARATEURS = new ArrayList<>();
-        COMPARATEURS.add(new LostTimeComparator(new NombreJoursAvecCoursComparator(null)));
+        COMPARATEURS.add(new LostTimeComparator(new CongesComparator(null)));
         COMPARATEURS.add(new LostTimeComparator(null));
-        COMPARATEURS.add(new NombreJoursAvecCoursComparator(null));
+        COMPARATEURS.add(new CongesComparator(null));
         this.selectedComparateur = COMPARATEURS.get(0);
     }
 
