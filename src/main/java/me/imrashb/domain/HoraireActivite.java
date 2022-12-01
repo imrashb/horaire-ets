@@ -61,8 +61,8 @@ public class HoraireActivite {
     }
 
     public String toString() {
-        String heureDepart = this.heureDepart / 100 + "" + ":" + StringUtils.rightPad(this.heureDepart % 100 + "", 2, "0");
-        String heureFin = this.heureFin / 100 + "" + ":" + StringUtils.rightPad(this.heureFin % 100 + "", 2, "0");
+        String heureDepart = this.heureDepart / 100 + "" + ":" + StringUtils.rightPad(this.heureDepart % 100 * 60 / 100 + "", 2, "0");
+        String heureFin = this.heureFin / 100 + "" + ":" + StringUtils.rightPad(this.heureFin % 100 * 60 / 100 + "", 2, "0");
         return heureDepart + " à " + heureFin;
     }
 

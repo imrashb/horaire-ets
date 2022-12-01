@@ -22,6 +22,8 @@ public class CoursParser {
     private final List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
+
+    private Activite currentActivite = null;
     private Session session = null;
 
     public CoursParser() {
@@ -163,6 +165,16 @@ public class CoursParser {
                         activite.addCharge(trimmed);
                 }
             }
+
+            if (currentActivite != null
+                    && currentActivite.getNom().equals("Labo A") && activite.getNom().equals("Labo B")
+                    && currentActivite.getCharges().size() != 0 && activite.getCharges().size() == 0) {
+                // Copies des chargés dans le Labo B
+                for (String charge : currentActivite.getCharges()) {
+                    activite.addCharge(charge);
+                }
+            }
+            currentActivite = activite;
 
             if (match.group(1) == null) {
                 return activite;
