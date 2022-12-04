@@ -8,18 +8,14 @@ import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
 import me.imrashb.service.HorairETSService;
 import me.imrashb.utils.ETSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.AbstractEnvironment;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Configuration
@@ -31,10 +27,6 @@ public class CoursServiceUpdateScheduledTask {
     @Value("${sessions}")
     private String[] sessions;
 
-    @Autowired
-    private Environment env;
-
-
     public CoursServiceUpdateScheduledTask(HorairETSService horairETSService) {
         this.horairETSService = horairETSService;
     }
@@ -43,12 +35,6 @@ public class CoursServiceUpdateScheduledTask {
     @Scheduled(fixedDelay = 3600000)
     public void updateCours() throws IOException {
         log.info("method: updateCours() : Début de la mise à jour des cours");
-
-        Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
-            System.out.format("%s=%s%n", envName, env.get(envName));
-        }
-
 
         if (sessions.length == 0)
             throw new RuntimeException("ERREUR: Sessions ne sont pas définient dans application.properties. Ex: sessions=20223,20231");
