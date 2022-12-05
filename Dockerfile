@@ -9,7 +9,7 @@ COPY . /usr/src/app
 # Compile and package the application to an executable JAR
 RUN mvn package
 
-FROM openjdk:11
+FROM amazoncorretto:11-alpine-jdk
 ARG JAR_FILE=horaire-ets.jar
 
 WORKDIR /opt/app
