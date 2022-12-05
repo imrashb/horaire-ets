@@ -16,5 +16,5 @@ WORKDIR /opt/app
 
 # Copy the spring-boot-api-tutorial.jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/target/${JAR_FILE} /opt/app/
-
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 ENTRYPOINT ["java","-jar", "-Dserver.port=$PORT","horaire-ets.jar"]
