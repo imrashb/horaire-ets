@@ -9,12 +9,15 @@ COPY . /usr/src/app
 # Compile and package the application to an executable JAR
 RUN mvn package
 
-FROM openjdk:11
+FROM amazoncorretto:11-alpine-jdk
+RUN apk --no-cache add msttcorefonts-installer fontconfig && \
+    update-ms-fonts && \
+    fc-cache -f
+
 ARG JAR_FILE=horaire-ets.jar
 
 WORKDIR /opt/app
 
 # Copy the spring-boot-api-tutorial.jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/target/${JAR_FILE} /opt/app/
-
 ENTRYPOINT ["java","-jar", "-Dserver.port=$PORT","horaire-ets.jar"]
