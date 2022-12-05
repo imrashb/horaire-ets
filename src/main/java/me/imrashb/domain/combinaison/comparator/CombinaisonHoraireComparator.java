@@ -1,5 +1,6 @@
 package me.imrashb.domain.combinaison.comparator;
 
+import lombok.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,18 @@ public abstract class CombinaisonHoraireComparator implements Comparator<Combina
 
         public CombinaisonHoraireComparator build() {
             return comparator;
+        }
+
+    }
+
+    public enum Comparator {
+
+        TEMPS_PERDU(LostTimeComparator.class),
+        CONGES(CongesComparator.class);
+        @Getter
+        private Class<? extends CombinaisonHoraireComparator> comparatorClass;
+        Comparator(Class<? extends CombinaisonHoraireComparator> comparatorClass) {
+            this.comparatorClass = comparatorClass;
         }
 
     }

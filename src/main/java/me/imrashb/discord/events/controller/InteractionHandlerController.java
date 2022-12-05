@@ -89,7 +89,7 @@ public class InteractionHandlerController extends ListenerAdapter {
                         .setEphemeral(true)
                         .queue();
             } else {
-                cb.reply("Il y a eu une erreur inattendu. Elle a été signalée. Désolé de cet inconvénient.").setEphemeral(true).queue();
+                cb.reply("Il y a eu une erreur inattendue. Elle a été signalée. Désolé de cet inconvénient.").setEphemeral(true).queue();
 
                 ex.printStackTrace();
 

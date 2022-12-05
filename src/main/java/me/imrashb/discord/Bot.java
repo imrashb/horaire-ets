@@ -30,8 +30,8 @@ public class Bot {
 
         JDABuilder builder = JDABuilder.createDefault(token);
 
-        if (!this.mediator.getCoursService().isReady()) {
-            this.mediator.getCoursService().addCoursManagerReadyListener(ready -> {
+        if (!this.mediator.getSessionService().isReady()) {
+            this.mediator.getSessionService().addSessionManagerReadyListener(ready -> {
                 try {
                     if (Bot.this.jda == null && ready) {
                         Bot.this.configure(builder);

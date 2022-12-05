@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Jour;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
+import me.imrashb.domain.combinaison.comparator.*;
 import me.imrashb.exception.CoursNotInitializedException;
 import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;
@@ -12,9 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 @EnableScheduling
@@ -22,20 +21,28 @@ import java.util.List;
 @Scope("singleton")
 public class CombinaisonServiceImpl implements CombinaisonService {
 
-    private final CoursService coursService;
+    private final SessionService sessionService;
+    private final Set<String> comparators;
 
-    public CombinaisonServiceImpl(CoursService coursService) {
-        this.coursService = coursService;
+    public CombinaisonServiceImpl(SessionService sessionService) {
+        this.sessionService = sessionService;
+        this.comparators = new HashSet<>();
+        this.initializeComparators();
+    }
+
+    private void initializeComparators() {
+        this.comparators.add(new LostTimeComparator(null).getId());
+        this.comparators.add(new CongesComparator(null).getId());
     }
 
     @Override
     public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, Jour[] conges, String sessionId, int nbCours) {
 
-        if (!coursService.isReady()) {
+        if (!sessionService.isReady()) {
             throw new CoursNotInitializedException();
         }
 
-        List<Cours> coursSession = coursService.getListeCours(sessionId);
+        List<Cours> coursSession = sessionService.getListeCours(sessionId);
 
         if (coursSession == null)
             throw new SessionDoesntExistException(sessionId);
@@ -52,7 +59,12 @@ public class CombinaisonServiceImpl implements CombinaisonService {
 
     @Override
     public CombinaisonHoraire getCombinaisonFromEncodedId(String encodedId) {
-        return CombinaisonHoraireFactory.fromEncodedUniqueId(encodedId, coursService);
+        return CombinaisonHoraireFactory.fromEncodedUniqueId(encodedId, sessionService);
+    }
+
+    @Override
+    public CombinaisonHoraireComparator.Comparator[] getAvailableCombinaisonHoraireComparators() {
+        return CombinaisonHoraireComparator.Comparator.values();
     }
 
 }

@@ -17,10 +17,10 @@ import java.util.Set;
 @EnableScheduling
 @Slf4j
 @Scope("singleton")
-public class CoursServiceImpl implements CoursService {
+public class SessionServiceImpl implements SessionService {
 
     private final HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
-    private final List<CoursServiceReadyListener> coursServiceReadyListener = new ArrayList<>();
+    private final List<SessionServiceReadyListener> sessionServiceReadyListeners = new ArrayList<>();
     private Integer derniereSession = null;
     @Getter
     private boolean ready = false;
@@ -60,8 +60,8 @@ public class CoursServiceImpl implements CoursService {
     }
 
     @Override
-    public void addCoursManagerReadyListener(CoursServiceReadyListener listener) {
-        this.coursServiceReadyListener.add(listener);
+    public void addSessionManagerReadyListener(SessionServiceReadyListener listener) {
+        this.sessionServiceReadyListeners.add(listener);
     }
 
     @Override
@@ -75,12 +75,12 @@ public class CoursServiceImpl implements CoursService {
     }
 
     private void fireReadyListeners() {
-        for (CoursServiceReadyListener listener : coursServiceReadyListener) {
-            listener.onCoursServiceReady(ready);
+        for (SessionServiceReadyListener listener : sessionServiceReadyListeners) {
+            listener.onSessionServiceReady(ready);
         }
     }
 
-    public interface CoursServiceReadyListener {
-        void onCoursServiceReady(boolean ready);
+    public interface SessionServiceReadyListener {
+        void onSessionServiceReady(boolean ready);
     }
 }

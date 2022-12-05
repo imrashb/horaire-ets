@@ -21,13 +21,13 @@ import java.util.concurrent.ExecutionException;
 @Configuration
 @EnableScheduling
 @Slf4j
-public class CoursServiceUpdateScheduledTask {
+public class SessionServiceUpdateScheduledTask {
 
     private final HorairETSService horairETSService;
     @Value("${sessions}")
     private String[] sessions;
 
-    public CoursServiceUpdateScheduledTask(HorairETSService horairETSService) {
+    public SessionServiceUpdateScheduledTask(HorairETSService horairETSService) {
         this.horairETSService = horairETSService;
     }
 
@@ -62,9 +62,9 @@ public class CoursServiceUpdateScheduledTask {
             }
             coursParser.getCours().sort(Comparator.comparing(Cours::getSigle));
 
-            this.horairETSService.getCoursService().addSession(session, coursParser.getCours());
+            this.horairETSService.getSessionService().addSession(session, coursParser.getCours());
         }
-        horairETSService.getCoursService().setReady(true);
+        horairETSService.getSessionService().setReady(true);
 
         log.info("method: updateCours() : Fin de la mise à jour des cours");
         System.gc();
