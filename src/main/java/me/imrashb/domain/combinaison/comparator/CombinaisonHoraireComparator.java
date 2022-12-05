@@ -36,7 +36,7 @@ public abstract class CombinaisonHoraireComparator implements Comparator<Combina
     }
 
     public String getDescription() {
-        if (this.comparator == null) return "Filtrer par " + this.description;
+        if (this.comparator == null) return "Trier par " + this.description;
         return this.comparator.getDescription() + ", par " + this.description;
     }
 
