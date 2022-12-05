@@ -9,7 +9,11 @@ COPY . /usr/src/app
 # Compile and package the application to an executable JAR
 RUN mvn package
 
-FROM amazoncorretto:11-alpine-full
+FROM amazoncorretto:11-alpine-jdk
+RUN apk --no-cache add msttcorefonts-installer fontconfig && \
+    update-ms-fonts && \
+    fc-cache -f
+
 ARG JAR_FILE=horaire-ets.jar
 
 WORKDIR /opt/app
