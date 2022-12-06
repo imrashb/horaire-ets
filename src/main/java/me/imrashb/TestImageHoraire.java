@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class TestImageHoraire {
@@ -77,7 +78,12 @@ public class TestImageHoraire {
         CombinaisonHoraire comb = new CombinaisonHoraire(groupes);
 
         HoraireImageMakerTheme theme = HoraireImageMaker.LIGHT_THEME;
-        Image image = new HoraireImageMaker(comb, theme).drawHoraire();
+        Image image = null;
+        try {
+            image = new HoraireImageMaker(comb, theme).drawHoraire().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
         ImageIO.write((RenderedImage) image, "png", new File("here.png"));
 
@@ -94,7 +100,12 @@ public class TestImageHoraire {
         panel.setLayout(new GridLayout(buttons.size(), 1));
 
         ActionListener listener = event -> {
-            Image img = new HoraireImageMaker(comb, theme).drawHoraire();
+            Image img = null;
+            try {
+                img = new HoraireImageMaker(comb, theme).drawHoraire().get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
             try {
                 ImageIO.write((RenderedImage) img, "jpeg", new File("save.jpeg"));
             } catch (IOException e) {

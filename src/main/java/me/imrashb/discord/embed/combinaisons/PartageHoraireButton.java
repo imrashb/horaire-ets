@@ -15,6 +15,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PartageHoraireButton extends StatefulActionComponent<Button> {
@@ -36,12 +37,16 @@ public class PartageHoraireButton extends StatefulActionComponent<Button> {
         }
         messages.clear();
         CombinaisonHoraire comb = this.combinaisons.get(currentCombinaison.get());
-        Image img = new HoraireImageMaker(comb, getTheme(user)).drawHoraire();
+        Image img = null;
+        try {
+            img = new HoraireImageMaker(comb, getTheme(user)).drawHoraire().get();
+        } catch (InterruptedException | ExecutionException e) {
+            event.reply("Il y a eu une erreur lors de la création de l'image de l'horaire. Veuillez réessayer.").setEphemeral(true).queue();
+            return;
+        }
         event.getMessageChannel().sendMessage(":newspaper: Horaire partagée par <@" + event.getUser().getIdLong() + "> :newspaper:")
                 .setFiles(MessageUtils.getFileUploadFromImage(img, comb.getUniqueId() + ".jpeg"))
-                .mention(event.getUser()).queue(message -> {
-                    messages.add(message);
-                });
+                .mention(event.getUser()).queue(messages::add);
     }
 
     @Override

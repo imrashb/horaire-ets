@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
+import java.util.concurrent.*;
 
 
 public class HoraireCommand extends DiscordSlashCommand<DeferredAction> {
@@ -68,11 +69,18 @@ public class HoraireCommand extends DiscordSlashCommand<DeferredAction> {
 
             CombinaisonHoraire comb = getMediatorService().getCombinaisonService().getCombinaisonFromEncodedId(idHoraire);
             HoraireImageMakerTheme theme = HoraireImageMaker.getThemeFromId(preferencesUtilisateur.getThemeId());
+            Future<Image> img = new HoraireImageMaker(comb, theme).drawHoraire();
+            event.deferReply(true).queue((hook) -> {
+                FileUpload file = null;
+                try {
+                    file = MessageUtils.getFileUploadFromImage(img.get(), comb.getUniqueId() + ".jpeg");
+                } catch (InterruptedException | ExecutionException e) {
+                    hook.editOriginal("Il y a eu une erreur lors de la création de l'image de l'horaire. Veuillez réessayer.").queue();
+                }
 
-            Image img = new HoraireImageMaker(comb, theme).drawHoraire();
-            FileUpload file = MessageUtils.getFileUploadFromImage(img, comb.getUniqueId() + ".jpeg");
+                hook.editOriginalAttachments(file).mention(event.getUser()).queue();
+            });
 
-            event.replyFiles(file).mention(event.getUser()).setEphemeral(true).queue();
         } catch (InvalidEncodedIdException e) {
             event.reply(e.getMessage())
                     .setEphemeral(true).queue();
