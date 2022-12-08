@@ -31,6 +31,7 @@ public class Activite {
     }
 
     private ModeEnseignement convertToModeEnseignement(String modeEnseignement) {
+        if (modeEnseignement == null) return null;
         switch (modeEnseignement.trim()) {
             case "P":
                 return ModeEnseignement.PRESENTIEL;
@@ -47,7 +48,7 @@ public class Activite {
 
     private String toPrettyNomActivite(String nomActivite) {
 
-        switch(nomActivite) {
+        switch (nomActivite) {
             case "C":
                 return "Cours";
             default:
@@ -64,8 +65,7 @@ public class Activite {
     public boolean equals(Object obj) {
         if (obj instanceof Activite) {
             Activite a = (Activite) obj;
-
-            return this.nom.equalsIgnoreCase(a.nom) && this.modeEnseignement.equals(a.modeEnseignement) && this.horaire.equals(a.horaire);
+            return this.nom.equalsIgnoreCase(a.nom) && (this.modeEnseignement == a.modeEnseignement) && this.horaire.equals(a.horaire);
         }
         return false;
     }
