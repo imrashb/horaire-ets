@@ -6,6 +6,7 @@ import me.imrashb.discord.events.controller.InteractionHandlerController;
 import me.imrashb.discord.events.handler.CommandAutoCompleteInteractionEventHandler;
 import me.imrashb.discord.events.handler.ComponentControlledEmbedHandler;
 import me.imrashb.discord.events.handler.SlashCommandInteractionEventHandler;
+import me.imrashb.discord.routines.*;
 import me.imrashb.service.HorairETSService;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -56,8 +57,8 @@ public class Bot {
 
         this.jda = jdaBuilder.build().awaitReady();
 
-        // Presence
-        jda.getPresence().setPresence(Activity.listening("/horairets"), true);
+        // Presence Routine
+        new DiscordPresenceRoutine(this.jda).startRoutine();
 
         this.subscribeCommands();
         this.subscribeListeners();
