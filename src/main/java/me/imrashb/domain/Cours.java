@@ -20,6 +20,8 @@ public class Cours {
     @JsonIgnore
     private List<Groupe> groupes;
     private Set<Programme> programmes;
+
+    @JsonIgnore
     private Session session;
 
 

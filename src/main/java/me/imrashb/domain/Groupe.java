@@ -2,7 +2,6 @@ package me.imrashb.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Groupe implements Comparable<Groupe> {
 
     public static final char SEPARATEUR_SIGLE_NUM_GROUPE = '-';

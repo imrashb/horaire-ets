@@ -19,4 +19,16 @@ public class MessageUtils {
         }
         return FileUpload.fromData(os.toByteArray(), name);
     }
+
+    public static String bold(String text) {
+        return "**"+text+"**";
+    }
+
+    public static String italic(String text) {
+        return "*"+text+"*";
+    }
+
+    public static String underline(String text) {
+        return "__"+text+"__";
+    }
 }

@@ -2,7 +2,7 @@ package me.imrashb.discord.embed.combinaisons;
 
 import me.imrashb.discord.embed.StatefulActionComponent;
 import me.imrashb.discord.utils.DomainUser;
-import me.imrashb.domain.CombinaisonHoraire;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -26,13 +26,7 @@ public class MonHoraireButton extends StatefulActionComponent<Button> {
     @Override
     public void execute(GenericComponentInteractionCreateEvent event) {
         CombinaisonHoraire comb = combinaisons.get(currentCombinaison.get());
-
-        if (user.getPreferences().getHoraires().containsKey(sessionId)) {
-            user.getPreferences().getHoraires().replace(sessionId, comb.getUniqueId());
-        } else {
-            user.getPreferences().getHoraires().put(sessionId, comb.getUniqueId());
-        }
-
+        user.getPreferences().getHoraires().put(sessionId, comb.getUniqueId());
         user.savePreferences();
     }
 

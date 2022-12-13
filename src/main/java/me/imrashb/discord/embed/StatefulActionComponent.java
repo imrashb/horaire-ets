@@ -30,11 +30,7 @@ public abstract class StatefulActionComponent<Component extends ActionComponent>
 
 
     public void setState(String key, Object value) {
-        if (this.states.containsKey(key)) {
-            this.states.replace(key, value);
-        } else {
-            this.states.put(key, value);
-        }
+        this.states.put(key, value);
     }
 
     public Object getState(String key) {

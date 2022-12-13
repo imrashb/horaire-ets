@@ -12,7 +12,7 @@ public class SessionsCommand extends DiscordSlashCommand<DeferredAction> {
     @Override
     public DeferredAction execute(SlashCommandInteractionEvent event) {
 
-        if (getMediatorService().getCoursService().getSessions().size() == 0) {
+        if (getMediatorService().getSessionService().getSessions().size() == 0) {
             event.reply("Aucune session est supportée pour le moment. Veuillez réessayer.")
                     .setEphemeral(true).queue();
             return null;
@@ -21,7 +21,7 @@ public class SessionsCommand extends DiscordSlashCommand<DeferredAction> {
         StringBuilder sb = new StringBuilder();
         sb.append("Voici les sessions supportées en ce moment: ");
 
-        for (String s : getMediatorService().getCoursService().getSessions()) {
+        for (String s : getMediatorService().getSessionService().getSessions()) {
             sb.append(s).append(", ");
         }
         event.reply(sb.substring(0, sb.lastIndexOf(",")))

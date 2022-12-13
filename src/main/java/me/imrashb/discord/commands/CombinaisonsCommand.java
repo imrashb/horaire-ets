@@ -5,9 +5,9 @@ import me.imrashb.discord.commands.options.CommandOptionUtils;
 import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.discord.utils.DomainUser;
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.CoursAlreadyPresentException;
 import me.imrashb.exception.CoursDoesntExistException;
 import me.imrashb.service.HorairETSService;
@@ -37,7 +37,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
 
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for (String s : this.getMediatorService().getCoursService().getSessions()) {
+        for (String s : this.getMediatorService().getSessionService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 
@@ -55,7 +55,7 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
                 if (event.getOption(ID_SESSION) == null) return null;
 
                 String text = event.getFocusedOption().getValue();
-                List<Cours> cours = getMediatorService().getCoursService().getListeCours(event.getOption(ID_SESSION).getAsString());
+                List<Cours> cours = getMediatorService().getSessionService().getListeCours(event.getOption(ID_SESSION).getAsString());
                 if (cours == null) return null;
 
                 List<Command.Choice> liste = new ArrayList<>();
@@ -111,12 +111,12 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
             }
         }
 
-        List<Cours> listeCours = this.getMediatorService().getCoursService().getListeCours(sessionId);
+        List<Cours> listeCours = this.getMediatorService().getSessionService().getListeCours(sessionId);
 
         if (listeCours == null) {
             String sb = "La session '" + sessionId + "' est invalide! " +
-                    "La dernière session est '" + this.getMediatorService().getCoursService().getDerniereSession() + "'. " +
-                    "Les sessions disponibles sont " + this.getMediatorService().getCoursService().getSessions().toString() + ".";
+                    "La dernière session est '" + this.getMediatorService().getSessionService().getDerniereSession() + "'. " +
+                    "Les sessions disponibles sont " + this.getMediatorService().getSessionService().getSessions().toString() + ".";
             event.reply(sb).setEphemeral(true).queue();
             return null;
         }

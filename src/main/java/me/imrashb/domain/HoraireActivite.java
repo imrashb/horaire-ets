@@ -13,8 +13,8 @@ public class HoraireActivite {
     private Jour jour;
 
     public HoraireActivite(int heureDepart, int minDepart, int heureFin, int minFin, String jour) {
-        this.heureDepart = heureDepart * 100 + minDepart;
-        this.heureFin = heureFin * 100 + minFin;
+        this.heureDepart = heureDepart * 100 + minDepart * 100 / 60;
+        this.heureFin = heureFin * 100 + minFin * 100 / 60;
         this.jour = stringToJour(jour);
     }
 
@@ -61,8 +61,8 @@ public class HoraireActivite {
     }
 
     public String toString() {
-        String heureDepart = this.heureDepart / 100 + "" + ":" + StringUtils.rightPad(this.heureDepart % 100 + "", 2, "0");
-        String heureFin = this.heureFin / 100 + "" + ":" + StringUtils.rightPad(this.heureFin % 100 + "", 2, "0");
+        String heureDepart = this.heureDepart / 100 + "" + ":" + StringUtils.rightPad(this.heureDepart % 100 * 60 / 100 + "", 2, "0");
+        String heureFin = this.heureFin / 100 + "" + ":" + StringUtils.rightPad(this.heureFin % 100 * 60 / 100 + "", 2, "0");
         return heureDepart + " à " + heureFin;
     }
 

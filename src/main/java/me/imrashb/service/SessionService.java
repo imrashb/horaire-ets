@@ -6,9 +6,9 @@ import me.imrashb.domain.Session;
 import java.util.List;
 import java.util.Set;
 
-public interface CoursService {
+public interface SessionService {
 
-    void addCoursManagerReadyListener(CoursServiceImpl.CoursServiceReadyListener listener);
+    void addSessionManagerReadyListener(SessionServiceImpl.SessionServiceReadyListener listener);
 
     void addSession(Session session, List<Cours> cours);
 

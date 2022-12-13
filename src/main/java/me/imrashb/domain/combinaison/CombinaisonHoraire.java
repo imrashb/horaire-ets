@@ -1,6 +1,9 @@
-package me.imrashb.domain;
+package me.imrashb.domain.combinaison;
 
 import lombok.Data;
+import me.imrashb.domain.Activite;
+import me.imrashb.domain.Groupe;
+import me.imrashb.domain.Jour;
 
 import java.util.*;
 
@@ -17,6 +20,20 @@ public class CombinaisonHoraire {
     public CombinaisonHoraire(List<Groupe> groupes) {
         this.groupes = groupes;
         Collections.sort(this.groupes);
+        generateUniqueId();
+        configureConges();
+    }
+
+
+    private void configureConges() {
+        for (Groupe g : groupes) {
+            for (Activite a : g.getActivites()) {
+                this.conges.remove(a.getHoraire().getJour());
+            }
+        }
+    }
+
+    private void generateUniqueId() {
 
         StringBuilder sb = new StringBuilder();
 
@@ -30,16 +47,8 @@ public class CombinaisonHoraire {
         String tmp = sb.toString();
         // Enleve le '/' à la fin
         if (tmp.length() != 0) tmp = tmp.substring(0, tmp.lastIndexOf(SEPARATEUR_GROUPES));
-        this.uniqueId = toEncodedId(tmp);
-        for (Groupe g : groupes) {
-            for (Activite a : g.getActivites()) {
-                this.conges.remove(a.getHoraire().getJour());
-            }
-        }
-    }
-
-    private String toEncodedId(String unencodedId) {
-        return Base64.getEncoder().encodeToString(unencodedId.getBytes());
+        this.uniqueId = Base64.getEncoder().encodeToString(tmp.getBytes());
     }
 
 }
+
