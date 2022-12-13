@@ -17,11 +17,12 @@ import java.util.regex.Pattern;
 public class CoursParser {
 
     private static final Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\W*?([a-zA-Z]{3})\\W(\\d{2}):(\\d{2})\\W-\\W(\\d{2}):(\\d{2})\\W(.*)\\W.*([DPHC])\\b");
-
+    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\s*?([a-zA-Z]{3})\\s(\\d{2}):(\\d{2})\\s-\\s(\\d{2}):(\\d{2})\\s(Labo A|Labo B|Labo(?: A\\+B)?|Labo\\/2|C|Atelier|TP\\/Labo|TP\\/2|TP(?: A\\+B| A| B)?|TP-Labo\\/2|TP-Labo (?:A|B)|Projet)\\s([DPHC]\\b)?($|\\s*(([A-Z]-\\d{4}.?,?\\s?)*)(.*))");
     private final List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
+
+    private Activite currentActivite = null;
     private Session session = null;
 
     public CoursParser() {
@@ -40,14 +41,13 @@ public class CoursParser {
         String[] lines = getLinesFromPDF(f);
 
         for (String line : lines) {
-
+            String trimmed = line.replaceAll("\\s+", " ");
             Cours cours = getCoursFromLine(line);
-
             if (handleCours(cours, programme) || currentCours == null) {
                 continue;
             }
 
-            Groupe groupe = getGroupeFromLine(line);
+            Groupe groupe = getGroupeFromLine(trimmed);
             handleGroupe(groupe, programme);
 
         }
@@ -118,7 +118,6 @@ public class CoursParser {
         if (obj instanceof Activite) {
 
             Activite activite = (Activite) obj;
-
             for (Activite a : currentGroupe.getActivites()) {
                 if (a.equals(activite)) return currentGroupe;
             }
@@ -146,6 +145,34 @@ public class CoursParser {
                     match.group(2));
 
             Activite activite = new Activite(match.group(7), match.group(8), sch);
+
+            String locaux = match.group(10);
+            String profs = match.group(12);
+            if (locaux != null) {
+                for (String s : locaux.split(",")) {
+                    String trimmed = s.trim();
+                    if (trimmed.length() != 0)
+                        activite.addLocal(trimmed);
+                }
+            }
+
+            if (profs != null) {
+                for (String s : profs.split("/")) {
+                    String trimmed = s.trim();
+                    if (trimmed.length() != 0)
+                        activite.addCharge(trimmed);
+                }
+            }
+
+            if (currentActivite != null
+                    && currentActivite.getNom().equals("Labo A") && activite.getNom().equals("Labo B")
+                    && currentActivite.getCharges().size() != 0 && activite.getCharges().size() == 0) {
+                // Copies des chargés dans le Labo B
+                for (String charge : currentActivite.getCharges()) {
+                    activite.addCharge(charge);
+                }
+            }
+            currentActivite = activite;
 
             if (match.group(1) == null) {
                 return activite;

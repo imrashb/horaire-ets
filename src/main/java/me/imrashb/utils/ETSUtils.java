@@ -52,6 +52,8 @@ public class ETSUtils {
             File f = futures.get(programme).get();
             if (f != null) {
                 files.add(new PdfCours(f, programme));
+            } else {
+                return null;
             }
         }
 
@@ -80,6 +82,7 @@ public class ETSUtils {
                 fileOutputStream.close();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
+                return null;
             }
 
             return file;

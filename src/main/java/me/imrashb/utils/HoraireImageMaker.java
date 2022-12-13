@@ -1,6 +1,10 @@
 package me.imrashb.utils;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.Activite;
+import me.imrashb.domain.Groupe;
+import me.imrashb.domain.HoraireActivite;
+import me.imrashb.domain.Jour;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 
 import java.awt.*;
 import java.awt.font.GlyphVector;
@@ -9,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.*;
+import java.util.stream.*;
 
 public class HoraireImageMaker {
 
@@ -36,13 +42,14 @@ public class HoraireImageMaker {
 
     private static final Font COURS_FONT;
     private static final Font FONT;
-    private static final Stroke TEXTE_STROKE = new BasicStroke(4.0f);
+    private static final Stroke TEXTE_STROKE = new BasicStroke(4.f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private static final Stroke HEURE_STROKE = new BasicStroke(2);
     private static final Stroke JOUR_STROKE = new BasicStroke(2);
     private static final Stroke DEMI_HEURE_STROKE = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
             0, new float[]{9}, 0);
+    private static final double UPSCALING = 1.5f;
     private static final int WIDTH = 1600;
-    private static final int HEIGHT = 1000;
+    private static final int HEIGHT = 1200;
     private static final int ARC_COURS = 30;
     private static final int BORDER_COURS = 2;
     private static final int TEXTURE_COURS = BORDER_COURS * 6;
@@ -103,30 +110,35 @@ public class HoraireImageMaker {
         return LIGHT_THEME;
     }
 
-    public Image drawHoraire() {
-        return this.drawHoraire(WIDTH);
+    public Future<Image> drawHoraire() {
+        return this.drawHoraire((int) (WIDTH*UPSCALING));
     }
 
-    public Image drawHoraire(int width) {
+    public Future<Image> drawHoraire(int width) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        AffineTransform at = new AffineTransform();
-        double scale = ((double) width) / (double) WIDTH;
-        at.setToScale(scale, scale);
+        return executor.submit(() -> {
+            AffineTransform at = new AffineTransform();
+            double scale = ((double) width) / (double) WIDTH;
+            at.setToScale(scale, scale);
 
 
-        BufferedImage bufferedImage = new BufferedImage((int) (WIDTH * scale), (int) (HEIGHT * scale), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = bufferedImage.createGraphics();
-        g2d.setTransform(at);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            BufferedImage bufferedImage = new BufferedImage((int) (WIDTH * scale), (int) (HEIGHT * scale), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.setTransform(at);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-        this.drawBackground(g2d);
-        this.drawJours(g2d);
-        this.drawHeures(g2d);
-        this.drawCours(g2d);
+            this.drawBackground(g2d);
+            this.drawJours(g2d);
+            this.drawHeures(g2d);
+            this.drawCours(g2d);
 
-        g2d.dispose();
-        return bufferedImage;
+            g2d.dispose();
+            return bufferedImage;
+        });
+
     }
 
     private void drawBackground(Graphics2D g2d) {
@@ -217,9 +229,10 @@ public class HoraireImageMaker {
                 this.drawOutlinedText(g2d, groupe.toString(), x + TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
                 currentHeight += offset;
                 this.drawOutlinedText(g2d, activite.getNom(), x + TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
-                currentHeight += offset;
-                this.drawOutlinedText(g2d, h.toString(), x + TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
-
+                for(String local : activite.getLocaux()) {
+                    currentHeight += offset;
+                    this.drawOutlinedText(g2d, local, x + TEXT_PADDING, currentHeight, this.theme.getColorTexteOutline());
+                }
             }
 
             g2d.setFont(FONT);

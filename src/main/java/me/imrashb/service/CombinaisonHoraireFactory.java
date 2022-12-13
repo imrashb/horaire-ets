@@ -1,8 +1,8 @@
 package me.imrashb.service;
 
-import me.imrashb.domain.CombinaisonHoraire;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Groupe;
+import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.InvalidEncodedIdException;
 
 import java.util.*;
@@ -40,7 +40,7 @@ class CombinaisonHoraireFactory {
      * @param encodedUniqueId l'id unique encodé en Base64
      * @return La combinaison d'horaire
      */
-    public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, CoursService coursService) {
+    public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, SessionService sessionService) {
         if (encodedUniqueId.getBytes().length < 2) throw new InvalidEncodedIdException("L'identifiant est trop petit.");
         String decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
 
@@ -51,7 +51,7 @@ class CombinaisonHoraireFactory {
         String nomSession = split[0];
         String nomsCours = split[1];
 
-        List<Cours> cours = coursService.getListeCours(nomSession);
+        List<Cours> cours = sessionService.getListeCours(nomSession);
 
         if (cours == null) throw new InvalidEncodedIdException("La session est invalide.");
 

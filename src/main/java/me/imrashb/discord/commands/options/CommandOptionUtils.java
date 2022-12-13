@@ -13,7 +13,7 @@ public class CommandOptionUtils {
     public String addSessionOption(DiscordSlashCommand command) {
         List<Command.Choice> choicesSession = new ArrayList<>();
 
-        for (String s : command.getMediatorService().getCoursService().getSessions()) {
+        for (String s : command.getMediatorService().getSessionService().getSessions()) {
             choicesSession.add(new Command.Choice(s, s));
         }
 
