@@ -8,10 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @EnableScheduling
@@ -19,7 +16,7 @@ import java.util.Set;
 @Scope("singleton")
 public class SessionServiceImpl implements SessionService {
 
-    private final HashMap<String, List<Cours>> coursParSessions = new HashMap<>();
+    private final HashMap<String, List<Cours>> coursParSessions = new LinkedHashMap<>();
     private final List<SessionServiceReadyListener> sessionServiceReadyListeners = new ArrayList<>();
     private Integer derniereSession = null;
     @Getter
