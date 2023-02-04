@@ -42,7 +42,13 @@ class CombinaisonHoraireFactory {
      */
     public static CombinaisonHoraire fromEncodedUniqueId(String encodedUniqueId, SessionService sessionService) {
         if (encodedUniqueId.getBytes().length < 2) throw new InvalidEncodedIdException("L'identifiant est trop petit.");
-        String decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
+
+        String decoded = null;
+        try {
+            decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
+        } catch(Exception ex) {
+            throw new InvalidEncodedIdException("L'identifiant ne peut pas être décodé.");
+        }
 
         String[] split = decoded.split(CombinaisonHoraire.SEPARATEUR_SESSION + "");
 

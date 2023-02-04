@@ -1,9 +1,6 @@
 package me.imrashb.controller;
 
-import me.imrashb.exception.CoursDoesntExistException;
-import me.imrashb.exception.CoursNotInitializedException;
-import me.imrashb.exception.InvalidCoursAmountException;
-import me.imrashb.exception.SessionDoesntExistException;
+import me.imrashb.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +22,11 @@ public class CombinaisonControllerAdvice {
     @ExceptionHandler(CoursNotInitializedException.class)
     public ResponseEntity handleUnavailableException(Exception exception) {
         return new ResponseEntity(exception.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(InvalidEncodedIdException.class)
+    public ResponseEntity handleInvalidEncodedId(Exception exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }
