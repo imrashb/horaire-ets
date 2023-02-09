@@ -14,7 +14,7 @@ public class CombinaisonControllerAdvice {
         return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidCoursAmountException.class)
+    @ExceptionHandler({InvalidCoursAmountException.class, InvalidCoursObligatoiresException.class})
     public ResponseEntity handleBadRequestException(Exception exception) {
         return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }

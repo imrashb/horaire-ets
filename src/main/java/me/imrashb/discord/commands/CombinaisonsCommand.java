@@ -5,8 +5,7 @@ import me.imrashb.discord.commands.options.CommandOptionUtils;
 import me.imrashb.discord.embed.combinaisons.CombinaisonsEmbed;
 import me.imrashb.discord.events.action.EmbedEditDeferredAction;
 import me.imrashb.discord.utils.DomainUser;
-import me.imrashb.domain.Cours;
-import me.imrashb.domain.Jour;
+import me.imrashb.domain.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.exception.CoursAlreadyPresentException;
 import me.imrashb.exception.CoursDoesntExistException;
@@ -130,8 +129,19 @@ public class CombinaisonsCommand extends DiscordSlashCommand<EmbedEditDeferredAc
         }
 
         try {
+            List<Cours> parsedCours = new ArrayList<>(
+                    getMediatorService().getSessionService().getCoursFromSigles(sessionId, cours.toArray(new String[0]))
+            );
+
+            ParametresCombinaison parametres = ParametresCombinaison.builder()
+                    .listeCours(parsedCours)
+                    .conges(conges.toArray(new Jour[0]))
+                    .session(sessionId)
+                    .nbCours(nbCours)
+                    .build();
+
             List<CombinaisonHoraire> combinaisons = getMediatorService().getCombinaisonService()
-                    .getCombinaisonsHoraire(cours.toArray(new String[0]), conges.toArray(new Jour[0]), sessionId, nbCours);
+                    .getCombinaisonsHoraire(parametres);
 
             if (combinaisons.size() == 0) {
                 event.reply("Il n'y a aucune combinaison d'horaire possible avec les cours fournis.").setEphemeral(true).queue();

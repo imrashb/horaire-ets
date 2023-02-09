@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
 import me.imrashb.domain.Session;
+import me.imrashb.exception.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public void addSession(Session session, List<Cours> cours) {
-
         final String nomSession = session.toString();
         final int idSession = session.toId();
 
@@ -43,22 +43,55 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public int getDerniereSession() {
+        validateReady();
         return this.derniereSession;
     }
 
     @Override
     public Set<String> getSessions() {
+        validateReady();
         return coursParSessions.keySet();
     }
 
     @Override
     public List<Cours> getListeCours(String sessionId) {
+        validateReady();
         return coursParSessions.get(sessionId);
+    }
+
+    @Override
+    public Set<Cours> getCoursFromSigles(String sessionId, String... sigles) {
+        validateReady();
+        Set<Cours> cours = new HashSet<>();
+
+        List<String> siglesList = new ArrayList<>(Arrays.asList(sigles));
+
+        List<Cours> listeCours = getListeCours(sessionId);
+
+        for (Cours c : listeCours) {
+            for (String s : sigles) {
+                if (c.getSigle().equalsIgnoreCase(s)) {
+                    boolean added = cours.add(c);
+                    if (!added) throw new CoursAlreadyPresentException();
+                    siglesList.remove(s);
+                }
+            }
+        }
+
+        if (siglesList.size() > 0) {
+            throw new CoursDoesntExistException(siglesList);
+        }
+
+        return cours;
     }
 
     @Override
     public void addSessionManagerReadyListener(SessionServiceReadyListener listener) {
         this.sessionServiceReadyListeners.add(listener);
+    }
+
+    private void validateReady() {
+        if(!this.isReady()) throw new CoursNotInitializedException();
     }
 
     @Override

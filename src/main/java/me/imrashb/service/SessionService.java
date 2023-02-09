@@ -18,6 +18,8 @@ public interface SessionService {
 
     List<Cours> getListeCours(String session);
 
+    Set<Cours> getCoursFromSigles(String sessionId, String... cours);
+
     boolean isReady();
 
     void setReady(boolean ready);
