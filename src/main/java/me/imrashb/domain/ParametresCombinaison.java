@@ -44,7 +44,7 @@ public class ParametresCombinaison {
         if(listeCoursObligatoires == null && coursObligatoires != null) {
             listeCoursObligatoires = new ArrayList<>(service.getCoursFromSigles(session, coursObligatoires));
 
-            if(!listeCours.containsAll(listeCoursObligatoires))
+            if(!listeCours.containsAll(listeCoursObligatoires) && listeCours.size() >= listeCoursObligatoires.size())
                 throw new InvalidCoursObligatoiresException();
 
         }
