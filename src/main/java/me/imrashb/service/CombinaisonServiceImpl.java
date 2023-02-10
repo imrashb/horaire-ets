@@ -1,8 +1,7 @@
 package me.imrashb.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.Cours;
-import me.imrashb.domain.Jour;
+import me.imrashb.domain.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.domain.combinaison.comparator.*;
 import me.imrashb.exception.CoursNotInitializedException;
@@ -36,25 +35,23 @@ public class CombinaisonServiceImpl implements CombinaisonService {
     }
 
     @Override
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(String[] cours, Jour[] conges, String sessionId, int nbCours) {
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(ParametresCombinaison parametres) {
+
+        parametres.init(sessionService);
 
         if (!sessionService.isReady()) {
             throw new CoursNotInitializedException();
         }
+
+        String sessionId = parametres.getSession();
 
         List<Cours> coursSession = sessionService.getListeCours(sessionId);
 
         if (coursSession == null)
             throw new SessionDoesntExistException(sessionId);
 
-        if (conges == null) {
-            return new GenerateurHoraire(coursSession)
-                    .getCombinaisonsHoraire(cours, nbCours);
-        } else {
-            return new GenerateurHoraire(coursSession)
-                    .addValidationStrategy(new CongeStrategy(new HashSet<>(Arrays.asList(conges))))
-                    .getCombinaisonsHoraire(cours, nbCours);
-        }
+
+        return new GenerateurHoraire(coursSession).getCombinaisonsHoraire(parametres);
     }
 
     @Override

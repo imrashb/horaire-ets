@@ -1,6 +1,6 @@
 package me.imrashb.controller;
 
-import me.imrashb.domain.Jour;
+import me.imrashb.domain.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.domain.combinaison.comparator.*;
 import me.imrashb.exception.*;
@@ -30,20 +30,13 @@ public class CombinaisonController {
     }
 
     @GetMapping("")
-    public List<CombinaisonHoraire> getCombinaisonsHoraire(@RequestParam String session,
-                                                           @RequestParam String[] cours,
-                                                           @RequestParam(required = false) Jour[] conges,
-                                                           @RequestParam(required = false) Integer nbCours,
-                                                           @RequestParam(required = false) LinkedHashSet<CombinaisonHoraireComparator.Comparator> sort) throws RuntimeException {
-        if (nbCours == null) {
-            nbCours = cours.length;
-        }
+    public List<CombinaisonHoraire> getCombinaisonsHoraire(ParametresCombinaison parametres) throws RuntimeException {
 
         CombinaisonHoraireComparator comparator = null;
 
-        if(sort != null && sort.size() > 0) {
+        if(parametres.getSort() != null && parametres.getSort().size() > 0) {
             CombinaisonHoraireComparator.Builder builder = new CombinaisonHoraireComparator.Builder();
-            for(CombinaisonHoraireComparator.Comparator c : sort) {
+            for(CombinaisonHoraireComparator.Comparator c : parametres.getSort()) {
                 try {
                     builder.addComparator(c.getComparatorClass());
                 } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
@@ -54,7 +47,8 @@ public class CombinaisonController {
             comparator = builder.build();
         }
 
-        List<CombinaisonHoraire> combinaisons = service.getCombinaisonsHoraire(cours, conges, session, nbCours);
+
+        List<CombinaisonHoraire> combinaisons = service.getCombinaisonsHoraire(parametres);
 
         if(comparator != null) Collections.sort(combinaisons, comparator);
 
