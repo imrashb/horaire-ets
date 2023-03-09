@@ -52,6 +52,13 @@ public class CoursParser {
 
         }
 
+        for (Cours c : listeCours) {
+            if (c.getGroupes().size() == 0) {
+                Groupe g = new Groupe("01", new ArrayList<>(), c);
+                c.addGroupe(g);
+            }
+        }
+
         return listeCours;
     }
 
