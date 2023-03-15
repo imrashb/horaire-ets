@@ -11,11 +11,13 @@ import java.util.Set;
 
 public class NodeGroupe {
 
+    private final NodeGroupe previous;
     private final List<Groupe> groupes;
     private final List<NodeGroupe> nodes = new ArrayList<>();
     private final Set<HoraireValidationStrategy> validationStrategies;
 
-    public NodeGroupe(Groupe groupe, List<Groupe> groupsPrecedents, @NotNull Set<HoraireValidationStrategy> validationStrategies) {
+    public NodeGroupe(NodeGroupe previous, Groupe groupe, List<Groupe> groupsPrecedents, @NotNull Set<HoraireValidationStrategy> validationStrategies) {
+        this.previous = previous;
         if (groupsPrecedents == null) this.groupes = new ArrayList<>();
         else this.groupes = new ArrayList<>(groupsPrecedents);
         if (groupe != null)
@@ -25,7 +27,7 @@ public class NodeGroupe {
     }
 
     public NodeGroupe createNode(Groupe groupe) {
-        NodeGroupe node = new NodeGroupe(groupe, groupes, validationStrategies);
+        NodeGroupe node = new NodeGroupe(this, groupe, groupes, validationStrategies);
         nodes.add(node);
         return node;
     }

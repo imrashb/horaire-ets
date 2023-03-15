@@ -1,12 +1,15 @@
 package me.imrashb.parser;
 
 import lombok.Data;
-import me.imrashb.domain.*;
+import me.imrashb.domain.Cours;
+import me.imrashb.domain.Groupe;
+import me.imrashb.domain.Jour;
+import me.imrashb.domain.ParametresCombinaison;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
-import me.imrashb.exception.CoursAlreadyPresentException;
-import me.imrashb.exception.CoursDoesntExistException;
 import me.imrashb.exception.InvalidCoursAmountException;
-import me.imrashb.parser.strategy.*;
+import me.imrashb.parser.strategy.CongeStrategy;
+import me.imrashb.parser.strategy.GroupeOverlapStrategy;
+import me.imrashb.parser.strategy.HoraireValidationStrategy;
 
 import java.util.*;
 
@@ -48,7 +51,7 @@ public class GenerateurHoraire {
         strategies.clear();
         strategies.add(new GroupeOverlapStrategy());
 
-        if(parametres.getConges() != null && parametres.getConges().length > 0) {
+        if (parametres.getConges() != null && parametres.getConges().length > 0) {
             strategies.add(new CongeStrategy(new HashSet<Jour>(Arrays.asList(parametres.getConges()))));
         }
 
@@ -64,15 +67,15 @@ public class GenerateurHoraire {
             throw new InvalidCoursAmountException(MIN_NB_COURS);
         }
 
-        NodeGroupe node = new NodeGroupe(null, null, strategies);
+        NodeGroupe node = new NodeGroupe(null, null, null, strategies);
 
         List<Set<Cours>> subsets = getSubsets(parametres.getListeCours(), parametres.getNbCours());
 
         // Verrouillage des cours qui doivent etre dans l'horaire obligatoirement
-        if(parametres.getListeCoursObligatoires() != null && parametres.getListeCoursObligatoires().size() > 0) {
+        if (parametres.getListeCoursObligatoires() != null && parametres.getListeCoursObligatoires().size() > 0) {
             List<Set<Cours>> invalides = new ArrayList<>();
-            for(Set<Cours> set : subsets) {
-                if(!set.containsAll(parametres.getListeCoursObligatoires())) {
+            for (Set<Cours> set : subsets) {
+                if (!set.containsAll(parametres.getListeCoursObligatoires())) {
                     invalides.add(set);
                 }
             }
@@ -106,6 +109,15 @@ public class GenerateurHoraire {
             if (node.isValid(g)) {
                 NodeGroupe n = node.createNode(g);
                 recurCreateCombinaisons(cours, index + 1, n);
+            } else {
+
+                for (Groupe sub : g.getSubGroupes()) {
+                    if (node.isValid(sub)) {
+                        NodeGroupe n = node.createNode(g);
+                        recurCreateCombinaisons(cours, index + 1, n);
+                    }
+                }
+              
             }
         }
 
