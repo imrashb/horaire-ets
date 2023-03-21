@@ -4,9 +4,11 @@ package me.imrashb.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import java.util.List;
+import java.util.*;
 
 public class SubGroupe extends Groupe {
+
+    private static final List<Groupe> EMPTY_SUBGROUP_LIST = new ArrayList<>();
 
     @Getter
     @JsonIgnore
@@ -19,6 +21,6 @@ public class SubGroupe extends Groupe {
 
     @Override
     public List<Groupe> createSubGroupes() {
-        throw new RuntimeException("Invalid operation: Cannot call getSubGroupes() on a SubGroupe object.");
+        return EMPTY_SUBGROUP_LIST;
     }
 }

@@ -1,7 +1,7 @@
 package me.imrashb.parser;
 
 import lombok.Getter;
-import me.imrashb.domain.Groupe;
+import me.imrashb.domain.*;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
 import me.imrashb.parser.strategy.HoraireValidationStrategy;
 import org.jetbrains.annotations.NotNull;
