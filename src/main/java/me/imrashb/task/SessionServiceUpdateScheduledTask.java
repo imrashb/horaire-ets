@@ -1,7 +1,9 @@
 package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.*;
+import me.imrashb.domain.Cours;
+import me.imrashb.domain.Session;
+import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
 import me.imrashb.service.HorairETSService;
@@ -83,16 +85,6 @@ public class SessionServiceUpdateScheduledTask {
 
             }
             coursParser.getCours().sort(Comparator.comparing(Cours::getSigle));
-
-            for (Cours c : coursParser.getCours()) {
-                for (Groupe g : c.getGroupes()) {
-
-                    for (SubGroupe sub : g.getSubGroupes()) {
-                        System.out.println(sub.toString() + ": " + sub.getActivites().size() + " (" + g.getActivites().size() + ") ");
-                    }
-
-                }
-            }
             this.horairETSService.getSessionService().addSession(session, coursParser.getCours());
         }
         horairETSService.getSessionService().setReady(true);

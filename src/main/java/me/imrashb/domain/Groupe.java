@@ -47,10 +47,10 @@ public class Groupe implements Comparable<Groupe> {
         return this.toString().compareTo(o.toString());
     }
 
-    public List<SubGroupe> getSubGroupes() {
+    public List<Groupe> createSubGroupes() {
 
 
-        List<SubGroupe> sub = new ArrayList<>();
+        List<Groupe> sub = new ArrayList<>();
 
         // Récupère les groupes uniques (càd qui ne sont pas Labo A, Labo B, TP A, etc)
         List<Activite> uniqueActivites = new ArrayList<>();
