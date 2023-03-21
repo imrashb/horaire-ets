@@ -14,11 +14,24 @@ class CombinaisonHoraireFactory {
         for (Cours c : cours) {
             if (mapGroupes.containsKey(c.getSigle())) {
                 String num = mapGroupes.get(c.getSigle());
+                String trimmed = num.substring(0, 2);
                 Groupe groupe = null;
                 for (Groupe g : c.getGroupes()) {
-                    if (g.getNumeroGroupe().equals(num)) {
-                        groupe = g;
-                        break;
+                    if (g.getNumeroGroupe().equals(trimmed)) {
+                        if (trimmed.equals(num)) {
+                            groupe = g;
+                            break;
+                        } else {
+                            // SubGroupe
+                            for (Groupe sub : g.createSubGroupes()) {
+                                if (sub.getNumeroGroupe().equals(num)) {
+                                    groupe = sub;
+                                    break;
+                                }
+                            }
+
+                            if (groupe != null) break;
+                        }
                     }
                 }
                 if (groupe == null)
@@ -46,7 +59,7 @@ class CombinaisonHoraireFactory {
         String decoded = null;
         try {
             decoded = new String(Base64.getDecoder().decode(encodedUniqueId.getBytes()));
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             throw new InvalidEncodedIdException("L'identifiant ne peut pas être décodé.");
         }
 

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class CoursParser {
 
     private static final Pattern coursPattern = Pattern.compile("^([A-Z]{3}(\\d{3}|EST|TEST))\\s[A-Z]*\\s");
-    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\s*?([a-zA-Z]{3})\\s(\\d{2}):(\\d{2})\\s-\\s(\\d{2}):(\\d{2})\\s(Labo A|Labo B|Labo(?: A\\+B)?|Labo\\/2|C|Atelier|TP\\/Labo|TP\\/2|TP(?: A\\+B| A| B)?|TP-Labo\\/2|TP-Labo (?:A|B)|Projet)\\s([DPHC]\\b)?($|\\s*(([A-Z]-\\d{4}.?,?\\s?)*)(.*))");
+    private static final Pattern groupePattern = Pattern.compile("^(\\d{2})?\\s*?([a-zA-Z]{3})\\s(\\d{2}):(\\d{2})\\s-\\s(\\d{2}):(\\d{2})\\s(Labo A|Labo B|Labo C|Labo D|Labo(?: A\\+B)?|Labo\\/2|C|Atelier|TP\\/Labo|TP\\/2|TP(?: A\\+B| A| B| C| D)?|TP-Labo\\/2|TP-Labo (?:A|B|C|D)|Projet)\\s([DPHC]\\b)?($|\\s*(([A-Z]-\\d{4}.?,?\\s?)*)(.*))");
     private final List<Cours> listeCours;
     private Cours currentCours = null;
     private Groupe currentGroupe = null;
