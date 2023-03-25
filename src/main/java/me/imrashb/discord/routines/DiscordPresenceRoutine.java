@@ -1,14 +1,15 @@
 package me.imrashb.discord.routines;
 
-import lombok.*;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
+import lombok.NonNull;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Activity;
 
-import java.time.*;
-import java.util.*;
-import java.util.function.*;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
-public class DiscordPresenceRoutine extends PeriodicRoutine{
+public class DiscordPresenceRoutine extends PeriodicRoutine {
 
     private final JDA jda;
     private final List<Supplier<Activity>> suppliers;
@@ -27,7 +28,7 @@ public class DiscordPresenceRoutine extends PeriodicRoutine{
 
     private Activity getWatchingGuildAmount() {
         int amount = jda.getGuilds().size();
-        return Activity.watching(amount+" serveurs");
+        return Activity.watching(amount + " serveurs");
     }
 
     private void initSuppliers() {
@@ -37,7 +38,7 @@ public class DiscordPresenceRoutine extends PeriodicRoutine{
 
     @Override
     public void run() {
-        if(currentSupplier >= suppliers.size()) {
+        if (currentSupplier >= suppliers.size()) {
             currentSupplier = 0;
         }
 

@@ -1,9 +1,8 @@
 package me.imrashb.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -11,18 +10,23 @@ import java.util.Objects;
 import java.util.Set;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @ToString
 public class Cours {
 
-    private String sigle;
+    private final String sigle;
     @JsonIgnore
-    private List<Groupe> groupes;
-    private Set<Programme> programmes;
+    private final List<Groupe> groupes;
+    private final Set<Programme> programmes;
 
     @JsonIgnore
-    private Session session;
+    private final Session session;
+
+    private Integer credits = null;
+
+    private List<String> prealables;
+
+    private String titre;
 
 
     public void addProgramme(Programme programme) {
@@ -36,5 +40,11 @@ public class Cours {
     @Override
     public int hashCode() {
         return Objects.hash(sigle, programmes);
+    }
+
+    public void syncFromCoursData(CoursDataWrapper data) {
+        this.credits = data.getCredits();
+        this.prealables = data.getPrealables();
+        this.titre = data.getTitre();
     }
 }
