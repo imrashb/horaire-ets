@@ -70,7 +70,7 @@ public class SessionServiceUpdateScheduledTask {
     public void updateCours() throws IOException {
         log.info("method: updateCours() : Début de la mise à jour des cours");
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int startYear = 2023;
+        int startYear = 2021;
 
         int sessionId = startYear * 10; // 2020 * 10 -> 20200, les sessions sont: 20201 (Hiver), 20202 (Été), 20203 (Automne)
 
