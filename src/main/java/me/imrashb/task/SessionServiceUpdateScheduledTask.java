@@ -2,10 +2,12 @@ package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
 import me.imrashb.domain.Cours;
+import me.imrashb.domain.CoursDataWrapper;
 import me.imrashb.domain.Session;
 import me.imrashb.domain.Trimestre;
 import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
+import me.imrashb.repository.ScrapedCoursDataRepository;
 import me.imrashb.service.HorairETSService;
 import me.imrashb.utils.ETSUtils;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +15,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Configuration
 @EnableScheduling
@@ -25,8 +28,11 @@ public class SessionServiceUpdateScheduledTask {
 
     private final HorairETSService horairETSService;
 
-    public SessionServiceUpdateScheduledTask(HorairETSService horairETSService) {
+    private final ScrapedCoursDataRepository repository;
+
+    public SessionServiceUpdateScheduledTask(HorairETSService horairETSService, ScrapedCoursDataRepository repository) {
         this.horairETSService = horairETSService;
+        this.repository = repository;
     }
 
     private static int getNextSessionId(int sessionId) {
@@ -38,15 +44,38 @@ public class SessionServiceUpdateScheduledTask {
         return sessionId;
     }
 
+    private void scrapeMissingCoursData(Map<String, List<Cours>> map) {
+        ExecutorService executor = Executors.newFixedThreadPool(16);
+        List<Future<CoursDataWrapper>> futures = new ArrayList<>();
+        for (Map.Entry<String, List<Cours>> entry : map.entrySet()) {
+            Future<CoursDataWrapper> future = new CoursDataScraper(entry.getKey()).getCoursData(executor);
+            futures.add(future);
+        }
+        for (Future<CoursDataWrapper> future : futures) {
+            try {
+                CoursDataWrapper data = future.get();
+                repository.save(data);
+                List<Cours> cours = map.get(data.getSigle());
+                cours.forEach((c) -> c.syncFromCoursData(data));
+            } catch (InterruptedException | ExecutionException e) {
+                // Ignore catch block
+            }
+
+        }
+
+    }
+
     //Update les horaires a chaque heure
     @Scheduled(fixedDelay = 3600000)
     public void updateCours() throws IOException {
         log.info("method: updateCours() : Début de la mise à jour des cours");
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int startYear = 2021;
+        int startYear = 2023;
 
         int sessionId = startYear * 10; // 2020 * 10 -> 20200, les sessions sont: 20201 (Hiver), 20202 (Été), 20203 (Automne)
 
+
+        Map<String, List<Cours>> missingAdditionalCoursData = new HashMap<>();
 
         while (true) {
 
@@ -85,10 +114,30 @@ public class SessionServiceUpdateScheduledTask {
 
             }
             coursParser.getCours().sort(Comparator.comparing(Cours::getSigle));
+
+            // Handle additional cours data
+            for (Cours c : coursParser.getCours()) {
+
+                Optional<CoursDataWrapper> data = repository.findById(c.getSigle());
+
+                // If no data add to missing to scrape after
+                if (data.isEmpty()) {
+                    List<Cours> coursList = missingAdditionalCoursData.get(c.getSigle());
+                    if (coursList == null) {
+                        coursList = new ArrayList<>();
+                        missingAdditionalCoursData.put(c.getSigle(), coursList);
+                    }
+                    coursList.add(c);
+                } else {
+                    c.syncFromCoursData(data.get());
+                }
+
+            }
+
             this.horairETSService.getSessionService().addSession(session, coursParser.getCours());
         }
         horairETSService.getSessionService().setReady(true);
-
+        scrapeMissingCoursData(missingAdditionalCoursData);
         log.info("method: updateCours() : Fin de la mise à jour des cours");
         System.gc();
     }
