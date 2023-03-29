@@ -16,8 +16,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Bot {
 
@@ -29,7 +28,7 @@ public class Bot {
         this.mediator = mediator;
         this.commands = new HashSet<>();
 
-        JDABuilder builder = JDABuilder.createDefault(token);
+        JDABuilder builder = JDABuilder.createLight(token);
 
         if (!this.mediator.getSessionService().isReady()) {
             this.mediator.getSessionService().addSessionManagerReadyListener(ready -> {
@@ -49,10 +48,17 @@ public class Bot {
 
     private void configure(JDABuilder jdaBuilder) throws InterruptedException {
         // Memory usage config
-        jdaBuilder.disableCache(CacheFlag.ACTIVITY);
-        jdaBuilder.setMemberCachePolicy(MemberCachePolicy.ONLINE);
+        jdaBuilder.disableCache(Arrays.asList(CacheFlag.values())); // Disable useless caches
         jdaBuilder.setChunkingFilter(ChunkingFilter.NONE);
-        jdaBuilder.disableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_TYPING);
+        jdaBuilder.setMemberCachePolicy(MemberCachePolicy.NONE); // Don't cache users
+        jdaBuilder.disableIntents(
+                GatewayIntent.GUILD_PRESENCES,
+                GatewayIntent.GUILD_MESSAGE_TYPING,
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.GUILD_BANS,
+                GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+                GatewayIntent.GUILD_INVITES,
+                GatewayIntent.SCHEDULED_EVENTS);
         jdaBuilder.setLargeThreshold(50);
 
         this.jda = jdaBuilder.build().awaitReady();
