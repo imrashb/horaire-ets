@@ -111,10 +111,8 @@ public class GenerateurHoraire {
                 recurCreateCombinaisons(cours, index + 1, n);
             } else {
                 // tentative de créer des combinaisons d'horaire avec les sous-groupes (aka les activités Labo A, Labo B, etc.)
-                if (g.createSubGroupes().size() > 0) {
-                    List<NodeGroupe> nodes = node.createNodesFromSubGroupes(g);
-                    nodes.forEach((n) -> recurCreateCombinaisons(cours, index + 1, n));
-                }
+                List<NodeGroupe> nodes = node.createNodesFromSubGroupes(g);
+                nodes.forEach((n) -> recurCreateCombinaisons(cours, index + 1, n));
 
             }
         }
