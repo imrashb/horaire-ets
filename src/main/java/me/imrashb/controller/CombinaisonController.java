@@ -1,28 +1,31 @@
 package me.imrashb.controller;
 
-import me.imrashb.domain.*;
+import me.imrashb.domain.ParametresCombinaison;
 import me.imrashb.domain.combinaison.CombinaisonHoraire;
-import me.imrashb.domain.combinaison.comparator.*;
-import me.imrashb.exception.*;
+import me.imrashb.domain.combinaison.comparator.CombinaisonHoraireComparator;
 import me.imrashb.service.CombinaisonService;
-import me.imrashb.utils.*;
-import org.apache.pdfbox.io.*;
-import org.springframework.http.*;
+import me.imrashb.utils.HoraireImageMaker;
+import me.imrashb.utils.HoraireImageMakerTheme;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/combinaisons")
 public class CombinaisonController {
 
+    private static final int MAX_IDS = 64;
     private final CombinaisonService service;
 
     public CombinaisonController(CombinaisonService service) {
@@ -34,9 +37,9 @@ public class CombinaisonController {
 
         CombinaisonHoraireComparator comparator = null;
 
-        if(parametres.getSort() != null && parametres.getSort().size() > 0) {
+        if (parametres.getSort() != null && parametres.getSort().size() > 0) {
             CombinaisonHoraireComparator.Builder builder = new CombinaisonHoraireComparator.Builder();
-            for(CombinaisonHoraireComparator.Comparator c : parametres.getSort()) {
+            for (CombinaisonHoraireComparator.Comparator c : parametres.getSort()) {
                 try {
                     builder.addComparator(c.getComparatorClass());
                 } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
@@ -50,7 +53,7 @@ public class CombinaisonController {
 
         List<CombinaisonHoraire> combinaisons = service.getCombinaisonsHoraire(parametres);
 
-        if(comparator != null) Collections.sort(combinaisons, comparator);
+        if (comparator != null) Collections.sort(combinaisons, comparator);
 
         return combinaisons;
     }
@@ -60,7 +63,7 @@ public class CombinaisonController {
         return service.getAvailableCombinaisonHoraireComparators();
     }
 
-    @GetMapping(value="{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "{id}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getCombinaisonImage(@PathVariable String id, @RequestParam(required = false) String theme) throws ExecutionException, InterruptedException, IOException {
 
         HoraireImageMakerTheme imageTheme = HoraireImageMaker.getThemeFromId(theme);
@@ -69,8 +72,25 @@ public class CombinaisonController {
         Future<Image> future = new HoraireImageMaker(comb, imageTheme).drawHoraire();
         Image img = future.get();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) img,"jpeg", os);
+        ImageIO.write((RenderedImage) img, "jpeg", os);
         return os.toByteArray();
+    }
+
+    @GetMapping(value = "id")
+    public List<CombinaisonHoraire> getCombinaisonsFromEncodedId(@RequestParam String[] ids) throws ExecutionException, InterruptedException, IOException {
+
+        List<CombinaisonHoraire> combinaisons = new ArrayList<>();
+
+        for (String id : ids) {
+            try {
+                CombinaisonHoraire comb = service.getCombinaisonFromEncodedId(id);
+                combinaisons.add(comb);
+            } catch (Exception ex) {
+                // Ignore
+            }
+        }
+
+        return combinaisons;
     }
 
 }
