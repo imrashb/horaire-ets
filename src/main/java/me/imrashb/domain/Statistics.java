@@ -1,5 +1,6 @@
 package me.imrashb.domain;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.stream.*;
 public class Statistics {
 
     @Id
+    @JsonIgnore
     private Long id = 0L;
 
     @Column(name = "total_combinaisons")
