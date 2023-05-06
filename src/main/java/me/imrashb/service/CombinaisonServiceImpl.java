@@ -7,7 +7,6 @@ import me.imrashb.domain.combinaison.comparator.*;
 import me.imrashb.exception.CoursNotInitializedException;
 import me.imrashb.exception.SessionDoesntExistException;
 import me.imrashb.parser.GenerateurHoraire;
-import me.imrashb.parser.strategy.CongeStrategy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,13 @@ import java.util.*;
 public class CombinaisonServiceImpl implements CombinaisonService {
 
     private final SessionService sessionService;
+
+    private final StatisticsService statisticsService;
     private final Set<String> comparators;
 
-    public CombinaisonServiceImpl(SessionService sessionService) {
+    public CombinaisonServiceImpl(SessionService sessionService, StatisticsService statisticsService) {
         this.sessionService = sessionService;
+        this.statisticsService = statisticsService;
         this.comparators = new HashSet<>();
         this.initializeComparators();
     }
@@ -37,6 +39,8 @@ public class CombinaisonServiceImpl implements CombinaisonService {
     @Override
     public List<CombinaisonHoraire> getCombinaisonsHoraire(ParametresCombinaison parametres) {
 
+        long startTime = System.nanoTime();
+
         parametres.init(sessionService);
 
         if (!sessionService.isReady()) {
@@ -46,12 +50,28 @@ public class CombinaisonServiceImpl implements CombinaisonService {
         String sessionId = parametres.getSession();
 
         List<Cours> coursSession = sessionService.getListeCours(sessionId);
-
         if (coursSession == null)
             throw new SessionDoesntExistException(sessionId);
 
+        List<CombinaisonHoraire> combinaisons = new GenerateurHoraire(coursSession).getCombinaisonsHoraire(parametres);
 
-        return new GenerateurHoraire(coursSession).getCombinaisonsHoraire(parametres);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+
+        this.updateGenerationStatistics(parametres, elapsedTime, combinaisons.size(), sessionId);
+
+        return combinaisons;
+    }
+
+    private void updateGenerationStatistics(ParametresCombinaison parametres, long timeSpentGenerating, long totalCombinaisonsGenerated, String sessionId) {
+        Statistics stats = this.statisticsService.getStatistics();
+        stats.addGenerationsPerProgrammes(parametres.getListeCours());
+        stats.addTotalCombinaisons(totalCombinaisonsGenerated);
+        stats.incrementTotalGenerations();
+        stats.addTimeSpentGenerating(timeSpentGenerating);
+        stats.addNombreCoursAverage(parametres.getNbCours());
+        stats.incrementGenerationsPerSession(sessionId);
+        statisticsService.save();
     }
 
     @Override

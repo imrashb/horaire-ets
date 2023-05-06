@@ -31,9 +31,15 @@ public class DiscordPresenceRoutine extends PeriodicRoutine {
         return Activity.watching(amount + " serveurs");
     }
 
+    private static final String HORAIRETS_LINK = "https://horairets.emmanuelcoulombe.dev";
+    private Activity getWatchingHorairETSWebsite() {
+        return Activity.watching(HORAIRETS_LINK);
+    }
+
     private void initSuppliers() {
         suppliers.add(this::getWatchingGuildAmount);
         suppliers.add(this::getListeningHorairETS);
+        suppliers.add(this::getWatchingHorairETSWebsite);
     }
 
     @Override
