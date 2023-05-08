@@ -61,17 +61,23 @@ public class ETSUtils {
     }
 
     private static Future<File> downloadHoraire(ExecutorService executor, String programme, String idSession) {
+        final String link = "https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idSession + "_" + programme + ".pdf";
+        return downloadFile(executor, link, programme+".pdf");
+    }
 
+    private static Future<File> downloadFile(ExecutorService executor, String link, String fileName) {
         return executor.submit(() -> {
             URL url = null;
             try {
-                url = new URL("https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idSession + "_" + programme + ".pdf");
+                url = new URL(link);
             } catch (MalformedURLException e) {
                 System.err.println(e.getMessage());
                 return null;
             }
 
-            File file = new File("./pdf" + "/" + programme + ".pdf");
+            File file = new File("./tmp/" + fileName);
+            if(!file.exists()) file.createNewFile();
+
             try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                 byte[] dataBuffer = new byte[1024];
@@ -87,7 +93,6 @@ public class ETSUtils {
 
             return file;
         });
-
     }
 
 }

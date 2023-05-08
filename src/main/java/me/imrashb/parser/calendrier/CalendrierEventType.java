@@ -1,0 +1,11 @@
+package me.imrashb.parser.calendrier;
+
+public enum CalendrierEventType {
+    INSCRIPTION_ANCIENS_ETUDIANTS,
+    INSCRIPTION_NOUVEAUX_ETUDIANTS,
+    DEBUT_SESSION,
+    FIN_SESSION,
+    PERMUTATION_HORAIRE,
+    REVISION_NOTE,
+    PAIEMENT_DROITS_SCOLARITE
+}
