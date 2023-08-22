@@ -8,7 +8,6 @@ public enum Programme {
 
     SEG("seg", "Enseignements généraux"),
     LOG("7084", "Génie logiciel"),
-    CUT("5730", "Cheminement universitaire en technologie"),
     CTN("7625", "Génie de la construction"),
     ELE("7694", "Génie électrique"),
     MEC("7684", "Génie mécanique"),
