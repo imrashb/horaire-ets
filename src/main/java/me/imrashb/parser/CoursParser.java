@@ -38,6 +38,8 @@ public class CoursParser {
         currentCours = null;
         currentGroupe = null;
 
+        System.out.println("["+session.getTrimestre().getLettre()+session.getAnnee()+"] - Parsing groupes for "+programme.getNom());
+
         String[] lines = getLinesFromPDF(f);
 
         for (String line : lines) {
@@ -125,6 +127,12 @@ public class CoursParser {
         if (obj instanceof Activite) {
 
             Activite activite = (Activite) obj;
+
+            if(currentGroupe == null) {
+                System.err.println("Current groupe is null, continuing. Line: "+line);
+                return null;
+            }
+
             for (Activite a : currentGroupe.getActivites()) {
                 if (a.equals(activite)) return currentGroupe;
             }
