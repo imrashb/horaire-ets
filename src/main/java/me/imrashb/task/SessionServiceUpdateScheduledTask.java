@@ -62,6 +62,7 @@ public class SessionServiceUpdateScheduledTask {
             }
 
         }
+        executor.shutdown();
 
     }
 
