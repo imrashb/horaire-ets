@@ -1,10 +1,7 @@
 package me.imrashb.task;
 
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.Cours;
-import me.imrashb.domain.CoursDataWrapper;
-import me.imrashb.domain.Session;
-import me.imrashb.domain.Trimestre;
+import me.imrashb.domain.*;
 import me.imrashb.parser.CoursParser;
 import me.imrashb.parser.PdfCours;
 import me.imrashb.repository.ScrapedCoursDataRepository;
@@ -96,7 +93,6 @@ public class SessionServiceUpdateScheduledTask {
                 files = ETSUtils.getFichiersHoraireSync(session);
 
                 if (files == null) {
-
                     if (sessionId / 10 >= currentYear || sessionId / 10 - currentYear > 5) {
                         break; // Exit quand on a fail de telecharger un fichier de cette année ou plus
                     } else {
@@ -135,7 +131,9 @@ public class SessionServiceUpdateScheduledTask {
 
             }
 
-            this.horairETSService.getSessionService().addSession(session, coursParser.getCours());
+            List<Programme> programmes = new ArrayList<>();
+            files.forEach((f) -> programmes.add(f.getProgramme()));
+            this.horairETSService.getSessionService().addSession(session, coursParser.getCours(), programmes);
         }
         horairETSService.getSessionService().setReady(true);
         scrapeMissingCoursData(missingAdditionalCoursData);
