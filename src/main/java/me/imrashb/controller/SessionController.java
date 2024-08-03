@@ -31,8 +31,8 @@ public class SessionController {
     }
 
     @GetMapping("/programmes")
-    public Programme[] getProgrammes() {
-        return Programme.values();
+    public Set<Programme> getProgrammes(@RequestParam(required = false) String session) {
+        return service.getProgrammes(session);
     }
 
     @GetMapping("")

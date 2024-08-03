@@ -52,7 +52,8 @@ public class ETSUtils {
             File f = futures.get(programme).get();
             if (f != null) {
                 files.add(new PdfCours(f, programme));
-            } else {
+            } else if(programme != Programme.INFODISTRIBUE) {
+                // Le premier pdf de info distribué a été release pour automne 2024
                 return null;
             }
         }

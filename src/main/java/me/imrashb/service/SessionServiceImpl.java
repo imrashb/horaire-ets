@@ -2,8 +2,7 @@ package me.imrashb.service;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import me.imrashb.domain.Cours;
-import me.imrashb.domain.Session;
+import me.imrashb.domain.*;
 import me.imrashb.exception.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -18,18 +17,20 @@ import java.util.*;
 public class SessionServiceImpl implements SessionService {
 
     private final HashMap<String, List<Cours>> coursParSessions = new LinkedHashMap<>();
+    private final HashMap<String, Set<Programme>> programmesParSessions = new LinkedHashMap<>();
     private final List<SessionServiceReadyListener> sessionServiceReadyListeners = new ArrayList<>();
     private Integer derniereSession = null;
     @Getter
     private boolean ready = false;
 
     @Override
-    public void addSession(Session session, List<Cours> cours) {
+    public void addSession(Session session, List<Cours> cours, List<Programme> programmes) {
         final String nomSession = session.toString();
         final int idSession = session.toId();
 
         if (coursParSessions.containsKey(nomSession)) {
             coursParSessions.replace(nomSession, cours);
+            programmesParSessions.replace(nomSession, new HashSet<>(programmes));
         } else {
 
             final int sessionId = session.toId();
@@ -38,6 +39,7 @@ public class SessionServiceImpl implements SessionService {
             }
 
             coursParSessions.put(nomSession, cours);
+            programmesParSessions.put(nomSession, new HashSet<>(programmes));
         }
     }
 
@@ -51,6 +53,12 @@ public class SessionServiceImpl implements SessionService {
     public Set<String> getSessions() {
         validateReady();
         return coursParSessions.keySet();
+    }
+
+    @Override
+    public Set<Programme> getProgrammes(String session) {
+        if(session == null) return new HashSet<>(List.of(Programme.values()));
+        return programmesParSessions.get(session);
     }
 
     @Override

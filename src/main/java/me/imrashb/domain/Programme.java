@@ -14,7 +14,8 @@ public enum Programme {
     GOL("6556", "Génie des opérations et de la logistique"),
     GPA("6557", "Génie de la production automatisée"),
     TI("7086", "Génie en technologie de l'information"),
-    MAITRISE("cyclessuperieurs", "Cycles supérieurs");
+    MAITRISE("cyclessuperieurs", "Cycles supérieurs"),
+    INFODISTRIBUE("6646", "Baccalauréat en informatique distribuée");
 
 
     private final String id;
