@@ -23,4 +23,4 @@ jobs:
           docker build . -f Dockerfile -t ${{secrets.DOCKERHUB_USERNAME}}/horaire-ets
       - name: push the docker image
         id: push-docker-image
-        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/horairets:latest
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/horaire-ets:latest
