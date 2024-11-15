@@ -1,4 +1,4 @@
-version: "3.5"
+version: "4"
 
 services:
   caddy:
@@ -28,6 +28,7 @@ services:
 
   horaire-ets:
     image: imrashb/horaire-ets
+    pull_policy: always
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
