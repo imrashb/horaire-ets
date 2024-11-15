@@ -13,9 +13,6 @@ services:
       - caddy_config:/config
     depends_on:
       - horaire-ets
-    networks:
-      - external
-      - internal
 
   postgres:
     image: postgres:17-alpine # Use the appropriate version for your needs
@@ -24,10 +21,10 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - internal
 
   horaire-ets:
     image: imrashb/horaire-ets
@@ -38,16 +35,8 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
     depends_on:
       - postgres
-    networks:
-      - internal
 
 volumes:
   postgres_data:
   caddy_data:
   caddy_config:
-
-networks:
-  internal:
-    internal: true
-  external:
-    driver: bridge
