@@ -1,10 +1,62 @@
 version: "3.5"
+
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/letsencrypt:ro
+      - ./certs-data:/data/letsencrypt
+      - ./logs:/var/log/nginx
+    depends_on:
+      - horaire-ets
+    networks:
+      - external
+      - internal
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./certs-data:/data/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done;'"
+    networks:
+      - external
+
+  postgres:
+    image: postgres:17-alpine # Use the appropriate version for your needs
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
   horaire-ets:
     image: imrashb/horaire-ets
-    build:
-      context: .
     environment:
-      - PORT=8080
-    ports:
-      - "8080:8080"
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+    depends_on:
+      - postgres
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    internal: true
+  external:
+    driver: bridge
