@@ -137,7 +137,7 @@ public class SessionServiceUpdateScheduledTask {
         }
         horairETSService.getSessionService().setReady(true);
         scrapeMissingCoursData(missingAdditionalCoursData);
-        log.info("method: updateCours() : Fin de la mise à jour des cours");
+        log.info("method: updateCours() : Fin de la tâche de la mise à jour des cours.");
         System.gc();
     }
 
