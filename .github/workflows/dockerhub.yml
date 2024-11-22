@@ -1,0 +1,41 @@
+name: Build and push to Docker Hub & Restart via SSH
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: push docker image to docker hub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: login to docker hub
+        id: docker-hub
+        env:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+        run: |
+          docker login -u $username -p $password
+      - name: build the docker image
+        id: build-docker-image
+        run: |
+          ls -la 
+          docker build . -f Dockerfile -t ${{secrets.DOCKERHUB_USERNAME}}/horaire-ets
+      - name: push the docker image
+        id: push-docker-image
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/horaire-ets:latest
+  restart:
+    name: restart the docker container
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd horairets
+            docker compose down
+            docker compose --env-file .env up -d

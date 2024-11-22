@@ -1,0 +1,44 @@
+version: "4"
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy-server
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - horaire-ets
+
+  postgres:
+    image: postgres:17-alpine # Use the appropriate version for your needs
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  horaire-ets:
+    image: imrashb/horaire-ets
+    pull_policy: always
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
