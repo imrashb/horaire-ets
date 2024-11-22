@@ -2,7 +2,7 @@ name: Build and push to Docker Hub & Restart via SSH
 on:
   push:
     branches:
-      - push-docker-hub
+      - master
 jobs:
   build:
     name: push docker image to docker hub
