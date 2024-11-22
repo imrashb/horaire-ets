@@ -28,4 +28,4 @@ replay_pid*
 /target/
 
 .env
-Caddyfile
+/Caddyfile
