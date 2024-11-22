@@ -30,6 +30,9 @@ jobs:
     needs: build
     steps:
       - uses: appleboy/ssh-action@v1.2.0
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKERHUB_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKERHUB_PASSWORD}}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -37,5 +40,6 @@ jobs:
           port: 22
           script: |
             cd horairets
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker compose down
             docker compose --env-file .env up -d
