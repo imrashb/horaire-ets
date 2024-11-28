@@ -28,7 +28,7 @@ public class CoursDataScraper {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        System.out.println(new CoursDataScraper("LOG750").getCoursData(Executors.newSingleThreadExecutor()).get());
+        System.out.println(new CoursDataScraper("LOG100").getCoursData(Executors.newSingleThreadExecutor()).get());
     }
 
     private String getCoursTitle(Document doc) {
@@ -57,6 +57,10 @@ public class CoursDataScraper {
 
     private Integer getCoursCredits(Document doc) {
         String text = getTextFromElementDescription(doc, "Crédits");
+
+        if(text == null) {
+            text = getTextFromElementDescription(doc, "Crédit");
+        }
 
         return text != null ? Integer.parseInt(text) : 0;
     }
