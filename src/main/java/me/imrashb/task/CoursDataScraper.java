@@ -28,11 +28,11 @@ public class CoursDataScraper {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        System.out.println(new CoursDataScraper("LOG100").getCoursData(Executors.newSingleThreadExecutor()).get());
+        System.out.println(new CoursDataScraper("LOG750").getCoursData(Executors.newSingleThreadExecutor()).get());
     }
 
     private String getCoursTitle(Document doc) {
-        Elements titre = doc.select("span.fiche__header");
+        Elements titre = doc.select("h1.o-title-2");
         if (titre.get(0) != null) {
             return titre.get(0).text();
         }
@@ -40,13 +40,15 @@ public class CoursDataScraper {
     }
 
     private String getTextFromElementDescription(Document doc, String labelText) {
-        Elements credits = doc.select("div.fiche__item");
+        Elements credits = doc.select("div.o-boxed-info__item");
 
         for (Element elem : credits) {
-            Elements label = elem.getElementsByClass("fiche__item__label");
+            Elements titleAndText = elem.children();
+            if(titleAndText.size() != 2) continue;
+            Element label = titleAndText.get(0);
+            Element text = titleAndText.get(1);
             if (label.text().equalsIgnoreCase(labelText)) {
-                Elements desc = elem.getElementsByClass("fiche__item__desc");
-                return desc.text();
+                return text.text();
             }
 
         }
@@ -60,7 +62,7 @@ public class CoursDataScraper {
     }
 
     private List<String> getCoursPrealables(Document doc) {
-        String prealables = getTextFromElementDescription(doc, "Préalables");
+        String prealables = getTextFromElementDescription(doc, "Préalable(s)");
         return prealables != null ? Arrays.asList(prealables.split(" ")) : null;
     }
 
