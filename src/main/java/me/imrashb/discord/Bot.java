@@ -61,7 +61,13 @@ public class Bot {
                 GatewayIntent.SCHEDULED_EVENTS);
         jdaBuilder.setLargeThreshold(50);
 
-        this.jda = jdaBuilder.build().awaitReady();
+        try {
+            this.jda = jdaBuilder.build().awaitReady();
+        } catch(Exception e) {
+            System.err.println("Failed to initialize Discord bot. Reason: "+e.getMessage());
+            e.printStackTrace();
+            return;
+        }
 
         // Presence Routine
         new DiscordPresenceRoutine(this.jda).startRoutine();
