@@ -74,4 +74,4 @@ docker-compose down
 | [Docker](https://www.docker.com/)    | Pour conteneuriser l'application|
 | [Heroku](https://www.heroku.com/)    | Pour héberger l'application|
 
-restart counter: 1
+restart counter: 2
