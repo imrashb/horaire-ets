@@ -42,18 +42,27 @@ public class ETSUtils {
         return futures;
     }
 
+    private static List<Programme> getNewProgrammes() {
+        List<Programme> programmes = new ArrayList<>();
+        programmes.add(Programme.INFODISTRIBUE);
+        programmes.add(Programme.AERO);
+        programmes.add(Programme.UX);
+        return programmes;
+    }
+
     public static List<PdfCours> getFichiersHoraireSync(Session session) throws ExecutionException, InterruptedException {
 
         Map<Programme, Future<File>> futures = getFichiersHoraireAsync(session);
 
         List<PdfCours> files = new ArrayList<>();
+        List<Programme> newProgrammes = getNewProgrammes();
         //Resolve all futures
         for (Programme programme : futures.keySet()) {
             File f = futures.get(programme).get();
             if (f != null) {
                 files.add(new PdfCours(f, programme));
-            } else if(programme != Programme.INFODISTRIBUE) {
-                // Le premier pdf de info distribué a été release pour automne 2024
+            } else if(!newProgrammes.contains(programme)) {
+                // Ces programmes sont nouveaux donc on veut pas que ça fail le download
                 return null;
             }
         }

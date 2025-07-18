@@ -15,7 +15,9 @@ public enum Programme {
     GPA("6557", "Génie de la production automatisée"),
     TI("7086", "Génie en technologie de l'information"),
     MAITRISE("cyclessuperieurs", "Cycles supérieurs"),
-    INFODISTRIBUE("6646", "Baccalauréat en informatique distribuée");
+    INFODISTRIBUE("6646", "Baccalauréat en informatique distribuée"),
+    AERO("6522", "Baccalauréat en génie aérospatial"),
+    UX("6599", "Baccalauréat en design d'expérience utilisateur (UX)");
 
 
     private final String id;
