@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,7 @@ public class ETSUtils {
 
         final String idSession = session.toId() + "";
 
-        final ExecutorService executor
-                = Executors.newFixedThreadPool(Programme.values().length);
+        final ExecutorService executor = Executors.newFixedThreadPool(Programme.values().length);
 
         final String tmpFolder = "./pdf";
         new File(tmpFolder).mkdir();
@@ -50,18 +50,19 @@ public class ETSUtils {
         return programmes;
     }
 
-    public static List<PdfCours> getFichiersHoraireSync(Session session) throws ExecutionException, InterruptedException {
+    public static List<PdfCours> getFichiersHoraireSync(Session session)
+            throws ExecutionException, InterruptedException {
 
         Map<Programme, Future<File>> futures = getFichiersHoraireAsync(session);
 
         List<PdfCours> files = new ArrayList<>();
         List<Programme> newProgrammes = getNewProgrammes();
-        //Resolve all futures
+        // Resolve all futures
         for (Programme programme : futures.keySet()) {
             File f = futures.get(programme).get();
             if (f != null) {
                 files.add(new PdfCours(f, programme));
-            } else if(!newProgrammes.contains(programme)) {
+            } else if (!newProgrammes.contains(programme)) {
                 // Ces programmes sont nouveaux donc on veut pas que ça fail le download
                 return null;
             }
@@ -75,22 +76,26 @@ public class ETSUtils {
         return executor.submit(() -> {
             URL url = null;
             try {
-                url = new URL("https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idSession + "_" + programme + ".pdf");
+                url = new URL("https://horaire.etsmtl.ca/HorairePublication/HorairePublication_" + idSession + "_"
+                        + programme + ".pdf");
             } catch (MalformedURLException e) {
                 System.err.println(e.getMessage());
                 return null;
             }
 
             File file = new File("./pdf" + "/" + programme + ".pdf");
-            try (BufferedInputStream in = new BufferedInputStream(url.openStream())) {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                byte[] dataBuffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+            try {
+                URLConnection conn = url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(10000);
+                try (InputStream in = conn.getInputStream();
+                        FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                    in.transferTo(fileOutputStream);
                 }
-                fileOutputStream.close();
             } catch (IOException e) {
+                if (file.exists()) {
+                    file.delete(); // Prevent leaving a 0-byte or half-downloaded PDF on timeout
+                }
                 System.err.println(e.getMessage());
                 return null;
             }
@@ -101,4 +106,3 @@ public class ETSUtils {
     }
 
 }
-

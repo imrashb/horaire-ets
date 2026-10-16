@@ -1,5 +1,3 @@
-version: "4"
-
 services:
   caddy:
     image: caddy:latest
@@ -33,12 +31,13 @@ services:
     deploy:
       resources:
         limits:
-          memory: 400M
+          memory: 650M
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - SPRING_DATASOURCE_URL=${DB_URL}
       - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - JAVA_TOOL_OPTIONS=-XX:+UseContainerSupport -XX:+ExitOnOutOfMemoryError -XX:+UseSerialGC -Xms128m -Xmx320m -XX:MaxMetaspaceSize=160m -Xss512k
     depends_on:
       - postgres
 
