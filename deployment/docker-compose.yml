@@ -30,6 +30,10 @@ services:
     image: imrashb/horaire-ets
     pull_policy: always
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 400M
     environment:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
